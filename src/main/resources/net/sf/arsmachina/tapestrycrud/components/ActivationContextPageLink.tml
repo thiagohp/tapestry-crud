@@ -1,0 +1,2 @@
+<a xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd"
+	t:type="PageLink" t:page="prop:page" t:context="context"><t:body/></a>

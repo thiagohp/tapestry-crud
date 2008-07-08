@@ -1,0 +1,16 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd">
+	<t:if test="edit">
+		<a href="#" t:type="crud/ActivationContextPageLink" t:page="prop:editPage"
+			t:object="object">
+			${message:link.edit.object}
+		</a>
+	</t:if>
+	<t:if test="remove">
+		<a href="#" t:type="crud/PrimaryKeyEventLink" t:object="object"
+			t:event="removeObject"
+			t:id="remove" t:zone="zone">
+			${message:link.remove.object}
+		</a>
+	</t:if>
+</div>

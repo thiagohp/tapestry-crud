@@ -1,0 +1,52 @@
+form label, form input {
+	display: block;
+	padding: 0;
+	margin: 0;
+	margin-bottom: 0.5em;
+}
+
+form input {
+	width: 10em;
+}
+
+form label {
+	width: 10em;
+	height: auto;
+	margin-right: 1em;
+	float: left;
+	clear: both;
+}
+
+label:after {
+	content: ":";
+}
+
+form input[type="submit"] {
+	margin-left: 13em;
+	width: auto;	
+}
+
+div.t-crud-emptygrid, div.t-crud-message {
+	margin-top: 1em;
+	margin-bottom: 1em;
+	border-width: 2px;
+	border-style: solid;
+}
+
+div.t-crud-emptygrid {
+	border-color: red;
+}
+
+div.t-crud-message {
+	border-color: blue;
+}
+
+div.t-crud-emptygrid p, div.t-crud-message p{
+	padding: 0.5em;
+	margin: 0;
+	width: auto;
+}
+
+form input[type="checkbox"], form input[type="radio"] {
+	width: auto;
+}
