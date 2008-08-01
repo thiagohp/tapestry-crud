@@ -3,17 +3,22 @@ package net.sf.arsmachina.tapestrycrud.services;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import net.sf.arsmachina.controller.Controller;
-import net.sf.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
-import net.sf.arsmachina.tapestrycrud.encoder.Encoder;
-import net.sf.arsmachina.tapestrycrud.encoder.LabelEncoder;
-import net.sf.arsmachina.tapestrycrud.ioc.TapestryCrudModule;
-import net.sf.arsmachina.tapestrycrud.selectmodel.SingleTypeSelectModelFactory;
 
 import org.apache.tapestry5.ioc.Registry;
 import org.apache.tapestry5.ioc.RegistryBuilder;
 import org.easymock.EasyMock;
 import org.testng.annotations.Test;
+
+import br.com.arsmachina.controller.Controller;
+import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
+import br.com.arsmachina.tapestrycrud.encoder.Encoder;
+import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
+import br.com.arsmachina.tapestrycrud.ioc.TapestryCrudModule;
+import br.com.arsmachina.tapestrycrud.selectmodel.SingleTypeSelectModelFactory;
+import br.com.arsmachina.tapestrycrud.services.ActivationContextEncoderSource;
+import br.com.arsmachina.tapestrycrud.services.ControllerSource;
+import br.com.arsmachina.tapestrycrud.services.EncoderSource;
+import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
 
 /**
  * Tapestry-IoC module for Tapestry-CRUD

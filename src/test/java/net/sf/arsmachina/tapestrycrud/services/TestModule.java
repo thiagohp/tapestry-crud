@@ -14,13 +14,14 @@
 
 package net.sf.arsmachina.tapestrycrud.services;
 
-import net.sf.arsmachina.controller.Controller;
-import net.sf.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
-import net.sf.arsmachina.tapestrycrud.encoder.Encoder;
-import net.sf.arsmachina.tapestrycrud.ioc.TapestryCrudModule;
-import net.sf.arsmachina.tapestrycrud.selectmodel.SelectModelFactory;
 
 import org.apache.tapestry5.ioc.MappedConfiguration;
+
+import br.com.arsmachina.controller.Controller;
+import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
+import br.com.arsmachina.tapestrycrud.encoder.Encoder;
+import br.com.arsmachina.tapestrycrud.ioc.TapestryCrudModule;
+import br.com.arsmachina.tapestrycrud.selectmodel.SelectModelFactory;
 
 /**
  * Tapestry-IoC module used to test {@link TapestryCrudModule}.
