@@ -5,17 +5,17 @@
 	<groupId>br.com.arsmachina</groupId>
 	<artifactId>tapestry-crud</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0</version>
+	<version>0.9</version>
 	<name>Tapestry-CRUD</name>
 	<description>
 		Tapestry 5 infrastructure for building CRUDs
 	</description>
 	<inceptionYear>2008</inceptionYear>
-	<url>http://ars-machina.sourceforge.net/tapestry-crud</url>
+	<url>http://www.arsmachina.com.br/project/tapestry-crud</url>
 	<parent>
 		<groupId>br.com.arsmachina</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.0</version>
+		<version>0.9</version>
 		<relativePath>../parent/pom.xml</relativePath>
 	</parent>
 	<dependencies>
