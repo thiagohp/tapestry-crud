@@ -164,7 +164,7 @@ public class TapestryCrudModule {
 	public static void contributeComponentClassResolver(Configuration<LibraryMapping> configuration) {
 
 		configuration.add(new LibraryMapping(TAPESTRY_CRUD_COMPONENT_PREFIX,
-				"net.sf.arsmachina.tapestrycrud"));
+				"br.com.arsmachina.tapestrycrud"));
 
 	}
 

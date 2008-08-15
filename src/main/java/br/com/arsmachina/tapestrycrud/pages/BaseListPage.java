@@ -82,10 +82,10 @@ public abstract class BaseListPage<T, K extends Serializable, A extends Serializ
 	/**
 	 * Returns <code>false</code>.
 	 * 
-	 * @see br.com.arsmachina.tapestrycrud.pages.BasePage#isfilterReadOnlyComponentsInBeanModel()
+	 * @see br.com.arsmachina.tapestrycrud.pages.BasePage#filterReadOnlyComponentsInBeanModel()
 	 */
 	@Override
-	protected boolean isfilterReadOnlyComponentsInBeanModel() {
+	protected boolean filterReadOnlyComponentsInBeanModel() {
 		return false;
 	}
 

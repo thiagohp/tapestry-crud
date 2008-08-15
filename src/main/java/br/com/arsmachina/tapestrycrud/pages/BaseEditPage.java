@@ -16,9 +16,7 @@ package br.com.arsmachina.tapestrycrud.pages;
 
 import java.io.Serializable;
 
-
 import org.apache.tapestry5.ComponentResources;
-import org.apache.tapestry5.EventConstants;
 import org.apache.tapestry5.Field;
 import org.apache.tapestry5.PersistenceConstants;
 import org.apache.tapestry5.annotations.AfterRenderTemplate;
@@ -69,8 +67,6 @@ public abstract class BaseEditPage<T, K extends Serializable, A extends Serializ
 	private ActivationContextEncoder<T, A> activationContextEncoder;
 
 	private Controller<T, K> controller;
-
-	private boolean isObjectPersistent;
 
 	/**
 	 * Single constructor of this class.
@@ -303,10 +299,12 @@ public abstract class BaseEditPage<T, K extends Serializable, A extends Serializ
 		setObject(activationContextEncoder.toObject(value));
 	}
 
-	@SuppressWarnings("unused")
-	@OnEvent(EventConstants.ACTIVATE)
-	final private void setIsObjectPersistent() {
-		isObjectPersistent = object != null && controller.isPersistent(object);
+	/**
+	 * Tells if the object is persistent.
+	 * @return a <code>boolean</code>.
+	 */
+	final private boolean isObjectPersistent() {
+		return object != null && controller.isPersistent(object);
 	}
 
 	/**
@@ -316,7 +314,7 @@ public abstract class BaseEditPage<T, K extends Serializable, A extends Serializ
 	 * @return a {@link String}.
 	 */
 	public String getZone() {
-		return isObjectPersistent ? Constants.DEFAULT_FORM_ZONE_ID : null;
+		return isObjectPersistent() ? Constants.DEFAULT_FORM_ZONE_ID : null;
 	}
 
 	/**

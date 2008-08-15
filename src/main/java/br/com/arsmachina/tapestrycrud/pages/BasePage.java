@@ -113,8 +113,8 @@ public abstract class BasePage<T, K extends Serializable, A extends Serializable
 	 * @return a {@link BeanModel}.
 	 */
 	public BeanModel<T> getBeanModel() {
-		return beanModelSource.create(entityClass, isfilterReadOnlyComponentsInBeanModel(),
-				componentResources);
+		return beanModelSource.create(entityClass, filterReadOnlyComponentsInBeanModel(),
+				getMessages());
 	}
 
 	/**
@@ -123,7 +123,7 @@ public abstract class BasePage<T, K extends Serializable, A extends Serializable
 	 * 
 	 * @return a <code>boolean</code>.
 	 */
-	protected boolean isfilterReadOnlyComponentsInBeanModel() {
+	protected boolean filterReadOnlyComponentsInBeanModel() {
 		return true;
 	}
 
