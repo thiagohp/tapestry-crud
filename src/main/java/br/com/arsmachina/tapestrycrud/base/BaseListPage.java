@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package br.com.arsmachina.tapestrycrud.pages;
+package br.com.arsmachina.tapestrycrud.base;
 
 import java.io.Serializable;
 
@@ -82,7 +82,7 @@ public abstract class BaseListPage<T, K extends Serializable, A extends Serializ
 	/**
 	 * Returns <code>false</code>.
 	 * 
-	 * @see br.com.arsmachina.tapestrycrud.pages.BasePage#filterReadOnlyComponentsInBeanModel()
+	 * @see br.com.arsmachina.tapestrycrud.base.BasePage#filterReadOnlyComponentsInBeanModel()
 	 */
 	@Override
 	protected boolean filterReadOnlyComponentsInBeanModel() {
@@ -92,7 +92,7 @@ public abstract class BaseListPage<T, K extends Serializable, A extends Serializ
 	/**
 	 * Adds an <code>action</code> property to the {@link BeanModel}.
 	 * 
-	 * @see br.com.arsmachina.tapestrycrud.pages.BasePage#getBeanModel()
+	 * @see br.com.arsmachina.tapestrycrud.base.BasePage#getBeanModel()
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
