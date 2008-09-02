@@ -14,7 +14,9 @@
 
 package br.com.arsmachina.tapestrycrud.components;
 
+import org.apache.tapestry5.annotations.Mixin;
 import org.apache.tapestry5.annotations.SetupRender;
+import org.apache.tapestry5.corelib.mixins.DiscardBody;
 
 /**
  * A component that renders nothing.
@@ -22,6 +24,10 @@ import org.apache.tapestry5.annotations.SetupRender;
  * @author Thiago H. de Paula Figueiredo (ThiagoHP)
  */
 public class Remove {
+
+	@Mixin
+	@SuppressWarnings("unused")
+	private DiscardBody discardBody;
 	
 	@SetupRender
 	public boolean nothing() {
