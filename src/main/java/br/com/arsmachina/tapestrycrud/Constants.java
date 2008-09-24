@@ -21,7 +21,7 @@ import org.apache.tapestry5.corelib.components.Grid;
 import br.com.arsmachina.tapestrycrud.components.ActionLinks;
 
 /**
- * Class that holds some constants related to tapestry-crud.
+ * Class that holds some constants related to Tapestry CRUD.
  * 
  * @author Thiago H. de Paula Figueiredo (ThiagoHP)
  */
@@ -43,9 +43,9 @@ final public class Constants {
 	public static final String MESSAGE_SAVEORUPDATE_SUCCESS = "message.success.saveorupdate";
 
 	/**
-	 * Tapestry-CRUD CSS asset path.
+	 * Tapestry CRUD CSS asset path.
 	 */
-	public static final String TAPESTRY_CRUD_CSS_ASSET = "classpath:/net/sf/arsmachina/tapestrycrud/components/tapestry-crud.css";
+	public static final String TAPESTRY_CRUD_CSS_ASSET = "classpath:/br/com/arsmachina/tapestrycrud/components/tapestry-crud.css";
 
 	/**
 	 * Remove object success message key.

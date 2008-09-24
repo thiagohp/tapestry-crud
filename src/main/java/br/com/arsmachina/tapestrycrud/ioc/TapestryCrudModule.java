@@ -17,7 +17,6 @@ package br.com.arsmachina.tapestrycrud.ioc;
 import java.util.Collection;
 import java.util.Map;
 
-
 import org.apache.tapestry5.ioc.Configuration;
 import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.services.LibraryMapping;
@@ -40,24 +39,24 @@ import br.com.arsmachina.tapestrycrud.services.impl.EncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.LabelEncoderSourceImpl;
 
 /**
- * Tapestry-IoC module for Tapestry-CRUD.
+ * Tapestry-IoC module for Tapestry CRUD.
  * 
  * @author Thiago H. de Paula Figueiredo (ThiagoHP)
  */
 public class TapestryCrudModule {
 
 	/**
-	 * tapestry-crud component prefix.
+	 * Tapestry CRUD component prefix.
 	 */
 	final public static String TAPESTRY_CRUD_COMPONENT_PREFIX = "crud";
 
 	/**
-	 * tapestry-crud version.
+	 * Tapestry CRUD version.
 	 */
 	final public static String TAPESTRY_CRUD_VERSION = "1.0";
 
 	/**
-	 * Path under with the tapestry-cruds assets will be accessed.
+	 * Path under with the Tapestry CRUDs assets will be accessed.
 	 */
 	final public static String TAPESTRY_CRUD_ASSET_PREFIX = "tapestry-crud/"
 			+ TAPESTRY_CRUD_VERSION;
