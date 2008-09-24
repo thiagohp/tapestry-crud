@@ -6,12 +6,12 @@
 	<artifactId>tapestry-crud</artifactId>
 	<packaging>jar</packaging>
 	<version>0.9</version>
-	<name>Tapestry-CRUD</name>
+	<name>Tapestry CRUD</name>
 	<description>
 		Tapestry 5 infrastructure for building CRUDs
 	</description>
 	<inceptionYear>2008</inceptionYear>
-	<url>http://www.arsmachina.com.br/project/tapestry-crud</url>
+	<url>http://www.arsmachina.com.br/project/tapestrycrud</url>
 	<parent>
 		<groupId>br.com.arsmachina</groupId>
 		<artifactId>parent</artifactId>
