@@ -21,7 +21,7 @@ import org.apache.tapestry5.annotations.Parameter;
 /**
  * Component that only shows a message if a given text is not null and not empty.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 public class Message {
 

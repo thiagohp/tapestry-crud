@@ -26,7 +26,7 @@ import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
 /**
  * {@link LabelEncoderSource} implementation.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 public class LabelEncoderSourceImpl implements LabelEncoderSource {
 

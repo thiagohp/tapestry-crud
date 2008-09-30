@@ -23,7 +23,7 @@ import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
 /**
  * Tapestry-IoC module for Tapestry CRUD
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 @SuppressWarnings("unchecked")
 public class TapestryCrudModuleTest {

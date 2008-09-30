@@ -27,7 +27,7 @@ import br.com.arsmachina.tapestrycrud.services.EncoderSource;
 /**
  * {@link EncoderSource} implementation.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 public class EncoderSourceImpl implements EncoderSource {
 

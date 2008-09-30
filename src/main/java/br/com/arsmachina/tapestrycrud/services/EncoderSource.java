@@ -23,7 +23,7 @@ import br.com.arsmachina.tapestrycrud.encoder.Encoder;
 /**
  * Service that provides {@link Encoder}s.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 public interface EncoderSource {
 

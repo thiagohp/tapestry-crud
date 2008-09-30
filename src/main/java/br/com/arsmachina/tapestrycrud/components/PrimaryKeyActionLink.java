@@ -32,7 +32,7 @@ import br.com.arsmachina.tapestrycrud.services.EncoderSource;
  * {@link Encoder#toKey(Object) } activation value.
  * </p>
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  * @see org.apache.tapestry5.corelib.components.ActionLink
  * @see ActivationContextEncoder
  */

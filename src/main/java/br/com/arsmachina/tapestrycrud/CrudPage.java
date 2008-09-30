@@ -22,7 +22,7 @@ import java.io.Serializable;
  * @param <T> the entity class related to this encoder.
  * @param <K> the type of the class' primary key property.
  * @param <A> the type of the class' activation context.
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 public interface CrudPage<T, K extends Serializable, A extends Serializable> {
 

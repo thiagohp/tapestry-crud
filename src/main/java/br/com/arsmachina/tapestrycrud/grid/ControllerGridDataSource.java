@@ -31,7 +31,7 @@ import br.com.arsmachina.dao.SortCriterion;
  * {@link GridDataSource} implementation using a {@link Controller} instance, specifically its
  * {@link Controller#findAll(int, int, SortCriterion[])} method.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 public class ControllerGridDataSource<T, K extends Serializable> implements GridDataSource {
 

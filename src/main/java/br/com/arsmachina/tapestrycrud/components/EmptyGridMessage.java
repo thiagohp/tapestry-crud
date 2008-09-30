@@ -26,7 +26,7 @@ import br.com.arsmachina.tapestrycrud.Constants;
  * Component that only shows a message if a given text is not null and not empty.
  * It puts the message inside a <code>div</code> with class <code>t-crud-emptygrid</code>.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 @IncludeStylesheet(Constants.TAPESTRY_CRUD_CSS_ASSET)
 public class EmptyGridMessage {

@@ -26,7 +26,7 @@ import br.com.arsmachina.tapestrycrud.services.ControllerSource;
 /**
  * {@link ControllerSource} implementation.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 public class ControllerSourceImpl implements ControllerSource {
 

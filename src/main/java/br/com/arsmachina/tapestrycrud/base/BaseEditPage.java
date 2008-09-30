@@ -40,7 +40,7 @@ import br.com.arsmachina.tapestrycrud.encoder.Encoder;
  * @param <K> the type of the class' primary key property.
  * @param <A> the type of the class' activation context.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 @Meta(PersistentFieldManagerImpl.META_KEY + "=" + PersistenceConstants.FLASH)
 public abstract class BaseEditPage<T, K extends Serializable, A extends Serializable> extends

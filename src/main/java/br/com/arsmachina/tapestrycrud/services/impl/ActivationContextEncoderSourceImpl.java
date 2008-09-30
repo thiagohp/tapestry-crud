@@ -27,7 +27,7 @@ import br.com.arsmachina.tapestrycrud.services.EncoderSource;
 /**
  * {@link ActivationContextEncoderSource} implementation.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 public class ActivationContextEncoderSourceImpl implements ActivationContextEncoderSource {
 

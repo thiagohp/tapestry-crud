@@ -45,7 +45,7 @@ import br.com.arsmachina.tapestrycrud.Constants;
  * has package visibility and thus cannot be overriden.
  * </p>
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 @SupportsInformalParameters
 @IncludeStylesheet(Constants.TAPESTRY_CRUD_CSS_ASSET)

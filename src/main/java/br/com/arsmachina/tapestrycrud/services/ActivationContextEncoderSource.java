@@ -22,7 +22,7 @@ import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 /**
  * Service that provides {@link ActivationContextEncoder}s.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 public interface ActivationContextEncoderSource {
 

@@ -46,7 +46,7 @@ import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
 /**
  * Class that implements some common infrastructure for listing and editing pages.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  * @param <T> the entity class related to this encoder.
  * @param <K> the type of the class' primary key property.
  * @param <A> the type of the class' activation context.

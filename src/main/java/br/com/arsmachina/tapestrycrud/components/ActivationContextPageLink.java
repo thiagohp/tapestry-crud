@@ -31,7 +31,7 @@ import br.com.arsmachina.tapestrycrud.services.ActivationContextEncoderSource;
  * passed as parameter, uses the corresponding {@link Encoder} to get the context
  * {@link Encoder#toKey(Object) } activation value.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 @SupportsInformalParameters
 public class ActivationContextPageLink extends AbstractLink {

@@ -22,7 +22,7 @@ import org.apache.tapestry5.SelectModel;
  * Interface that defines a factory of {@link SelectModel} instances for any given type, provided it
  * has a configured {@link SingleTypeSelectModelFactory} for it.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  * @see SelectModel
  */
 public interface SelectModelFactory {

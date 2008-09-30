@@ -22,7 +22,7 @@ import br.com.arsmachina.controller.Controller;
 /**
  * Service that mathes entity classes to their controller classes ({@link Controller} instances).
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  * @see Controller
  */
 public interface ControllerSource {

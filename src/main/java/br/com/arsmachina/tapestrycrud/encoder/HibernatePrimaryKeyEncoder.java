@@ -33,7 +33,7 @@ import br.com.arsmachina.controller.Controller;
  * @param <T> the entity class related to this controller.
  * @param <K> the type of the field that represents the entity class' primary key.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 public class HibernatePrimaryKeyEncoder<T, K extends Serializable> implements
 		PrimaryKeyEncoder<K, T> {

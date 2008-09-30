@@ -20,7 +20,7 @@ import org.apache.tapestry5.annotations.SupportsInformalParameters;
  * A link to edit a new object. Created because Firefox (and maybe other browsers) sometimes keeps
  * the field values from one page, editing one object, to a new object page.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 @SupportsInformalParameters
 public class NewObjectLink {

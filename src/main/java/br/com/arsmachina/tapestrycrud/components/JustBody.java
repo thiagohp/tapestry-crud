@@ -19,7 +19,7 @@ package br.com.arsmachina.tapestrycrud.components;
  * templates in the <code>body</code> tag, so it cannot be used for template previewability
  * even when it is used inside a Layout component. 
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 public class JustBody {
 

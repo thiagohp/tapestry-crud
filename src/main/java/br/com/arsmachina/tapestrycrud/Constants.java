@@ -23,7 +23,7 @@ import br.com.arsmachina.tapestrycrud.components.ActionLinks;
 /**
  * Class that holds some constants related to Tapestry CRUD.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 final public class Constants {
 	

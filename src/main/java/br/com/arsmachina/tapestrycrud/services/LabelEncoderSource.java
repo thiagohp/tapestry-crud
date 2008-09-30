@@ -20,7 +20,7 @@ import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
 /**
  * Service that provides {@link LabelEncoder}s.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 public interface LabelEncoderSource {
 

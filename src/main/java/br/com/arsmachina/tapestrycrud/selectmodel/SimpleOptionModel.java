@@ -21,7 +21,7 @@ import org.apache.tapestry5.OptionModel;
 /**
  * Simple {@link OptionModel} implementation.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 public class SimpleOptionModel implements OptionModel {
 

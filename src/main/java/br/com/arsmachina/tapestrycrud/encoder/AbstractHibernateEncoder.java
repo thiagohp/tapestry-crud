@@ -26,7 +26,7 @@ import br.com.arsmachina.controller.Controller;
 /**
  * Partial {@link Encoder} implementation using Hibernate.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  * @param <T> the entity class related to this encoder.
  * @param <K> the type of the class' primary key property.
  * @param <A> the type of the class' activation context.

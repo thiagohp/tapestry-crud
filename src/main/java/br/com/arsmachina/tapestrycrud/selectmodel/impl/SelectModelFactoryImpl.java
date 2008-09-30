@@ -29,7 +29,7 @@ import br.com.arsmachina.tapestrycrud.selectmodel.SingleTypeSelectModelFactory;
  * Default {@link SelectModelFactory} implementation. It delegates all its methods for
  * {@link SelectModelFactory} instances.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  * @see SelectModel
  * @see SingleTypeSelectModelFactory
  */

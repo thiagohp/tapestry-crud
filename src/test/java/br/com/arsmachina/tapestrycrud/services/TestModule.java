@@ -26,7 +26,7 @@ import br.com.arsmachina.tapestrycrud.selectmodel.SelectModelFactory;
 /**
  * Tapestry-IoC module used to test {@link TapestryCrudModule}.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 public class TestModule {
 

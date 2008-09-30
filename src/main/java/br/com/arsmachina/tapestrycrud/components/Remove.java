@@ -21,7 +21,7 @@ import org.apache.tapestry5.corelib.mixins.DiscardBody;
 /**
  * A component that renders nothing.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 public class Remove {
 

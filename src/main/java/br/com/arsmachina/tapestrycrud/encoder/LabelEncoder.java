@@ -21,7 +21,7 @@ import org.apache.tapestry5.corelib.components.Select;
  * Interface which defines a single method, {@link #toLabel(Object)}, that returns a
  * user-presentable description (label) of a given object.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  * @param <T> the class related to this encoder.
  */
 public interface LabelEncoder<T> {

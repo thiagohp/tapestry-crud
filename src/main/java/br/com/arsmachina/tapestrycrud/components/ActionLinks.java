@@ -22,7 +22,7 @@ import org.apache.tapestry5.annotations.Property;
 /**
  * Component that renders the action links in a listing page.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 public class ActionLinks {
 	

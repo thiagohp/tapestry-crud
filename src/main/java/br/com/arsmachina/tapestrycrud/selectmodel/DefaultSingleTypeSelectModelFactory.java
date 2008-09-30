@@ -28,7 +28,7 @@ import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
  * Default {@link SingleTypeSelectModelFactory} implementation for entity classes. It uses
  * {@link Controller#}
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  * @param <T> the type related to this factory.
  */
 public class DefaultSingleTypeSelectModelFactory<T> implements SingleTypeSelectModelFactory<T> {

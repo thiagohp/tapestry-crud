@@ -19,7 +19,7 @@ import java.io.Serializable;
 /**
  * Interface that encapsulates the Tapestry 5 activation context logic for objects of a given type.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  * @param <T> the entity class related to this encoder.
  * @param <A> the type of the class' activation context.
  */

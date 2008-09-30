@@ -24,7 +24,7 @@ import org.apache.tapestry5.util.AbstractSelectModel;
 /**
  * Simple {@link SelectModel} implementation. It doesnt't provide any {@link OptionGroupModel}.
  * 
- * @author Thiago H. de Paula Figueiredo (ThiagoHP)
+ * @author Thiago H. de Paula Figueiredo
  */
 public class SimpleSelectModel extends AbstractSelectModel {
 
