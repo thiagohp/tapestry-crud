@@ -73,4 +73,18 @@
 			</plugin>
 		</plugins>
 	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.tapestry</groupId>
+				<artifactId>tapestry-component-report</artifactId>
+				<version>5.0.14</version>
+				<configuration>
+					<rootPackage>
+						br.com.arsmachina.tapestrycrud
+					</rootPackage>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
