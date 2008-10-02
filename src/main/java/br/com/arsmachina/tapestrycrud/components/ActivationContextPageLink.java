@@ -44,6 +44,9 @@ public class ActivationContextPageLink extends AbstractLink {
 	@Property
 	private String page;
 	
+	/**
+	 * The object from which the activation context value will be extracted.
+	 */
 	@Parameter(required = true)
 	private Object object;
 

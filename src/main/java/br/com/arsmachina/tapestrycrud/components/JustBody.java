@@ -15,9 +15,12 @@
 package br.com.arsmachina.tapestrycrud.components;
 
 /**
- * A component that just renders its body, not its tag. It was meant to be used in Tapestry
- * templates in the <code>body</code> tag, so it cannot be used for template previewability
- * even when it is used inside a Layout component. 
+ * A component that just renders its body, not its tag, thus providing previewability
+ * for Tapestry templates.  It was meant to be used in the 
+ * <code>body</code> tag that in pages that use some Layout component.
+ * One example can be found 
+ * <a href="http://ars-machina.svn.sourceforge.net/viewvc/ars-machina/example/trunk/src/main/webapp/Index.tml?view=markup"
+ * 		>in the Ars Machina Project Example Application</a>.
  * 
  * @author Thiago H. de Paula Figueiredo
  */

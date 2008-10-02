@@ -32,6 +32,13 @@ import br.com.arsmachina.tapestrycrud.grid.ControllerGridDataSource;
  * Base class for pages that list entity objects. The <code>object</code> property is meant to be
  * used as the <code>row</code> parameter of the {@link Grid} component.
  * 
+ * One example of its use can be found in the Ars Machina Project Example Application 
+ * (<a href="http://ars-machina.svn.sourceforge.net/viewvc/ars-machina/example/trunk/src/main/java/br/com/arsmachina/example/web/pages/project/ListProject.java?view=markup"
+ * 		>page class</a>.
+ * <a href="http://ars-machina.svn.sourceforge.net/viewvc/ars-machina/example/trunk/src/main/webapp/project/ListProject.tml?view=markup"
+ * 		>template</a>).
+ * 
+ * 
  * @param <T> the entity class related to this encoder.
  * @param <K> the type of the class' primary key property.
  * @param <A> the type of the class' activation context.

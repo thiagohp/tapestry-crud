@@ -19,7 +19,11 @@ import org.apache.tapestry5.annotations.SetupRender;
 import org.apache.tapestry5.corelib.mixins.DiscardBody;
 
 /**
- * A component that renders nothing.
+ * A component that doesn't render its tag nor its body. It is used for 
+ * previewability purposes and works a lot like Tapestry 4's <code>$remove$</code>.
+ * One example can be found
+ * <a href="http://ars-machina.svn.sourceforge.net/viewvc/ars-machina/example/trunk/src/main/webapp/Index.tml?view=markup"
+ * 		>in the Ars Machina Project Example Application</a>.
  * 
  * @author Thiago H. de Paula Figueiredo
  */

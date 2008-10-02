@@ -35,6 +35,11 @@ import br.com.arsmachina.tapestrycrud.encoder.Encoder;
 
 /**
  * Base class for pages that edit entity objects.
+ * One example of its use can be found in the Ars Machina Project Example Application 
+ * (<a href="http://ars-machina.svn.sourceforge.net/viewvc/ars-machina/example/trunk/src/main/java/br/com/arsmachina/example/web/pages/project/EditProject.java?view=markup"
+ * 		>page class</a>.
+ * <a href="http://ars-machina.svn.sourceforge.net/viewvc/ars-machina/example/trunk/src/main/webapp/project/EditProject.tml?view=markup"
+ * 		>template</a>).
  * 
  * @param <T> the entity class related to this encoder.
  * @param <K> the type of the class' primary key property.

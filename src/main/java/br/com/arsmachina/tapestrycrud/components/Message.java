@@ -20,6 +20,10 @@ import org.apache.tapestry5.annotations.Parameter;
 
 /**
  * Component that only shows a message if a given text is not null and not empty.
+ * It puts the message inside a <code>div</code> with class <code>t-crud-message</code>.
+ * One example can be found in
+ * <a href="http://ars-machina.svn.sourceforge.net/viewvc/ars-machina/example/trunk/src/main/webapp/project/EditProject.tml?view=markup"
+ * 		>Ars Machina Project Example</a>.
  * 
  * @author Thiago H. de Paula Figueiredo
  */
@@ -30,6 +34,9 @@ public class Message {
 	 */
 	private static final String CSS_CLASS = "t-crud-message";
 	
+	/**
+	 * Message to be shown.
+	 */
 	@Parameter(required = true)
 	private String message;
 	

@@ -19,12 +19,16 @@ import org.apache.tapestry5.BindingConstants;
 import org.apache.tapestry5.annotations.BeforeRenderBody;
 import org.apache.tapestry5.annotations.IncludeStylesheet;
 import org.apache.tapestry5.annotations.Parameter;
+import org.apache.tapestry5.corelib.components.Grid;
 
 import br.com.arsmachina.tapestrycrud.Constants;
 
 /**
- * Component that only shows a message if a given text is not null and not empty.
+ * Component used to easily standardize and internationalize the 
+ * {@link Grid}'s "no records to display" message.
  * It puts the message inside a <code>div</code> with class <code>t-crud-emptygrid</code>.
+ * <a href="http://ars-machina.svn.sourceforge.net/viewvc/ars-machina/example/trunk/src/main/webapp/project/ListProject.tml?view=markup"
+ * 		>Ars Machina Project Example</a>.
  * 
  * @author Thiago H. de Paula Figueiredo
  */
@@ -41,6 +45,9 @@ public class EmptyGridMessage {
 	 */
 	public static final String CSS_CLASS = "t-crud-emptygrid";
 
+	/**
+	 * Message to be shown.
+	 */
 	@Parameter(defaultPrefix = BindingConstants.MESSAGE, value = MESSAGE_GRID_EMPTY)
 	private String message;
 

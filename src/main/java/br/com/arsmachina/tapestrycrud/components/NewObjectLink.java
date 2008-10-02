@@ -19,6 +19,9 @@ import org.apache.tapestry5.annotations.SupportsInformalParameters;
 /**
  * A link to edit a new object. Created because Firefox (and maybe other browsers) sometimes keeps
  * the field values from one page, editing one object, to a new object page.
+ * One example can be found in
+ * <a href="http://ars-machina.svn.sourceforge.net/viewvc/ars-machina/example/trunk/src/main/webapp/project/EditProject.tml?view=markup"
+ * 		>Ars Machina Project Example</a>.
  * 
  * @author Thiago H. de Paula Figueiredo
  */
