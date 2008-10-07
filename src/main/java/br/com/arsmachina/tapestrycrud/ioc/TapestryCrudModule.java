@@ -53,7 +53,7 @@ public class TapestryCrudModule {
 	/**
 	 * Tapestry CRUD version.
 	 */
-	final public static String TAPESTRY_CRUD_VERSION = "1.0";
+	final public static String TAPESTRY_CRUD_VERSION = "0.9";
 
 	/**
 	 * Path under with the Tapestry CRUDs assets will be accessed.
@@ -169,7 +169,7 @@ public class TapestryCrudModule {
 
 	public static void contributeClasspathAssetAliasManager(
 			MappedConfiguration<String, String> configuration) {
-		configuration.add(TAPESTRY_CRUD_ASSET_PREFIX, "net/sf/arsmachina/tapestrycrud/components");
+		configuration.add(TAPESTRY_CRUD_ASSET_PREFIX, "br/com/arsmachina/tapestrycrud/components");
 	}
 
 }
