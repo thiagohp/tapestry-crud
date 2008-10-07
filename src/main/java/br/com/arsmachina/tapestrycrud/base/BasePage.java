@@ -52,7 +52,7 @@ import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
  * @param <K> the type of the class' primary key property.
  * @param <A> the type of the class' activation context.
  */
-abstract class BasePage<T, K extends Serializable, A extends Serializable> implements
+public abstract class BasePage<T, K extends Serializable, A extends Serializable> implements
 		CrudPage<T, K, A> {
 
 	@Inject
