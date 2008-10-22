@@ -53,7 +53,7 @@ public class TapestryCrudModule {
 	/**
 	 * Tapestry CRUD version.
 	 */
-	final public static String TAPESTRY_CRUD_VERSION = "0.9";
+	final public static String TAPESTRY_CRUD_VERSION = "1.0";
 
 	/**
 	 * Path under with the Tapestry CRUDs assets will be accessed.
@@ -151,8 +151,9 @@ public class TapestryCrudModule {
 	 */
 	@SuppressWarnings("unchecked")
 	public static SelectModelFactory buildSelectModelFactory(
-			Map<Class, SingleTypeSelectModelFactory> contributions) {
-		return new SelectModelFactoryImpl(contributions);
+			Map<Class, SingleTypeSelectModelFactory> contributions, ControllerSource controllerSource, 
+			EncoderSource encoderSource) {
+		return new SelectModelFactoryImpl(contributions, controllerSource, encoderSource);
 	}
 
 	/**
