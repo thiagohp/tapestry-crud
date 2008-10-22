@@ -17,7 +17,6 @@ package br.com.arsmachina.tapestrycrud.selectmodel;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.apache.tapestry5.OptionModel;
 import org.apache.tapestry5.SelectModel;
 
@@ -59,12 +58,7 @@ public class DefaultSingleTypeSelectModelFactory<T> implements SingleTypeSelectM
 		this.labelEncoder = labelEncoder;
 
 	}
-	
-	
 
-	/** 
-	 * @see br.com.arsmachina.tapestrycrud.selectmodel.SingleTypeSelectModelFactory#create(java.util.List)
-	 */
 	public SelectModel create(List<T> objects) {
 
 		if (objects == null) {
