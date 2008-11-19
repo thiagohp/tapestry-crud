@@ -53,6 +53,16 @@ final public class Constants {
 	public static final String MESSAGE_SUCCESS_REMOVE = "message.success.remove";
 
 	/**
+	 * Remove object success error (remove not allowed) key.
+	 */
+	public static final String MESSAGE_ERROR_REMOVE_NOT_ALLOWED = "message.error.remove.notallowed";
+
+	/**
+	 * Remove object success error (object not found) key.
+	 */
+	public static final String MESSAGE_ERROR_REMOVE_NOT_FOUND = "message.error.remove.notfound";
+
+	/**
 	 * Name of the pseudo-property added to the {@link BeanModel} returned by
 	 * {@link #getBeanModel()} to hold actions related to an object in a {@link Grid}.
 	 */
@@ -85,4 +95,4 @@ final public class Constants {
 	 */
 	public static final String NEW_OBJECT_EVENT = "newObject";
 
-}
+	}

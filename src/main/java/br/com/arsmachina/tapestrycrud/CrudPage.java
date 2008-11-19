@@ -17,14 +17,13 @@ package br.com.arsmachina.tapestrycrud;
 import java.io.Serializable;
 
 /**
- * Interface that defines some common methods for CRUD pages.
+ * Interface that defines some common methods for CRUD pages, being it listing or editing.
  * 
  * @param <T> the entity class related to this encoder.
  * @param <K> the type of the class' primary key property.
- * @param <A> the type of the class' activation context.
  * @author Thiago H. de Paula Figueiredo
  */
-public interface CrudPage<T, K extends Serializable, A extends Serializable> {
+public interface CrudPage<T, K extends Serializable> {
 
 	/**
 	 * Returns the value of the <code>message</code> property.
@@ -41,10 +40,17 @@ public interface CrudPage<T, K extends Serializable, A extends Serializable> {
 	void setMessage(String message);
 
 	/**
-	 * Returns the value of the <code>entityClass</code> property.
+	 * Returns the entity type.
 	 * 
 	 * @return a {@link Class<T>}.
 	 */
 	Class<T> getEntityClass();
+
+	/**
+	 * Returns the type of the entity's primary key field.
+	 * 
+	 * @return a {@link Class<?>}.
+	 */
+	Class<?> getPrimaryKeyClass();
 
 }

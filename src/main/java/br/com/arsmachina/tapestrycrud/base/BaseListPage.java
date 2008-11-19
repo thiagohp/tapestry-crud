@@ -16,37 +16,40 @@ package br.com.arsmachina.tapestrycrud.base;
 
 import java.io.Serializable;
 
-
 import org.apache.tapestry5.ComponentResources;
+import org.apache.tapestry5.EventContext;
+import org.apache.tapestry5.PrimaryKeyEncoder;
 import org.apache.tapestry5.annotations.Cached;
+import org.apache.tapestry5.annotations.OnEvent;
 import org.apache.tapestry5.annotations.PageDetached;
+import org.apache.tapestry5.annotations.Retain;
 import org.apache.tapestry5.beaneditor.BeanModel;
 import org.apache.tapestry5.corelib.components.Grid;
 import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.services.BeanModelSource;
 import org.apache.tapestry5.services.Request;
 
 import br.com.arsmachina.tapestrycrud.Constants;
 import br.com.arsmachina.tapestrycrud.grid.ControllerGridDataSource;
+import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
 
 /**
  * Base class for pages that list entity objects. The <code>object</code> property is meant to be
  * used as the <code>row</code> parameter of the {@link Grid} component.
  * 
- * One example of its use can be found in the Ars Machina Project Example Application 
- * (<a href="http://ars-machina.svn.sourceforge.net/viewvc/ars-machina/example/trunk/src/main/java/br/com/arsmachina/example/web/pages/project/ListProject.java?view=markup"
- * 		>page class</a>.
- * <a href="http://ars-machina.svn.sourceforge.net/viewvc/ars-machina/example/trunk/src/main/webapp/project/ListProject.tml?view=markup"
- * 		>template</a>).
+ * One example of its use can be found in the Ars Machina Project Example Application (<a
+ * href="http://ars-machina.svn.sourceforge.net/viewvc/ars-machina/example/trunk/src/main/java/br/com/arsmachina/example/web/pages/project/ListProject.java?view=markup"
+ * >page class</a>. <a
+ * href="http://ars-machina.svn.sourceforge.net/viewvc/ars-machina/example/trunk/src/main/webapp/project/ListProject.tml?view=markup"
+ * >template</a>).
  * 
  * 
  * @param <T> the entity class related to this encoder.
  * @param <K> the type of the class' primary key property.
- * @param <A> the type of the class' activation context.
  * 
  * @author Thiago H. de Paula Figueiredo
  */
-public abstract class BaseListPage<T, K extends Serializable, A extends Serializable> extends
-		BasePage<T, K, A> {
+public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T, K> {
 
 	@Inject
 	private ComponentResources componentResources;
@@ -54,7 +57,28 @@ public abstract class BaseListPage<T, K extends Serializable, A extends Serializ
 	@Inject
 	private Request request;
 
+	@Inject
+	private PrimaryKeyEncoderSource primaryKeyEncoderSource;
+	
+	@Retain
+	private PrimaryKeyEncoder<K, T> primaryKeyEncoder;
+
+	@Inject
+	private BeanModelSource beanModelSource;
+
 	private T object;
+
+	/**
+	 * Single constructor of this class.
+	 */
+	@SuppressWarnings("unchecked")
+	public BaseListPage() {
+		
+		super();
+		
+		primaryKeyEncoder = (PrimaryKeyEncoder<K, T>) primaryKeyEncoderSource.get(getEntityClass());
+		
+	}
 
 	/**
 	 * Method used as the <code>source</code> parameter of the {@link Grid} component. This
@@ -87,42 +111,41 @@ public abstract class BaseListPage<T, K extends Serializable, A extends Serializ
 	}
 
 	/**
-	 * Returns <code>false</code>.
-	 * 
-	 * @see br.com.arsmachina.tapestrycrud.base.BasePage#filterReadOnlyComponentsInBeanModel()
-	 */
-	@Override
-	protected boolean filterReadOnlyComponentsInBeanModel() {
-		return false;
-	}
-
-	/**
 	 * Adds an <code>action</code> property to the {@link BeanModel}.
 	 * 
 	 * @see br.com.arsmachina.tapestrycrud.base.BasePage#getBeanModel()
 	 */
 	@SuppressWarnings("unchecked")
-	@Override
 	public BeanModel<T> getBeanModel() {
 
-		final BeanModel<T> beanModel = super.getBeanModel();
+		final BeanModel<T> beanModel = beanModelSource.createDisplayModel(getEntityClass(),
+				getMessages());
 		beanModel.add(Constants.ACTION_PROPERTY_NAME, null);
 
 		return beanModel;
 
 	}
-	
+
 	/**
 	 * Removes or not a given object. This method only removes an object, using
 	 * <code>getController().delete(id)</code>, if {@link canRemove(K)} returns <code>true</code>.
 	 * 
-	 * @param id a {@link K}.
+	 * @param object a {@link K}.
 	 */
-	protected final Object doRemove(K id) {
+	protected final Object remove(T object) {
+		
+		if (object == null) {
+			setRemoveErrorNotFoundMessage();
+		}
 
-		if (canRemove(id)) {
-			getController().delete(id);
+		else if (canRemove(object)) {
+
+			getController().delete(object);
 			setRemoveSuccessMessage();
+
+		}
+		else {
+			setRemoveErrorNotAllowedMessage();
 		}
 
 		return returnFromDoRemove();
@@ -161,13 +184,27 @@ public abstract class BaseListPage<T, K extends Serializable, A extends Serializ
 	}
 
 	/**
+	 * Sets the remove not done because of lack of priviledge message in this page.
+	 */
+	protected void setRemoveErrorNotAllowedMessage() {
+		setMessage(getMessages().get(Constants.MESSAGE_ERROR_REMOVE_NOT_ALLOWED));
+	}
+
+	/**
+	 * Sets the remove not done because object not found in this page.
+	 */
+	protected void setRemoveErrorNotFoundMessage() {
+		setMessage(getMessages().get(Constants.MESSAGE_ERROR_REMOVE_NOT_FOUND));
+	}
+
+	/**
 	 * Tells if a given object can be removed in this context. It must be overriden if you have some
 	 * rules about when an object can be removed. This implementation just returns <code>true</code>.
 	 * 
-	 * @param id a {@link #K}.
+	 * @param object a {@link #T}.
 	 * @return a <code>boolean</code>.
 	 */
-	protected boolean canRemove(K id) {
+	protected boolean canRemove(T object) {
 		return true;
 	}
 
@@ -177,9 +214,38 @@ public abstract class BaseListPage<T, K extends Serializable, A extends Serializ
 	 */
 	@PageDetached
 	void clearMessage() {
+
 		if (request.isXHR()) {
 			setMessage(null);
 		}
+
+	}
+
+	/**
+	 * This method listens to the {@link Constants#REMOVE_OBJECT_ACTION} event and removes the
+	 * corresponding object.
+	 * 
+	 * @param context an {@link EventContext}.
+	 */
+	@OnEvent(Constants.REMOVE_OBJECT_ACTION)
+	protected Object remove(EventContext context) {
+		
+		K id = context.get(getPrimaryKeyClass(), 0);
+		final T toBeRemoved = primaryKeyEncoder.toValue(id);
+		return remove(toBeRemoved);
+
+	}
+
+	/**
+	 * Returns the configured {@link PrimaryKeyEncoder} for a given entity class.
+	 * 
+	 * @param <X> the type of the entity.
+	 * @param clasz a {@link Class}.
+	 * @return a {@link PrimaryKeyEncoder}.
+	 * @see br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource#get(java.lang.Class)
+	 */
+	protected <X> PrimaryKeyEncoder<?, X> getPrimaryKeyEncoder(Class<X> clasz) {
+		return primaryKeyEncoderSource.get(clasz);
 	}
 
 }

@@ -18,17 +18,15 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-
 import org.apache.tapestry5.Block;
 import org.apache.tapestry5.ComponentResources;
 import org.apache.tapestry5.PersistenceConstants;
 import org.apache.tapestry5.ValueEncoder;
 import org.apache.tapestry5.annotations.Persist;
-import org.apache.tapestry5.beaneditor.BeanModel;
+import org.apache.tapestry5.annotations.Retain;
 import org.apache.tapestry5.corelib.components.Zone;
 import org.apache.tapestry5.ioc.Messages;
 import org.apache.tapestry5.ioc.annotations.Inject;
-import org.apache.tapestry5.services.BeanModelSource;
 import org.apache.tapestry5.services.ValueEncoderSource;
 
 import br.com.arsmachina.controller.Controller;
@@ -50,10 +48,9 @@ import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
  * @author Thiago H. de Paula Figueiredo
  * @param <T> the entity class related to this encoder.
  * @param <K> the type of the class' primary key property.
- * @param <A> the type of the class' activation context.
  */
-public abstract class BasePage<T, K extends Serializable, A extends Serializable> implements
-		CrudPage<T, K, A> {
+public abstract class BasePage<T, K extends Serializable> implements
+		CrudPage<T, K> {
 
 	@Inject
 	private ActivationContextEncoderSource activationContextEncoderSource;
@@ -73,10 +70,12 @@ public abstract class BasePage<T, K extends Serializable, A extends Serializable
 	@Inject
 	private SelectModelFactory selectModelFactory;
 
+	@Retain
 	private Class<T> entityClass;
 
+	@Retain
 	private Controller<T, K> controller;
-
+	
 	@Persist(PersistenceConstants.FLASH)
 	private String message;
 
@@ -84,10 +83,10 @@ public abstract class BasePage<T, K extends Serializable, A extends Serializable
 	private ComponentResources componentResources;
 
 	@Inject
-	private BeanModelSource beanModelSource;
-
-	@Inject
 	private Messages messages;
+	
+	@Retain
+	private Class<K> primaryKeyClass;
 
 	/**
 	 * Single constructor of this class.
@@ -98,25 +97,27 @@ public abstract class BasePage<T, K extends Serializable, A extends Serializable
 		final Type genericSuperclass = getClass().getGenericSuperclass();
 		final ParameterizedType parameterizedType = ((ParameterizedType) genericSuperclass);
 		entityClass = (Class<T>) parameterizedType.getActualTypeArguments()[0];
+		primaryKeyClass = (Class<K>) parameterizedType.getActualTypeArguments()[1];
 
 		controller = controllerSource.get(entityClass);
 
 		assert entityClass != null;
+		assert primaryKeyClass != null;
 		assert controller != null;
 
 	}
 
-	/**
-	 * Creates a {@link BeanModel} for this entity class using
-	 * <code>beanModelSource.create(entityClass, false, componentResources)</code>. This method
-	 * can ve overriden if needed.
-	 * 
-	 * @return a {@link BeanModel}.
-	 */
-	public BeanModel<T> getBeanModel() {
-		return beanModelSource.create(entityClass, filterReadOnlyComponentsInBeanModel(),
-				getMessages());
-	}
+//	/**
+//	 * Creates a {@link BeanModel} for this entity class using
+//	 * <code>beanModelSource.create(entityClass, false, componentResources)</code>. This method
+//	 * can ve overriden if needed.
+//	 * 
+//	 * @return a {@link BeanModel}.
+//	 */
+//	public BeanModel<T> getBeanModel() {
+//		return beanModelSource.create(entityClass, filterReadOnlyComponentsInBeanModel(),
+//				getMessages());
+//	}
 
 	/**
 	 * Used by {@link #getBeanModel()} to filter read only components or not. This implementation
@@ -154,11 +155,10 @@ public abstract class BasePage<T, K extends Serializable, A extends Serializable
 	 * Returns the {@link ActivationContextEncoder} for a given class.
 	 * 
 	 * @param <V> the class.
-	 * @param <X> the class' activation context type.
 	 * @param clasz a {@link Class};
-	 * @return a {@link LabelEncoder}.
+	 * @return an {@link ActivationContextEncoder}.
 	 */
-	protected <V, X extends Serializable> ActivationContextEncoder<V, X> getActivationContextEncoder(
+	protected <V, X extends Serializable> ActivationContextEncoder<V> getActivationContextEncoder(
 			Class<V> clasz) {
 		return activationContextEncoderSource.get(clasz);
 	}
@@ -168,11 +168,10 @@ public abstract class BasePage<T, K extends Serializable, A extends Serializable
 	 * 
 	 * @param <V> the class.
 	 * @param <X> the class' primary key field type.
-	 * @param <Y> the class' activation context type.
 	 * @param clasz a {@link Class};
 	 * @return a {@link LabelEncoder}.
 	 */
-	protected <V, Y extends Serializable, X extends Serializable> Encoder<V, Y, X> getEncoder(
+	protected <V, Y extends Serializable, X extends Serializable> Encoder<V, Y> getEncoder(
 			Class<V> clasz) {
 		return encoderSource.get(clasz);
 	}
@@ -200,13 +199,14 @@ public abstract class BasePage<T, K extends Serializable, A extends Serializable
 		return controller;
 	}
 
-	/**
-	 * @see br.com.arsmachina.tapestrycrud.CrudPage#getEntityClass()
-	 */
 	public final Class<T> getEntityClass() {
 		return entityClass;
 	}
 
+	public final Class<K> getPrimaryKeyClass() {
+		return primaryKeyClass;
+	}
+	
 	/**
 	 * Returns the value of the <code>messages</code> property.
 	 * 
@@ -246,7 +246,7 @@ public abstract class BasePage<T, K extends Serializable, A extends Serializable
 	}
 
 	/**
-	 * Used by {@link #returnFromDoRemove()} to know whether it must return a {@link Zone} or a
+	 * Used by {@link #returnFromRemove()} to know whether it must return a {@link Zone} or a
 	 * {@link Block}. This implementation returns <code>true</code>.
 	 * 
 	 * @return a <code>boolean</code>.

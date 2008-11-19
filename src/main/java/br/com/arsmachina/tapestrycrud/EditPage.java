@@ -16,16 +16,18 @@ package br.com.arsmachina.tapestrycrud;
 
 import java.io.Serializable;
 
+import org.apache.tapestry5.Block;
+import org.apache.tapestry5.corelib.components.Zone;
+
 /**
  * Interface that defines some common methods for pages that edit entities.
  * 
  * @param <T> the entity class related to this encoder.
  * @param <K> the type of the class' primary key property.
- * @param <A> the type of the class' activation context.
  * @author Thiago H. de Paula Figueiredo
  */
-public interface EditPage<T, K extends Serializable, A extends Serializable> extends
-		CrudPage<T, K, A> {
+public interface EditPage<T, K extends Serializable> extends
+		CrudPage<T, K> {
 
 	/**
 	 * Returns edited object.
@@ -40,5 +42,14 @@ public interface EditPage<T, K extends Serializable, A extends Serializable> ext
 	 * @param object a {@link T}.
 	 */
 	public void setObject(T object);
+
+	/**
+	 * Returns the {@link Zone} that wraps the form. It is used for AJAX form submission.
+	 * Otherwise, just return <code>null</code>.
+	 *  
+	 * @return an {@link Object} that must be a {@link Zone} (preferred) or a  
+	 * {@link Block}
+	 */
+	public Object getFormZone();
 
 }
