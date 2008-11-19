@@ -27,12 +27,11 @@ import org.apache.tapestry5.services.ValueEncoderFactory;
  * 
  * @param <T> the entity class related to this encoder.
  * @param <K> the type of the class' primary key property.
- * @param <A> the type of the class' activation context.
  * 
  * @author Thiago H. de Paula Figueiredo
  */
-public interface Encoder<T, K extends Serializable, A extends Serializable> extends
+public interface Encoder<T, K extends Serializable> extends
 		PrimaryKeyEncoder<K, T>, ValueEncoder<T>, ValueEncoderFactory<T>,
-		ActivationContextEncoder<T, A>, LabelEncoder<T> {
+		ActivationContextEncoder<T>, LabelEncoder<T> {
 
 }

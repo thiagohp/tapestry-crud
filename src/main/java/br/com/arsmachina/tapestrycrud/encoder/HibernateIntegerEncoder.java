@@ -14,6 +14,7 @@
 
 package br.com.arsmachina.tapestrycrud.encoder;
 
+import org.apache.tapestry5.EventContext;
 import org.apache.tapestry5.ValueEncoder;
 import org.hibernate.SessionFactory;
 
@@ -26,12 +27,11 @@ import br.com.arsmachina.controller.Controller;
  * 
  * @param <T> the entity class related to this encoder.
  * @param <K> the type of the class' primary key property.
- * @param <A> the type of the class' activation context.
  * 
  * @author Thiago H. de Paula Figueiredo
  */
 public class HibernateIntegerEncoder<T> extends HibernatePrimaryKeyEncoder<T, Integer> implements
-		Encoder<T, Integer, Integer> {
+		Encoder<T, Integer> {
 
 	/**
 	 * Single constructor of this class.
@@ -43,25 +43,27 @@ public class HibernateIntegerEncoder<T> extends HibernatePrimaryKeyEncoder<T, In
 		super(sessionFactory, controller);
 	}
 
-	/**
-	 * @see org.apache.tapestry5.services.ValueEncoderFactory#create(java.lang.Class)
-	 */
 	public ValueEncoder<T> create(Class<T> type) {
 		return this;
 	}
 
-	/**
-	 * @see br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder#toActivationContext(java.lang.Object)
-	 */
 	public Integer toActivationContext(T object) {
 		return toKey(object);
 	}
 
-	/**
-	 * @see br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder#toObject(java.io.Serializable)
-	 */
-	public T toObject(Integer value) {
-		return getController().findById(value);
+	public T toObject(EventContext context) {
+		
+		T object = null;
+		
+		if (context.getCount() > 0) {
+			
+			final Integer id = context.get(Integer.class, 0);
+			object = toValue(id);
+			
+		}
+		
+		return object;
+		
 	}
 
 	/**
@@ -80,7 +82,7 @@ public class HibernateIntegerEncoder<T> extends HibernatePrimaryKeyEncoder<T, In
 		T value = null;
 
 		if (clientValue != null && clientValue.trim().length() > 0) {
-			value = toObject(Integer.valueOf(clientValue));
+			value = toValue(Integer.valueOf(clientValue));
 		}
 
 		return value;

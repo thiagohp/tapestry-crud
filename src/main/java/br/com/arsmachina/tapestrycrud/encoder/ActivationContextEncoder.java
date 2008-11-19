@@ -14,31 +14,30 @@
 
 package br.com.arsmachina.tapestrycrud.encoder;
 
-import java.io.Serializable;
+import org.apache.tapestry5.EventContext;
 
 /**
  * Interface that encapsulates the Tapestry 5 activation context logic for objects of a given type.
  * 
  * @author Thiago H. de Paula Figueiredo
  * @param <T> the entity class related to this encoder.
- * @param <A> the type of the class' activation context.
  */
-public interface ActivationContextEncoder<T, A extends Serializable> {
+public interface ActivationContextEncoder<T> {
 
 	/**
 	 * Given an object, returns its activation context value.
 	 * 
-	 * @param object a {@link T}.
-	 * @return a {@link A}.
+	 * @param object an {@link EventContext}.
+	 * @return an {@link Object}. It must be null if <code>object</code> is null.
 	 */
-	public A toActivationContext(T object);
+	public Object toActivationContext(T object);
 
 	/**
 	 * Given an activation context value, returns its object.
 	 * 
-	 * @param value a {@link A}.
+	 * @param value an {@link EventContext}.
 	 * @return a {@link T}.
 	 */
-	public T toObject(A value);
+	public T toObject(EventContext value);
 
 }

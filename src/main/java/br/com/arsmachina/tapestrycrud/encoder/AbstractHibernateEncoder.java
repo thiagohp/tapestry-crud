@@ -29,10 +29,9 @@ import br.com.arsmachina.controller.Controller;
  * @author Thiago H. de Paula Figueiredo
  * @param <T> the entity class related to this encoder.
  * @param <K> the type of the class' primary key property.
- * @param <A> the type of the class' activation context.
  */
 public abstract class AbstractHibernateEncoder<T, K extends Serializable, A extends Serializable>
-		extends HibernatePrimaryKeyEncoder<T, K> implements Encoder<T, K, A> {
+		extends HibernatePrimaryKeyEncoder<T, K> implements Encoder<T, K> {
 
 	/**
 	 * Single constructor of this class.
