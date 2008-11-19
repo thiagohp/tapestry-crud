@@ -15,28 +15,48 @@
 package br.com.arsmachina.tapestrycrud.ioc;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.tapestry5.PrimaryKeyEncoder;
+import org.apache.tapestry5.SelectModel;
+import org.apache.tapestry5.internal.InternalConstants;
 import org.apache.tapestry5.ioc.Configuration;
 import org.apache.tapestry5.ioc.MappedConfiguration;
+import org.apache.tapestry5.ioc.ObjectLocator;
+import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.ioc.annotations.Symbol;
+import org.apache.tapestry5.ioc.services.ClassNameLocator;
 import org.apache.tapestry5.services.LibraryMapping;
 import org.apache.tapestry5.services.ValueEncoderFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import br.com.arsmachina.controller.Controller;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.Encoder;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
+import br.com.arsmachina.tapestrycrud.module.DefaultModule;
+import br.com.arsmachina.tapestrycrud.module.Module;
+import br.com.arsmachina.tapestrycrud.selectmodel.DefaultSingleTypeSelectModelFactory;
 import br.com.arsmachina.tapestrycrud.selectmodel.SelectModelFactory;
 import br.com.arsmachina.tapestrycrud.selectmodel.SingleTypeSelectModelFactory;
 import br.com.arsmachina.tapestrycrud.selectmodel.impl.SelectModelFactoryImpl;
 import br.com.arsmachina.tapestrycrud.services.ActivationContextEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.ControllerSource;
 import br.com.arsmachina.tapestrycrud.services.EncoderSource;
+import br.com.arsmachina.tapestrycrud.services.EntitySource;
 import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
+import br.com.arsmachina.tapestrycrud.services.ModuleService;
+import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.impl.ActivationContextEncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.ControllerSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.EncoderSourceImpl;
+import br.com.arsmachina.tapestrycrud.services.impl.EntitySourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.LabelEncoderSourceImpl;
+import br.com.arsmachina.tapestrycrud.services.impl.ModuleServiceImpl;
+import br.com.arsmachina.tapestrycrud.services.impl.PrimaryKeyEncoderSourceImpl;
 
 /**
  * Tapestry-IoC module for Tapestry CRUD.
@@ -61,6 +81,8 @@ public class TapestryCrudModule {
 	final public static String TAPESTRY_CRUD_ASSET_PREFIX = "tapestry-crud/"
 			+ TAPESTRY_CRUD_VERSION;
 
+	final private static Logger LOGGER = LoggerFactory.getLogger(TapestryCrudModule.class);
+
 	/**
 	 * Contributes all ({@link Class}, {@link Encoder} pairs registered in {@link EncoderSource}
 	 * to {@link ValueEncoderFactory}.
@@ -71,12 +93,18 @@ public class TapestryCrudModule {
 	@SuppressWarnings("unchecked")
 	public void contributeValueEncoderFactory(
 			MappedConfiguration<Class, ValueEncoderFactory> configuration,
-			EncoderSource encoderSource) {
+			EncoderSource encoderSource, EntitySource entitySource) {
 
-		Collection<Class> classes = encoderSource.getClasses();
+		Set<Class<?>> classes = entitySource.getEntityClasses();
 
 		for (Class clasz : classes) {
-			configuration.add(clasz, encoderSource.get(clasz));
+
+			final Encoder encoder = encoderSource.get(clasz);
+
+			if (encoder != null) {
+				configuration.add(clasz, encoder);
+			}
+
 		}
 
 	}
@@ -87,12 +115,18 @@ public class TapestryCrudModule {
 	@SuppressWarnings("unchecked")
 	public static void contributeValueEncoderSource(
 			MappedConfiguration<Class, ValueEncoderFactory> configuration,
-			EncoderSource encoderSource) {
+			EncoderSource encoderSource, EntitySource entitySource) {
 
-		Collection<Class> classes = encoderSource.getClasses();
+		Collection<Class<?>> classes = entitySource.getEntityClasses();
 
 		for (Class clasz : classes) {
-			configuration.add(clasz, encoderSource.get(clasz));
+
+			final Encoder encoder = encoderSource.get(clasz);
+
+			if (encoder != null) {
+				configuration.add(clasz, encoder);
+			}
+
 		}
 
 	}
@@ -122,6 +156,18 @@ public class TapestryCrudModule {
 	}
 
 	/**
+	 * Builds the {@link PrimaryKeyEncoderSource} service.
+	 * 
+	 * @param contributions a {@link Map<Class, PrimaryKeyEncoder>}.
+	 * @return an {@link PrimaryKeyEncoderSource}.
+	 */
+	@SuppressWarnings("unchecked")
+	public static PrimaryKeyEncoderSource buildPrimaryKeyEncoderSource(
+			Map<Class, PrimaryKeyEncoder> contributions, EncoderSource encoderSource) {
+		return new PrimaryKeyEncoderSourceImpl(contributions, encoderSource);
+	}
+
+	/**
 	 * Builds the {@link EncoderSource} service.
 	 * 
 	 * @param contributions a {@link Map<Class, Encoder>}.
@@ -144,6 +190,28 @@ public class TapestryCrudModule {
 	}
 
 	/**
+	 * Builds the {@link EntitySource} service.
+	 * 
+	 * @param contributions a {@link Map<Class, Controller>}.
+	 * @return an {@link ControllerSource}.
+	 */
+	@SuppressWarnings("unchecked")
+	public static EntitySource buildEntitySource(Collection<Class> contributions) {
+		return new EntitySourceImpl(new HashSet(contributions));
+	}
+
+	/**
+	 * Builds the {@link ModuleService} service.
+	 * 
+	 * @param contributions a {@link Map<Class, Controller>}.
+	 * @return an {@link ControllerSource}.
+	 */
+	@SuppressWarnings("unchecked")
+	public static ModuleService buildModuleSource(Collection<Module> contributions) {
+		return new ModuleServiceImpl(new HashSet(contributions));
+	}
+
+	/**
 	 * Builds the {@link SelectModelFactory} service.
 	 * 
 	 * @param contributions a {@link Map<Class, SingleTypeSelectModelFactory>}.
@@ -151,13 +219,12 @@ public class TapestryCrudModule {
 	 */
 	@SuppressWarnings("unchecked")
 	public static SelectModelFactory buildSelectModelFactory(
-			Map<Class, SingleTypeSelectModelFactory> contributions, ControllerSource controllerSource, 
-			EncoderSource encoderSource) {
-		return new SelectModelFactoryImpl(contributions, controllerSource, encoderSource);
+			Map<Class, SingleTypeSelectModelFactory> contributions) {
+		return new SelectModelFactoryImpl(contributions);
 	}
 
 	/**
-	 * Contributes the tapestry-crud components under the <code>crud</code> prefix.
+	 * Contributes the Tapestry CRUD components under the <code>crud</code> prefix.
 	 * 
 	 * @param configuration a {@link Configuration}.
 	 */
@@ -171,6 +238,181 @@ public class TapestryCrudModule {
 	public static void contributeClasspathAssetAliasManager(
 			MappedConfiguration<String, String> configuration) {
 		configuration.add(TAPESTRY_CRUD_ASSET_PREFIX, "br/com/arsmachina/tapestrycrud/components");
+	}
+
+	/**
+	 * Contributes the main (default module) to the {@link ModuleService} service.
+	 * 
+	 * @param configuration a {@link Configuration} of {@link Module}s.
+	 */
+	public static void contributeModuleSource(Configuration<Module> configuration,
+			ClassNameLocator classNameLocator, @Inject
+			@Symbol(InternalConstants.TAPESTRY_APP_PACKAGE_PARAM)
+			final String tapestryRootPackage) {
+
+		// The convention is that the module root is one package level above the
+		// Tapestry root package
+
+		String modulePackage = tapestryRootPackage.substring(0,
+				tapestryRootPackage.lastIndexOf('.'));
+
+		configuration.add(new DefaultModule("Default module", modulePackage, classNameLocator));
+
+	}
+
+	/**
+	 * Contributes the {@link Module}s entity classes to the {@link EntitySource} service.
+	 * 
+	 * @param configuration a {@link Configuration} of {@link Class} instances.
+	 * @param moduleService a {@link ModuleService}.
+	 */
+	public static void contributeEntitySource(Configuration<Class<?>> configuration,
+			ModuleService moduleService) {
+
+		for (Class<?> entityClass : moduleService.getEntityClasses()) {
+			configuration.add(entityClass);
+		}
+
+	}
+
+	/**
+	 * Associates entity classes with their {@link SelectModel}s.
+	 * 
+	 * @param contributions a {@link MappedConfiguration}.
+	 */
+	@SuppressWarnings("unchecked")
+	public void contributeSelectModelFactory(
+			MappedConfiguration<Class, SingleTypeSelectModelFactory> contributions,
+			ControllerSource controllerSource, EntitySource entitySource,
+			LabelEncoderSource labelEncoderSource) {
+
+		final Set<Class<?>> entityClasses = entitySource.getEntityClasses();
+
+		for (Class<?> entityClass : entityClasses) {
+
+			Controller controller = controllerSource.get(entityClass);
+			LabelEncoder labelEncoder = labelEncoderSource.get(entityClass);
+
+			if (controller != null && labelEncoder != null) {
+
+				SingleTypeSelectModelFactory stsmf = new DefaultSingleTypeSelectModelFactory(
+						controller, labelEncoder);
+
+				contributions.add(entityClass, stsmf);
+
+			}
+
+		}
+
+	}
+
+	/**
+	 * Associantes entity classes with their {@link Encoder}s.
+	 * 
+	 * @param contributions a {@link MappedConfiguration}.
+	 */
+	@SuppressWarnings("unchecked")
+	public void contributeEncoderSource(MappedConfiguration<Class, Encoder> contributions,
+			EntitySource entitySource, ModuleService moduleService, ObjectLocator objectLocator) {
+
+		final Set<Class<?>> entityClasses = entitySource.getEntityClasses();
+		Encoder encoder = null;
+
+		for (Class<?> entityClass : entityClasses) {
+
+			final Class<?> encoderClass = moduleService.getEncoderClass(entityClass);
+
+			if (encoderClass != null) {
+
+				encoder = (Encoder) getServiceIfExists(encoderClass, objectLocator);
+
+				if (encoder == null) {
+					encoder = (Encoder) objectLocator.autobuild(encoderClass);
+				}
+
+				contributions.add(entityClass, encoder);
+
+				if (LOGGER.isInfoEnabled()) {
+
+					final String entityName = entityClass.getSimpleName();
+					final String encoderClassName = encoder.getClass().getName();
+					final String message = String.format("Associating entity %s with encoder %s",
+							entityName, encoderClassName);
+
+					LOGGER.info(message);
+
+				}
+
+			}
+
+		}
+
+	}
+
+	/**
+	 * Returns a service if it exists. Otherwise, this method returns null.
+	 * 
+	 * @param <T> type of service.
+	 * @param serviceInterface a {@link Class}.
+	 * @param objectLocator an {@link ObjectLocator}.
+	 * @return aa <code>T</code> or null.
+	 */
+	private <T> T getServiceIfExists(final Class<T> serviceInterface, ObjectLocator objectLocator) {
+		
+		try {
+			return objectLocator.getService(serviceInterface);
+		}
+		catch (RuntimeException e) {
+			return null;
+		}
+		
+	}
+
+	/**
+	 * Associantes entity classes with their {@link Controller}s.
+	 * 
+	 * @param contributions a {@link MappedConfiguration}.
+	 */
+	@SuppressWarnings("unchecked")
+	public void contributeControllerSource(MappedConfiguration<Class, Controller> contributions,
+			EntitySource entitySource, ModuleService moduleService, ObjectLocator objectLocator) {
+
+		final Set<Class<?>> entityClasses = entitySource.getEntityClasses();
+		Controller controller = null;
+
+		for (Class<?> entityClass : entityClasses) {
+
+			final Class<?> controllerDefinitionClass = moduleService.getControllerDefinitionClass(entityClass);
+			final Class<?> controllerImplementationClass = moduleService.getControllerImplementationClass(entityClass);
+
+			// If the entity class has no controller definition (interface), we don't register
+			// a controller for it.
+			if (controllerDefinitionClass != null) {
+
+				controller = (Controller) getServiceIfExists(controllerDefinitionClass, objectLocator);
+
+				if (controller == null) {
+					controller = (Controller) objectLocator.autobuild(controllerImplementationClass);
+				}
+
+				contributions.add(entityClass, controller);
+
+				if (LOGGER.isInfoEnabled()) {
+
+					final String entityName = entityClass.getSimpleName();
+					final String controllerClassName = controller.getClass().getName();
+					final String message = String.format(
+							"Associating entity %s with controller %s", entityName,
+							controllerClassName);
+
+					LOGGER.info(message);
+
+				}
+
+			}
+
+		}
+
 	}
 
 }

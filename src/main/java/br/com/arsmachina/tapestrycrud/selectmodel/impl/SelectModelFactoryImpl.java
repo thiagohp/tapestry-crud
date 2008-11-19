@@ -14,8 +14,6 @@
 
 package br.com.arsmachina.tapestrycrud.selectmodel.impl;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,10 +21,6 @@ import org.apache.tapestry5.Link;
 import org.apache.tapestry5.SelectModel;
 import org.apache.tapestry5.ioc.util.StrategyRegistry;
 
-import br.com.arsmachina.controller.Controller;
-import br.com.arsmachina.tapestrycrud.encoder.Encoder;
-import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
-import br.com.arsmachina.tapestrycrud.selectmodel.DefaultSingleTypeSelectModelFactory;
 import br.com.arsmachina.tapestrycrud.selectmodel.SelectModelFactory;
 import br.com.arsmachina.tapestrycrud.selectmodel.SingleTypeSelectModelFactory;
 import br.com.arsmachina.tapestrycrud.services.ControllerSource;
@@ -55,27 +49,8 @@ public class SelectModelFactoryImpl implements SelectModelFactory {
 	 * @param encoderSource an {@link EncoderSource}. It cannot be null.
 	 */
 	@SuppressWarnings("unchecked")
-	public SelectModelFactoryImpl(Map<Class, SingleTypeSelectModelFactory> registrations,
-			ControllerSource controllerSource, EncoderSource encoderSource) {
-		
-		if (registrations == null) {
-			throw new IllegalArgumentException("Parameter registrations cannot be null");
-		}
-
-		if (encoderSource == null) {
-			throw new IllegalArgumentException("Parameter encoderSource cannot be null");
-		}
-
-		if (controllerSource == null) {
-			throw new IllegalArgumentException("Parameter controllerSource cannot be null");
-		}
-
-		Map<Class, SingleTypeSelectModelFactory> map = createSTSMFs(registrations,
-				controllerSource, encoderSource);
-
-		final Class<SingleTypeSelectModelFactory> clasz = SingleTypeSelectModelFactory.class;
-		registry = StrategyRegistry.newInstance(clasz, map);
-
+	public SelectModelFactoryImpl(Map<Class, SingleTypeSelectModelFactory> registrations) {
+		registry = StrategyRegistry.newInstance(SingleTypeSelectModelFactory.class, registrations);
 	}
 
 	/**
@@ -96,51 +71,6 @@ public class SelectModelFactoryImpl implements SelectModelFactory {
 	@SuppressWarnings("unchecked")
 	private <T> SingleTypeSelectModelFactory<T> get(Class<T> clasz) {
 		return registry.get(clasz);
-	}
-
-	/**
-	 * Creates {@link SingleTypeSelectModelFactory}s for classes that don't have one configured,
-	 * but have both a {@link Controller} and an {@link Encoder} configured. 
-	 * 
-	 * @param registrations
-	 * @param controllerSource
-	 * @param encoderSource
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	private Map<Class, SingleTypeSelectModelFactory> createSTSMFs(
-			Map<Class, SingleTypeSelectModelFactory> registrations,
-			ControllerSource controllerSource, EncoderSource encoderSource) {
-		
-		Map<Class, SingleTypeSelectModelFactory> map = new HashMap<Class, SingleTypeSelectModelFactory>();
-		map.putAll(registrations);
-
-		StrategyRegistry<SingleTypeSelectModelFactory> temporary = StrategyRegistry.newInstance(
-				SingleTypeSelectModelFactory.class, registrations, true);
-
-		// @todo: find some better way to get the edited application entities
-		final Collection<Class> classes = encoderSource.getClasses();
-
-		for (Class clasz : classes) {
-
-			// if there is no STSMF registered for this class ...
-			if (temporary.get(clasz) == null) {
-
-				Controller controller = controllerSource.get(clasz);
-				LabelEncoder encoder = encoderSource.get(clasz);
-
-				// if there is a registered controller and a registered controller,
-				// we can create an STSMF for it automatically.
-				if (controller != null && encoder != null) {
-					map.put(clasz, new DefaultSingleTypeSelectModelFactory(controller, encoder));
-				}
-
-			}
-
-		}
-		
-		return map;
-		
 	}
 
 }
