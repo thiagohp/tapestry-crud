@@ -14,8 +14,6 @@
 
 package br.com.arsmachina.tapestrycrud.services;
 
-import java.io.Serializable;
-
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 
 
@@ -30,10 +28,9 @@ public interface ActivationContextEncoderSource {
 	 * Returns the {@link ActivationContextEncoder} of a given type.
 	 * 
 	 * @param <T> a type.
-	 * @param <A> the type's activation context type.
 	 * @param clasz a {@link Class}.
 	 * @return an {@link ActivationContextEncoder}.
 	 */
-	<T, A extends Serializable> ActivationContextEncoder<T, A> get(Class<T> clasz);
+	<T> ActivationContextEncoder<T> get(Class<T> clasz);
 
 }
