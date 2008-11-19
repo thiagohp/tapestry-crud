@@ -29,6 +29,8 @@ import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
  * @author Thiago H. de Paula Figueiredo
  */
 public class LabelEncoderSourceImpl implements LabelEncoderSource {
+	
+	final private static LabelEncoder<Object> DEFAULT_ENCODER = new ToStringEncoder();
 
 	@SuppressWarnings("unchecked")
 	final private StrategyRegistry<LabelEncoder> registry;
@@ -71,12 +73,19 @@ public class LabelEncoderSourceImpl implements LabelEncoderSource {
 		}
 
 		if (encoder == null) {
-			throw new IllegalArgumentException("There is no LabelEncoder configured for class "
-					+ clasz.getName());
+			encoder = (LabelEncoder<T>) DEFAULT_ENCODER;
 		}
 
 		return encoder;
 
+	}
+	
+	final private static class ToStringEncoder implements LabelEncoder<Object> {
+
+		public String toLabel(Object object) {
+			return object.toString();
+		}
+		
 	}
 
 }
