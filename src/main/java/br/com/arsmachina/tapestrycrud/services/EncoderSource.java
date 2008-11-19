@@ -15,7 +15,6 @@
 package br.com.arsmachina.tapestrycrud.services;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 import br.com.arsmachina.tapestrycrud.encoder.Encoder;
 
@@ -32,18 +31,9 @@ public interface EncoderSource {
 	 * 
 	 * @param <T> a type.
 	 * @param <K> the type's primary key field type.
-	 * @param <A> the type's activation context type.
 	 * @param clasz a {@link Class}.
 	 * @return an {@link Encoder}.
 	 */
-	<T, K extends Serializable, A extends Serializable> Encoder<T, K, A> get(Class<T> clasz);
+	<T, K extends Serializable> Encoder<T, K> get(Class<T> clasz);
 	
-	/**
-	 * Returns all the classes that have a corresponding registered
-	 * {@link Encoder}.
-	 * @return a {@link Collection}.
-	 */
-	@SuppressWarnings("unchecked")
-	Collection<Class> getClasses();
-
 }
