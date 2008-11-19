@@ -15,9 +15,7 @@
 package br.com.arsmachina.tapestrycrud.services.impl;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Map;
-
 
 import org.apache.tapestry5.ioc.util.StrategyRegistry;
 
@@ -41,20 +39,15 @@ public class EncoderSourceImpl implements EncoderSource {
 	 */
 	@SuppressWarnings("unchecked")
 	public EncoderSourceImpl(Map<Class, Encoder> registrations) {
-		registry = StrategyRegistry.newInstance(Encoder.class, registrations);
+		registry = StrategyRegistry.newInstance(Encoder.class, registrations, true);
 	}
 
 	/**
 	 * @see br.com.arsmachina.tapestrycrud.services.EncoderSource#get(java.lang.Class)
 	 */
 	@SuppressWarnings("unchecked")
-	public <T, K extends Serializable, A extends Serializable> Encoder<T, K, A> get(Class<T> clasz) {
+	public <T, K extends Serializable> Encoder<T, K> get(Class<T> clasz) {
 		return registry.get(clasz);
 	}
 
-	@SuppressWarnings("unchecked")
-	public Collection<Class> getClasses() {
-		return registry.getTypes();
-	}
-	
 }

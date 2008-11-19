@@ -40,7 +40,7 @@ public class ControllerSourceImpl implements ControllerSource {
 	 */
 	@SuppressWarnings("unchecked")
 	public ControllerSourceImpl(Map<Class, Controller> registrations) {
-		registry = StrategyRegistry.newInstance(Controller.class, registrations);
+		registry = StrategyRegistry.newInstance(Controller.class, registrations, true);
 	}
 
 	/**
