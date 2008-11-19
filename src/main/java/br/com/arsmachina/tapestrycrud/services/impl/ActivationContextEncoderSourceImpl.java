@@ -14,9 +14,7 @@
 
 package br.com.arsmachina.tapestrycrud.services.impl;
 
-import java.io.Serializable;
 import java.util.Map;
-
 
 import org.apache.tapestry5.ioc.util.StrategyRegistry;
 
@@ -59,13 +57,10 @@ public class ActivationContextEncoderSourceImpl implements ActivationContextEnco
 
 	}
 
-	/**
-	 * @see br.com.arsmachina.tapestrycrud.services.ActivationContextEncoderSource#get(java.lang.Class)
-	 */
 	@SuppressWarnings("unchecked")
-	public <T, A extends Serializable> ActivationContextEncoder<T, A> get(Class<T> clasz) {
+	public <T> ActivationContextEncoder<T> get(Class<T> clasz) {
 
-		ActivationContextEncoder<T, A> encoder = registry.get(clasz);
+		ActivationContextEncoder<T> encoder = registry.get(clasz);
 
 		if (encoder == null) {
 			encoder = encoderSource.get(clasz);
