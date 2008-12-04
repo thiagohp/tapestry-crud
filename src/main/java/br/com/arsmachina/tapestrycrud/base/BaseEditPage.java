@@ -302,7 +302,7 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 	final public Object onPassivate() {
 
 		final T o = getObject();
-		return o != null ? getEncoder(getEntityClass()).toActivationContext(o) : null;
+		return o != null ? getActivationContextEncoder(getEntityClass()).toActivationContext(o) : null;
 
 	}
 

@@ -50,11 +50,6 @@
 			<groupId>org.apache.tapestry</groupId>
 			<artifactId>tapestry5-annotations</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate</artifactId>
-			<optional>true</optional>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

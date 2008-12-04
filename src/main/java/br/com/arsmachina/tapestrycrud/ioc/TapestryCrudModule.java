@@ -16,6 +16,7 @@ package br.com.arsmachina.tapestrycrud.ioc;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,18 +26,27 @@ import org.apache.tapestry5.internal.InternalConstants;
 import org.apache.tapestry5.ioc.Configuration;
 import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.ObjectLocator;
+import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.annotations.Symbol;
+import org.apache.tapestry5.ioc.services.ChainBuilder;
 import org.apache.tapestry5.ioc.services.ClassNameLocator;
+import org.apache.tapestry5.ioc.services.TypeCoercer;
 import org.apache.tapestry5.services.LibraryMapping;
 import org.apache.tapestry5.services.ValueEncoderFactory;
+import org.apache.tapestry5.services.ValueEncoderSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import br.com.arsmachina.controller.Controller;
+import br.com.arsmachina.dao.DAO;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.Encoder;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
+import br.com.arsmachina.tapestrycrud.factory.DefaultControllerFactory;
+import br.com.arsmachina.tapestrycrud.factory.DefaultDAOFactory;
+import br.com.arsmachina.tapestrycrud.factory.PrimaryKeyEncoderFactory;
+import br.com.arsmachina.tapestrycrud.factory.impl.DefaultControllerFactoryImpl;
 import br.com.arsmachina.tapestrycrud.module.DefaultModule;
 import br.com.arsmachina.tapestrycrud.module.Module;
 import br.com.arsmachina.tapestrycrud.selectmodel.DefaultSingleTypeSelectModelFactory;
@@ -45,18 +55,22 @@ import br.com.arsmachina.tapestrycrud.selectmodel.SingleTypeSelectModelFactory;
 import br.com.arsmachina.tapestrycrud.selectmodel.impl.SelectModelFactoryImpl;
 import br.com.arsmachina.tapestrycrud.services.ActivationContextEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.ControllerSource;
+import br.com.arsmachina.tapestrycrud.services.DAOSource;
 import br.com.arsmachina.tapestrycrud.services.EncoderSource;
 import br.com.arsmachina.tapestrycrud.services.EntitySource;
 import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.ModuleService;
 import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
+import br.com.arsmachina.tapestrycrud.services.PrimaryKeyTypeService;
 import br.com.arsmachina.tapestrycrud.services.impl.ActivationContextEncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.ControllerSourceImpl;
+import br.com.arsmachina.tapestrycrud.services.impl.DAOSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.EncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.EntitySourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.LabelEncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.ModuleServiceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.PrimaryKeyEncoderSourceImpl;
+import br.com.arsmachina.tapestrycrud.services.impl.PrimaryKeyEncoderValueEncoder;
 
 /**
  * Tapestry-IoC module for Tapestry CRUD.
@@ -85,15 +99,19 @@ public class TapestryCrudModule {
 
 	/**
 	 * Contributes all ({@link Class}, {@link Encoder} pairs registered in {@link EncoderSource}
-	 * to {@link ValueEncoderFactory}.
+	 * to {@link ValueEncoderSource}. If no {@link Encoder} is found for a given entity class, if a
+	 * {@link PrimaryKeyEncoder} is found, a {@link ValueEncoderFactory} is automatically created
+	 * using the {@link PrimaryKeyEncoder}.
 	 * 
 	 * @param configuration
 	 * @param encoderSource
 	 */
 	@SuppressWarnings("unchecked")
-	public void contributeValueEncoderFactory(
+	public static void contributeValueEncoderSource(
 			MappedConfiguration<Class, ValueEncoderFactory> configuration,
-			EncoderSource encoderSource, EntitySource entitySource) {
+			EncoderSource encoderSource, EntitySource entitySource,
+			PrimaryKeyEncoderSource primaryKeyEncoderSource,
+			PrimaryKeyTypeService primaryKeyTypeService, TypeCoercer typeCoercer) {
 
 		Set<Class<?>> classes = entitySource.getEntityClasses();
 
@@ -104,27 +122,20 @@ public class TapestryCrudModule {
 			if (encoder != null) {
 				configuration.add(clasz, encoder);
 			}
+			else {
 
-		}
+				PrimaryKeyEncoder primaryKeyEncoder = primaryKeyEncoderSource.get(clasz);
 
-	}
+				if (primaryKeyEncoder != null) {
 
-	/**
-	 * Contributes a {@link ValueEncoderFactory}s for each registered {@link Encoder}.
-	 */
-	@SuppressWarnings("unchecked")
-	public static void contributeValueEncoderSource(
-			MappedConfiguration<Class, ValueEncoderFactory> configuration,
-			EncoderSource encoderSource, EntitySource entitySource) {
+					final Class primaryKeyType = primaryKeyTypeService.getPrimaryKeyType(clasz);
+					ValueEncoderFactory valueEncoderFactory = new PrimaryKeyEncoderValueEncoder(
+							primaryKeyType, primaryKeyEncoder, typeCoercer);
 
-		Collection<Class<?>> classes = entitySource.getEntityClasses();
+					configuration.add(clasz, valueEncoderFactory);
 
-		for (Class clasz : classes) {
+				}
 
-			final Encoder encoder = encoderSource.get(clasz);
-
-			if (encoder != null) {
-				configuration.add(clasz, encoder);
 			}
 
 		}
@@ -139,8 +150,13 @@ public class TapestryCrudModule {
 	 */
 	@SuppressWarnings("unchecked")
 	public static ActivationContextEncoderSource buildActivationContextEncoderSource(
-			Map<Class, ActivationContextEncoder> contributions, EncoderSource encoderSource) {
-		return new ActivationContextEncoderSourceImpl(contributions, encoderSource);
+			Map<Class, ActivationContextEncoder> contributions, EncoderSource encoderSource,
+			PrimaryKeyEncoderSource primaryKeyEncoderSource,
+			PrimaryKeyTypeService primaryKeyTypeService) {
+
+		return new ActivationContextEncoderSourceImpl(contributions, encoderSource,
+				primaryKeyEncoderSource, primaryKeyTypeService);
+
 	}
 
 	/**
@@ -159,12 +175,16 @@ public class TapestryCrudModule {
 	 * Builds the {@link PrimaryKeyEncoderSource} service.
 	 * 
 	 * @param contributions a {@link Map<Class, PrimaryKeyEncoder>}.
+	 * @param encoderSource an {@link EncoderSource}.
+	 * @param primaryKeyEncoderFactory a {@link PrimaryKeyEncoderFactory}.
 	 * @return an {@link PrimaryKeyEncoderSource}.
 	 */
 	@SuppressWarnings("unchecked")
 	public static PrimaryKeyEncoderSource buildPrimaryKeyEncoderSource(
-			Map<Class, PrimaryKeyEncoder> contributions, EncoderSource encoderSource) {
-		return new PrimaryKeyEncoderSourceImpl(contributions, encoderSource);
+			Map<Class, PrimaryKeyEncoder> contributions, EncoderSource encoderSource,
+			PrimaryKeyEncoderFactory primaryKeyEncoderFactory) {
+		return new PrimaryKeyEncoderSourceImpl(contributions, encoderSource,
+				primaryKeyEncoderFactory);
 	}
 
 	/**
@@ -185,8 +205,23 @@ public class TapestryCrudModule {
 	 * @return an {@link ControllerSource}.
 	 */
 	@SuppressWarnings("unchecked")
-	public static ControllerSource buildControllerSource(Map<Class, Controller> contributions) {
-		return new ControllerSourceImpl(contributions);
+	public static ControllerSource buildControllerSource(Map<Class, Controller> contributions,
+			DefaultControllerFactory defaultControllerFactory) {
+		return new ControllerSourceImpl(contributions, defaultControllerFactory);
+	}
+
+	/**
+	 * Builds the {@link DAOSource} service.
+	 * 
+	 * @param contributions a {@link Map<Class, DAO>}.
+	 * @param entitySource an {@link EntitySource}.
+	 * @param defaultDAOFactory a {@link DefaultDAOFactory}.
+	 * @return an {@link DAOSource}.
+	 */
+	@SuppressWarnings("unchecked")
+	public static DAOSource buildDAOSource(Map<Class, DAO> contributions,
+			EntitySource entitySource, DefaultDAOFactory defaultDAOFactory) {
+		return new DAOSourceImpl(contributions, entitySource, defaultDAOFactory);
 	}
 
 	/**
@@ -281,7 +316,7 @@ public class TapestryCrudModule {
 	 * @param contributions a {@link MappedConfiguration}.
 	 */
 	@SuppressWarnings("unchecked")
-	public void contributeSelectModelFactory(
+	public static void contributeSelectModelFactory(
 			MappedConfiguration<Class, SingleTypeSelectModelFactory> contributions,
 			ControllerSource controllerSource, EntitySource entitySource,
 			LabelEncoderSource labelEncoderSource) {
@@ -307,12 +342,12 @@ public class TapestryCrudModule {
 	}
 
 	/**
-	 * Associantes entity classes with their {@link Encoder}s.
+	 * Associates entity classes with their {@link Encoder}s.
 	 * 
 	 * @param contributions a {@link MappedConfiguration}.
 	 */
 	@SuppressWarnings("unchecked")
-	public void contributeEncoderSource(MappedConfiguration<Class, Encoder> contributions,
+	public static void contributeEncoderSource(MappedConfiguration<Class, Encoder> contributions,
 			EntitySource entitySource, ModuleService moduleService, ObjectLocator objectLocator) {
 
 		final Set<Class<?>> entityClasses = entitySource.getEntityClasses();
@@ -357,25 +392,27 @@ public class TapestryCrudModule {
 	 * @param objectLocator an {@link ObjectLocator}.
 	 * @return aa <code>T</code> or null.
 	 */
-	private <T> T getServiceIfExists(final Class<T> serviceInterface, ObjectLocator objectLocator) {
-		
+	final private static <T> T getServiceIfExists(final Class<T> serviceInterface,
+			ObjectLocator objectLocator) {
+
 		try {
 			return objectLocator.getService(serviceInterface);
 		}
 		catch (RuntimeException e) {
 			return null;
 		}
-		
+
 	}
 
 	/**
-	 * Associantes entity classes with their {@link Controller}s.
+	 * Associates entity classes with their {@link Controller}s.
 	 * 
 	 * @param contributions a {@link MappedConfiguration}.
 	 */
 	@SuppressWarnings("unchecked")
-	public void contributeControllerSource(MappedConfiguration<Class, Controller> contributions,
-			EntitySource entitySource, ModuleService moduleService, ObjectLocator objectLocator) {
+	public static void contributeControllerSource(
+			MappedConfiguration<Class, Controller> contributions, EntitySource entitySource,
+			ModuleService moduleService, ObjectLocator objectLocator) {
 
 		final Set<Class<?>> entityClasses = entitySource.getEntityClasses();
 		Controller controller = null;
@@ -389,7 +426,8 @@ public class TapestryCrudModule {
 			// a controller for it.
 			if (controllerDefinitionClass != null) {
 
-				controller = (Controller) getServiceIfExists(controllerDefinitionClass, objectLocator);
+				controller = (Controller) getServiceIfExists(controllerDefinitionClass,
+						objectLocator);
 
 				if (controller == null) {
 					controller = (Controller) objectLocator.autobuild(controllerImplementationClass);
@@ -412,6 +450,261 @@ public class TapestryCrudModule {
 			}
 
 		}
+
+	}
+
+	/**
+	 * Associates entity classes with their {@link Controller}s.
+	 * 
+	 * @param contributions a {@link MappedConfiguration}.
+	 */
+	@SuppressWarnings("unchecked")
+	public static void contributeActivationContextEncoderSource(
+			MappedConfiguration<Class, ActivationContextEncoder> contributions,
+			EntitySource entitySource, ModuleService moduleService, ObjectLocator objectLocator) {
+
+		final Set<Class<?>> entityClasses = entitySource.getEntityClasses();
+		ActivationContextEncoder encoder = null;
+
+		for (Class<?> entityClass : entityClasses) {
+
+			final Class<?> encoderClass = moduleService.getActivationContextEncoderClass(entityClass);
+
+			// If the entity class has no activation context encoder, we don't register
+			// a one for it for it.
+			if (encoderClass != null) {
+
+				encoder = (ActivationContextEncoder) getServiceIfExists(encoderClass, objectLocator);
+
+				if (encoder == null) {
+					encoder = (ActivationContextEncoder) objectLocator.autobuild(encoderClass);
+				}
+
+				contributions.add(entityClass, encoder);
+
+				if (LOGGER.isInfoEnabled()) {
+
+					final String entityName = entityClass.getSimpleName();
+					final String encoderClassName = encoder.getClass().getName();
+					final String message = String.format(
+							"Associating entity %s with activation context encoder %s", entityName,
+							encoderClassName);
+
+					LOGGER.info(message);
+
+				}
+
+			}
+
+		}
+
+	}
+
+	/**
+	 * Associates entity classes with their {@link LabelEncoder}s.
+	 * 
+	 * @param contributions a {@link MappedConfiguration}.
+	 */
+	@SuppressWarnings("unchecked")
+	public static void contributeLabelEncoderSource(
+			MappedConfiguration<Class, LabelEncoder> contributions, EntitySource entitySource,
+			ModuleService moduleService, ObjectLocator objectLocator) {
+
+		final Set<Class<?>> entityClasses = entitySource.getEntityClasses();
+		LabelEncoder encoder = null;
+
+		for (Class<?> entityClass : entityClasses) {
+
+			final Class<?> encoderClass = moduleService.getLabelEncoderClass(entityClass);
+
+			// If the entity class has no activation context encoder, we don't register
+			// a one for it for it.
+			if (encoderClass != null) {
+
+				encoder = (LabelEncoder) getServiceIfExists(encoderClass, objectLocator);
+
+				if (encoder == null) {
+					encoder = (LabelEncoder) objectLocator.autobuild(encoderClass);
+				}
+
+				contributions.add(entityClass, encoder);
+
+				if (LOGGER.isInfoEnabled()) {
+
+					final String entityName = entityClass.getSimpleName();
+					final String encoderClassName = encoder.getClass().getName();
+					final String message = String.format(
+							"Associating entity %s with label encoder %s", entityName,
+							encoderClassName);
+
+					LOGGER.info(message);
+
+				}
+
+			}
+
+		}
+
+	}
+
+	/**
+	 * Associates entity classes with their {@link PrimaryKeyEncoder}s.
+	 * 
+	 * @param contributions a {@link MappedConfiguration}.
+	 */
+	@SuppressWarnings("unchecked")
+	public static void contributePrimaryKeyEncoderSource(
+			MappedConfiguration<Class, PrimaryKeyEncoder> contributions, EntitySource entitySource,
+			ModuleService moduleService, ObjectLocator objectLocator) {
+
+		final Set<Class<?>> entityClasses = entitySource.getEntityClasses();
+		PrimaryKeyEncoder encoder = null;
+
+		for (Class<?> entityClass : entityClasses) {
+
+			final Class<?> encoderClass = moduleService.getPrimaryKeyEncoderClass(entityClass);
+
+			// If the entity class has no primary key encoder, we don't register
+			// a one for it for it.
+			if (encoderClass != null) {
+
+				encoder = (PrimaryKeyEncoder) getServiceIfExists(encoderClass, objectLocator);
+
+				if (encoder == null) {
+					encoder = (PrimaryKeyEncoder) objectLocator.autobuild(encoderClass);
+				}
+
+				contributions.add(entityClass, encoder);
+
+				if (LOGGER.isInfoEnabled()) {
+
+					final String entityName = entityClass.getSimpleName();
+					final String encoderClassName = encoder.getClass().getName();
+					final String message = String.format(
+							"Associating entity %s with primary key encoder %s", entityName,
+							encoderClassName);
+
+					LOGGER.info(message);
+
+				}
+
+			}
+
+		}
+
+	}
+
+	/**
+	 * Associantes entity classes with their {@link DAO}s.
+	 * 
+	 * @param contributions a {@link MappedConfiguration}.
+	 */
+	@SuppressWarnings("unchecked")
+	public static void contributeDAOSource(MappedConfiguration<Class, DAO> contributions,
+			EntitySource entitySource, ModuleService moduleService, ObjectLocator objectLocator) {
+
+		final Set<Class<?>> entityClasses = entitySource.getEntityClasses();
+		DAO dao = null;
+
+		for (Class<?> entityClass : entityClasses) {
+
+			final Class<?> daoDefinitionClass = moduleService.getDAODefinitionClass(entityClass);
+			final Class<?> daoImplementationClass = moduleService.getDAOImplementationClass(entityClass);
+
+			// If the entity class has no dao definition (interface), we don't register
+			// a dao for it.
+			if (daoDefinitionClass != null) {
+
+				dao = (DAO) getServiceIfExists(daoDefinitionClass, objectLocator);
+
+				if (dao == null) {
+					dao = (DAO) objectLocator.autobuild(daoImplementationClass);
+				}
+
+				contributions.add(entityClass, dao);
+
+				if (LOGGER.isInfoEnabled()) {
+
+					final String entityName = entityClass.getSimpleName();
+					final String daoClassName = dao.getClass().getName();
+					final String message = String.format("Associating entity %s with DAO %s",
+							entityName, daoClassName);
+
+					LOGGER.info(message);
+
+				}
+
+			}
+
+		}
+
+	}
+
+	/**
+	 * Builds the {@link PrimaryKeyEncoderFactory} service.
+	 * 
+	 * @param contributions a {@link List} of {@link PrimaryKeyEncoderFactory}.
+	 * @param chainBuilder a {@link ChainBuilder}.
+	 * @return a {@link DefaultDAOFactory}.
+	 */
+	public PrimaryKeyEncoderFactory buildPrimaryKeyEncoderFactory(
+			final List<PrimaryKeyEncoderFactory> contributions, ChainBuilder chainBuilder) {
+
+		return chainBuilder.build(PrimaryKeyEncoderFactory.class, contributions);
+
+	}
+
+	/**
+	 * Builds the {@link DefaultDAOFactory} service.
+	 * 
+	 * @param contributions a {@link List} of {@link DefaultDAOFactory}.
+	 * @param chainBuilder a {@link ChainBuilder}.
+	 * @return a {@link DefaultDAOFactory}.
+	 */
+	public DefaultDAOFactory buildDefaultDAOFactory(final List<DefaultDAOFactory> contributions,
+			ChainBuilder chainBuilder) {
+
+		return chainBuilder.build(DefaultDAOFactory.class, contributions);
+
+	}
+
+	/**
+	 * Builds the {@link DefaultLabelEncoderFactory} service.
+	 * 
+	 * @param contributions a {@link List} of {@link DefaultControllerFactory}.
+	 * @param chainBuilder a {@link ChainBuilder}.
+	 * @return a {@link DefaultControllerFactory}.
+	 */
+	public DefaultControllerFactory buildDefaultControllerFactory(
+			final List<DefaultControllerFactory> contributions, ChainBuilder chainBuilder) {
+
+		return chainBuilder.build(DefaultControllerFactory.class, contributions);
+
+	}
+
+	/**
+	 * Builds the {@link DefaultLabelEncoderFactory} service.
+	 * 
+	 * @param contributions a {@link List} of {@link PrimaryKeyTypeService}.
+	 * @param chainBuilder a {@link ChainBuilder}.
+	 * @return a {@link PrimaryKeyTypeService}.
+	 */
+	public PrimaryKeyTypeService buildPrimaryKeyTypeService(
+			final List<PrimaryKeyTypeService> contributions, ChainBuilder chainBuilder) {
+
+		return chainBuilder.build(PrimaryKeyTypeService.class, contributions);
+
+	}
+
+	/**
+	 * Contributes to the {@link DefaultControllerFactory} service.
+	 * 
+	 * @param contributions a {@link List} of {@link DefaultControllerFactory}.
+	 */
+	public static void contributeDefaultControllerFactory(
+			OrderedConfiguration<DefaultControllerFactory> configuration, DAOSource daoSource) {
+
+		configuration.add("default", new DefaultControllerFactoryImpl(daoSource), "after:*");
 
 	}
 

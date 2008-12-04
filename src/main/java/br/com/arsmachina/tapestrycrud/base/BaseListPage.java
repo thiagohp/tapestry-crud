@@ -244,7 +244,7 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 	 * @return a {@link PrimaryKeyEncoder}.
 	 * @see br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource#get(java.lang.Class)
 	 */
-	protected <X> PrimaryKeyEncoder<?, X> getPrimaryKeyEncoder(Class<X> clasz) {
+	protected <X, Y extends Serializable> PrimaryKeyEncoder<Y, X> getPrimaryKeyEncoder(Class<X> clasz) {
 		return primaryKeyEncoderSource.get(clasz);
 	}
 

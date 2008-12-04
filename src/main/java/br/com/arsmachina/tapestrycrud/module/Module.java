@@ -19,6 +19,7 @@ import java.util.Set;
 import org.apache.tapestry5.PrimaryKeyEncoder;
 
 import br.com.arsmachina.controller.Controller;
+import br.com.arsmachina.dao.DAO;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.Encoder;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
@@ -54,6 +55,24 @@ public interface Module {
 	 * @return a {@link Controller} or null (if no corresponding one is found).
 	 */
 	public <T> Class<? extends Controller<T, ?>> getControllerDefinitionClass(Class<T> entityClass);
+
+	/**
+	 * Returns the DAO class implementation corresponding to a given entity class.
+	 * 
+	 * @param <T> the entity type.
+	 * @param entityClass a {@link Class} instance. It cannot be null.
+	 * @return a {@link DAO} or null (if no corresponding one is found).
+	 */
+	public <T> Class<? extends DAO<T, ?>> getDAOImplementationClass(Class<T> entityClass);
+
+	/**
+	 * Returns the DAO definition (interface) corresponding to a given entity class.
+	 * 
+	 * @param <T> the entity type.
+	 * @param entityClass a {@link Class} instance. It cannot be null.
+	 * @return a {@link DAO} or null (if no corresponding one is found).
+	 */
+	public <T> Class<? extends DAO<T, ?>> getDAODefinitionClass(Class<T> entityClass);
 
 	/**
 	 * Returns the activation context encoder class corresponding to a given entity class.

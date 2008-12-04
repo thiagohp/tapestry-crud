@@ -16,6 +16,7 @@ package br.com.arsmachina.tapestrycrud.components;
 
 
 import org.apache.tapestry5.BindingConstants;
+import org.apache.tapestry5.PrimaryKeyEncoder;
 import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.annotations.SupportsInformalParameters;
@@ -23,7 +24,7 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.Encoder;
-import br.com.arsmachina.tapestrycrud.services.EncoderSource;
+import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
 
 /**
  * <p>
@@ -54,12 +55,12 @@ public class PrimaryKeyActionLink {
     private String zone;
 	
 	@Inject
-	private EncoderSource encoderSource;
+	private PrimaryKeyEncoderSource primaryKeyEncoderSource;
 	
 	@SuppressWarnings("unchecked")
 	public Object getContext() {
 
-		Encoder encoder = encoderSource.get(object.getClass());
+		PrimaryKeyEncoder encoder = primaryKeyEncoderSource.get(object.getClass());
 		return encoder.toKey(object);
 
 	}

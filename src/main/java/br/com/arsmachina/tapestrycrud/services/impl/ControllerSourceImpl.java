@@ -15,12 +15,15 @@
 package br.com.arsmachina.tapestrycrud.services.impl;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
-
 import org.apache.tapestry5.ioc.util.StrategyRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import br.com.arsmachina.controller.Controller;
+import br.com.arsmachina.tapestrycrud.factory.DefaultControllerFactory;
 import br.com.arsmachina.tapestrycrud.services.ControllerSource;
 
 /**
@@ -30,8 +33,15 @@ import br.com.arsmachina.tapestrycrud.services.ControllerSource;
  */
 public class ControllerSourceImpl implements ControllerSource {
 
+	final private static Logger LOGGER = LoggerFactory.getLogger(ControllerSourceImpl.class);
+	
 	@SuppressWarnings("unchecked")
 	final private StrategyRegistry<Controller> registry;
+	
+	final private DefaultControllerFactory defaultControllerFactory;
+	
+	@SuppressWarnings("unchecked")
+	final private Map<Class, Controller> additionalControllers = new HashMap<Class, Controller>();
 
 	/**
 	 * Single constructor.
@@ -39,16 +49,50 @@ public class ControllerSourceImpl implements ControllerSource {
 	 * @param registrations
 	 */
 	@SuppressWarnings("unchecked")
-	public ControllerSourceImpl(Map<Class, Controller> registrations) {
+	public ControllerSourceImpl(Map<Class, Controller> registrations, DefaultControllerFactory defaultControllerFactory) {
+		
+		if (registrations == null) {
+			throw new IllegalArgumentException("Parameter registrations cannot be null");
+		}
+		
+		if (defaultControllerFactory == null) {
+			throw new IllegalArgumentException("Parameter defaultControllerFactory cannot be null");
+		}
+		
 		registry = StrategyRegistry.newInstance(Controller.class, registrations, true);
+		this.defaultControllerFactory = defaultControllerFactory;
+		
 	}
 
-	/**
-	 * @see br.com.arsmachina.tapestrycrud.services.ControllerSource#get(java.lang.Class)
-	 */
 	@SuppressWarnings("unchecked")
 	public <T, K extends Serializable> Controller<T, K> get(Class<T> clasz) {
-		return registry.get(clasz);
+		
+		Controller controller = registry.get(clasz);
+		
+		if (controller == null) {
+			
+			controller = additionalControllers.get(clasz);
+			
+			if (controller == null) {
+				
+				controller = defaultControllerFactory.build(clasz);
+
+				if (controller != null) {
+					
+					additionalControllers.put(clasz, controller);
+					
+					if (LOGGER.isDebugEnabled()) {
+						LOGGER.debug("Created default controller for " + clasz.getName());
+					}
+					
+				}
+				
+			}
+			
+		}
+		
+		return controller;
+		
 	}
 
 }

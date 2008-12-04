@@ -14,6 +14,8 @@
 
 package br.com.arsmachina.tapestrycrud.services;
 
+import java.io.Serializable;
+
 import org.apache.tapestry5.PrimaryKeyEncoder;
 
 import br.com.arsmachina.tapestrycrud.encoder.Encoder;
@@ -33,6 +35,7 @@ public interface PrimaryKeyEncoderSource {
 	 * @param clasz a {@link Class}.
 	 * @return an {@link Encoder}.
 	 */
-	<T> PrimaryKeyEncoder<?, T> get(Class<T> clasz);
+	<T, K extends Serializable> PrimaryKeyEncoder<K, T> get(Class<T> clasz);
+
 
 }

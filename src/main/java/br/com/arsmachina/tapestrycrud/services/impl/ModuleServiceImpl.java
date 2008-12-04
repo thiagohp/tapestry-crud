@@ -21,6 +21,7 @@ import java.util.Set;
 import org.apache.tapestry5.PrimaryKeyEncoder;
 
 import br.com.arsmachina.controller.Controller;
+import br.com.arsmachina.dao.DAO;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.Encoder;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
@@ -146,6 +147,42 @@ public class ModuleServiceImpl implements ModuleService {
 		}
 		
 		return controller;
+		
+	}
+
+	public <T> Class<? extends DAO<T, ?>> getDAOImplementationClass(Class<T> entityClass) {
+
+		Class<? extends DAO<T, ?>> dao = null;
+		
+		for (Module module : modules) {
+			
+			dao = module.getDAOImplementationClass(entityClass);
+			
+			if (dao != null) {
+				break;
+			}
+			
+		}
+		
+		return dao;
+		
+	}
+
+	public <T> Class<? extends DAO<T, ?>> getDAODefinitionClass(Class<T> entityClass) {
+
+		Class<? extends DAO<T, ?>> dao = null;
+		
+		for (Module module : modules) {
+			
+			dao = module.getDAODefinitionClass(entityClass);
+			
+			if (dao != null) {
+				break;
+			}
+			
+		}
+		
+		return dao;
 		
 	}
 

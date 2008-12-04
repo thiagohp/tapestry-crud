@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import org.apache.tapestry5.Block;
 import org.apache.tapestry5.ComponentResources;
 import org.apache.tapestry5.PersistenceConstants;
+import org.apache.tapestry5.PrimaryKeyEncoder;
 import org.apache.tapestry5.ValueEncoder;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Retain;
@@ -33,33 +34,28 @@ import br.com.arsmachina.controller.Controller;
 import br.com.arsmachina.tapestrycrud.Constants;
 import br.com.arsmachina.tapestrycrud.CrudPage;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
-import br.com.arsmachina.tapestrycrud.encoder.Encoder;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
 import br.com.arsmachina.tapestrycrud.selectmodel.SelectModelFactory;
 import br.com.arsmachina.tapestrycrud.services.ActivationContextEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.ControllerSource;
-import br.com.arsmachina.tapestrycrud.services.EncoderSource;
 import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
+import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
+import br.com.arsmachina.tapestrycrud.services.PrimaryKeyTypeService;
 
 /**
- * Class that implements some common infrastructure for listing and editing pages.
- * This class is not 
+ * Class that implements some common infrastructure for listing and editing pages. This class is not
  * 
  * @author Thiago H. de Paula Figueiredo
  * @param <T> the entity class related to this encoder.
  * @param <K> the type of the class' primary key property.
  */
-public abstract class BasePage<T, K extends Serializable> implements
-		CrudPage<T, K> {
+public abstract class BasePage<T, K extends Serializable> implements CrudPage<T, K> {
 
 	@Inject
 	private ActivationContextEncoderSource activationContextEncoderSource;
 
 	@Inject
 	private ControllerSource controllerSource;
-
-	@Inject
-	private EncoderSource encoderSource;
 
 	@Inject
 	private LabelEncoderSource labelEncoderSource;
@@ -70,12 +66,18 @@ public abstract class BasePage<T, K extends Serializable> implements
 	@Inject
 	private SelectModelFactory selectModelFactory;
 
+	@Inject
+	private PrimaryKeyEncoderSource primaryKeyEncoderSource;
+
+	@Inject
+	private PrimaryKeyTypeService primaryKeyTypeService;
+
 	@Retain
 	private Class<T> entityClass;
 
 	@Retain
 	private Controller<T, K> controller;
-	
+
 	@Persist(PersistenceConstants.FLASH)
 	private String message;
 
@@ -84,7 +86,7 @@ public abstract class BasePage<T, K extends Serializable> implements
 
 	@Inject
 	private Messages messages;
-	
+
 	@Retain
 	private Class<K> primaryKeyClass;
 
@@ -97,7 +99,7 @@ public abstract class BasePage<T, K extends Serializable> implements
 		final Type genericSuperclass = getClass().getGenericSuperclass();
 		final ParameterizedType parameterizedType = ((ParameterizedType) genericSuperclass);
 		entityClass = (Class<T>) parameterizedType.getActualTypeArguments()[0];
-		primaryKeyClass = (Class<K>) parameterizedType.getActualTypeArguments()[1];
+		primaryKeyClass = primaryKeyTypeService.getPrimaryKeyType(entityClass);
 
 		controller = controllerSource.get(entityClass);
 
@@ -107,17 +109,17 @@ public abstract class BasePage<T, K extends Serializable> implements
 
 	}
 
-//	/**
-//	 * Creates a {@link BeanModel} for this entity class using
-//	 * <code>beanModelSource.create(entityClass, false, componentResources)</code>. This method
-//	 * can ve overriden if needed.
-//	 * 
-//	 * @return a {@link BeanModel}.
-//	 */
-//	public BeanModel<T> getBeanModel() {
-//		return beanModelSource.create(entityClass, filterReadOnlyComponentsInBeanModel(),
-//				getMessages());
-//	}
+	// /**
+	// * Creates a {@link BeanModel} for this entity class using
+	// * <code>beanModelSource.create(entityClass, false, componentResources)</code>. This method
+	// * can ve overriden if needed.
+	// *
+	// * @return a {@link BeanModel}.
+	// */
+	// public BeanModel<T> getBeanModel() {
+	// return beanModelSource.create(entityClass, filterReadOnlyComponentsInBeanModel(),
+	// getMessages());
+	// }
 
 	/**
 	 * Used by {@link #getBeanModel()} to filter read only components or not. This implementation
@@ -164,16 +166,16 @@ public abstract class BasePage<T, K extends Serializable> implements
 	}
 
 	/**
-	 * Returns the {@link Encoder} for a given class.
+	 * Returns the {@link PrimaryKeyEncoder} for a given class.
 	 * 
 	 * @param <V> the class.
 	 * @param <X> the class' primary key field type.
 	 * @param clasz a {@link Class};
-	 * @return a {@link LabelEncoder}.
+	 * @return a {@link PrimaryKeyEncoder}.
 	 */
-	protected <V, Y extends Serializable, X extends Serializable> Encoder<V, Y> getEncoder(
+	protected <V, X extends Serializable> PrimaryKeyEncoder<X, V> getPrimaryKeyEncoder(
 			Class<V> clasz) {
-		return encoderSource.get(clasz);
+		return primaryKeyEncoderSource.get(clasz);
 	}
 
 	/**
@@ -206,7 +208,7 @@ public abstract class BasePage<T, K extends Serializable> implements
 	public final Class<K> getPrimaryKeyClass() {
 		return primaryKeyClass;
 	}
-	
+
 	/**
 	 * Returns the value of the <code>messages</code> property.
 	 * 

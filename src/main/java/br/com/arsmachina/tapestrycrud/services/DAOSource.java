@@ -16,25 +16,25 @@ package br.com.arsmachina.tapestrycrud.services;
 
 import java.io.Serializable;
 
-import br.com.arsmachina.controller.Controller;
+import br.com.arsmachina.dao.DAO;
 
 
 /**
- * Service that mathes entity classes to their controllers ({@link Controller} instances).
+ * Service that mathes entity classes to their DAOs ({@link DAO} instances).
  * 
  * @author Thiago H. de Paula Figueiredo
- * @see Controller
+ * @see DAO
  */
-public interface ControllerSource {
+public interface DAOSource {
 
 	/**
-	 * Returns the {@link Controller} of a given type.
+	 * Returns the {@link DAO} of a given type.
 	 * 
 	 * @param <T> a type.
 	 * @param <K> the type's primary key field type.
 	 * @param clasz a {@link Class}.
-	 * @return a {@link GenericController}.
+	 * @return a {@link DAO}.
 	 */
-	<T, K extends Serializable> Controller<T, K> get(Class<T> clasz);
+	<T, K extends Serializable> DAO<T, K> get(Class<T> clasz);
 
 }

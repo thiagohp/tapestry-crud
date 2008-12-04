@@ -14,13 +14,17 @@
 
 package br.com.arsmachina.tapestrycrud.services.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tapestry5.PrimaryKeyEncoder;
 import org.apache.tapestry5.ioc.util.StrategyRegistry;
 
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.services.ActivationContextEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.EncoderSource;
+import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
+import br.com.arsmachina.tapestrycrud.services.PrimaryKeyTypeService;
 
 /**
  * {@link ActivationContextEncoderSource} implementation.
@@ -33,6 +37,13 @@ public class ActivationContextEncoderSourceImpl implements ActivationContextEnco
 	final private StrategyRegistry<ActivationContextEncoder> registry;
 
 	final private EncoderSource encoderSource;
+	
+	final private PrimaryKeyEncoderSource primaryKeyEncoderSource;
+	
+	final private PrimaryKeyTypeService primaryKeyTypeService;
+
+	@SuppressWarnings("unchecked")
+	final private Map<Class, ActivationContextEncoder> additionalEncoders = new HashMap<Class, ActivationContextEncoder>();
 
 	/**
 	 * Single constructor.
@@ -41,7 +52,8 @@ public class ActivationContextEncoderSourceImpl implements ActivationContextEnco
 	 */
 	@SuppressWarnings("unchecked")
 	public ActivationContextEncoderSourceImpl(Map<Class, ActivationContextEncoder> registrations,
-			EncoderSource encoderSource) {
+			EncoderSource encoderSource, PrimaryKeyEncoderSource primaryKeyEncoderSource,
+			PrimaryKeyTypeService primaryKeyTypeService) {
 
 		if (registrations == null) {
 			throw new IllegalArgumentException("Parameter registrations cannot be null");
@@ -50,10 +62,17 @@ public class ActivationContextEncoderSourceImpl implements ActivationContextEnco
 		if (encoderSource == null) {
 			throw new IllegalArgumentException("Parameter encoderSource cannot be null");
 		}
-
+		
+		if (primaryKeyTypeService == null) {
+			throw new IllegalArgumentException("Parameter primaryKeyTypeService cannot be null");
+		}
+		
 		registry = StrategyRegistry.newInstance(ActivationContextEncoder.class, registrations, true);
 
 		this.encoderSource = encoderSource;
+		this.primaryKeyEncoderSource = primaryKeyEncoderSource;
+		this.primaryKeyTypeService = primaryKeyTypeService;
+		
 
 	}
 
@@ -64,6 +83,28 @@ public class ActivationContextEncoderSourceImpl implements ActivationContextEnco
 
 		if (encoder == null) {
 			encoder = encoderSource.get(clasz);
+		}
+
+		if (encoder == null) {
+
+			encoder = additionalEncoders.get(clasz);
+			
+			if (encoder == null) {
+				
+				PrimaryKeyEncoder<?, T> primaryKeyEncoder = primaryKeyEncoderSource.get(clasz);
+				
+				if (primaryKeyEncoder != null) {
+					
+					Class primaryKeyType = primaryKeyTypeService.getPrimaryKeyType(clasz);
+					encoder = 
+						new PrimaryKeyEncoderActivationContextEncoder(primaryKeyEncoder, primaryKeyType);
+					
+					additionalEncoders.put(clasz, encoder);
+					
+				}
+				
+			}
+			
 		}
 
 		if (encoder == null) {

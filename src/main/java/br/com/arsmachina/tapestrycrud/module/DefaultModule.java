@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import br.com.arsmachina.controller.Controller;
+import br.com.arsmachina.dao.DAO;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.Encoder;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
@@ -102,6 +103,17 @@ public class DefaultModule implements Module {
 		return getClass(getControllerDefinitionClassName(entityClass));
 	}
 
+	@SuppressWarnings("unchecked")
+	public <T> Class<? extends DAO<T, ?>> getDAOImplementationClass(
+			Class<T> entityClass) {
+		return getClass(getDAOImplementationClassName(entityClass));
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> Class<? extends DAO<T, ?>> getDAODefinitionClass(Class<T> entityClass) {
+		return getClass(getDAODefinitionClassName(entityClass));
+	}
+
 	public Set<Class<?>> getEntityClasses() {
 		return entityClasses;
 	}
@@ -154,6 +166,34 @@ public class DefaultModule implements Module {
 	protected String getControllerDefinitionClassName(Class<?> entityClass) {
 
 		return String.format("%s.controller.%sController", rootPackage,
+				entityClass.getSimpleName());
+
+	}
+
+	/**
+	 * Returns the fully-qualified name of the DAO class implementation for a given entity
+	 * class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String}.
+	 */
+	protected String getDAOImplementationClassName(Class<?> entityClass) {
+
+		return String.format("%s.dao.impl.%sDAOImpl", rootPackage,
+				entityClass.getSimpleName());
+
+	}
+
+	/**
+	 * Returns the fully-qualified name of the DAO definition (interface) for a given entity
+	 * class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String}.
+	 */
+	protected String getDAODefinitionClassName(Class<?> entityClass) {
+
+		return String.format("%s.dao.%sDAO", rootPackage,
 				entityClass.getSimpleName());
 
 	}
@@ -235,7 +275,7 @@ public class DefaultModule implements Module {
 		Class<?> clasz = null;
 
 		try {
-			clasz = Class.forName(name);
+			clasz = Thread.currentThread().getContextClassLoader().loadClass(name);
 		}
 		catch (ClassNotFoundException e) {
 
