@@ -31,6 +31,7 @@ import org.apache.tapestry5.internal.services.PersistentFieldManagerImpl;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.services.Request;
 
+import br.com.arsmachina.controller.ReadableController;
 import br.com.arsmachina.tapestrycrud.Constants;
 import br.com.arsmachina.tapestrycrud.EditPage;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
@@ -88,7 +89,10 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 
 	/**
 	 * Ensures the edited object is not null before form rendering and submission. It uses
-	 * {@link #createNewObject()} to create a new entity object if needed.
+	 * {@link #createNewObject()} to create a new entity object if needed. If not,
+	 * <code>getController.reattach(object)</code> is invoked.
+	 * 
+	 * @see ReadableController#reattach(Object)
 	 */
 	@OnEvent(component = Constants.FORM_ID, value = EventConstants.PREPARE)
 	final protected void prepare() {
@@ -97,6 +101,9 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 
 		if (object == null) {
 			setObject(createNewObject());
+		}
+		else {
+			getController().reattach(object);
 		}
 
 	}
