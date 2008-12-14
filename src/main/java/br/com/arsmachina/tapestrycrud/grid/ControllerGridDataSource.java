@@ -15,13 +15,9 @@
 package br.com.arsmachina.tapestrycrud.grid;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
-
-import org.apache.tapestry5.grid.ColumnSort;
 import org.apache.tapestry5.grid.GridDataSource;
-import org.apache.tapestry5.grid.SortConstraint;
 
 import br.com.arsmachina.controller.Controller;
 import br.com.arsmachina.controller.ReadableController;
@@ -31,19 +27,12 @@ import br.com.arsmachina.dao.SortCriterion;
  * {@link GridDataSource} implementation using a {@link Controller} instance, specifically its
  * {@link Controller#findAll(int, int, SortCriterion[])} method.
  * 
+ * @param <T> the entity class related to this controller.
+ * @param <K> the type of the field that represents the entity class' primary key.
  * @author Thiago H. de Paula Figueiredo
  */
-public class ControllerGridDataSource<T, K extends Serializable> implements GridDataSource {
-
-	private static final SortCriterion[] EMPTY_SORT_CRITERION_ARRAY = new SortCriterion[0];
-
-	final private Class<T> entityClass;
-
-	final private ReadableController<T, K> controller;
-
-	private List<T> list;
-
-	private int startIndex;
+public class ControllerGridDataSource<T, K extends Serializable> extends
+		PagedSearchGridDataSource<T> {
 
 	/**
 	 * Single construtctor of this class.
@@ -52,94 +41,37 @@ public class ControllerGridDataSource<T, K extends Serializable> implements Grid
 	 */
 	@SuppressWarnings("unchecked")
 	public ControllerGridDataSource(Class<T> clasz, ReadableController<T, K> controller) {
-
-		if (controller == null) {
-			throw new IllegalArgumentException("Parameter controller cannot be null");
-		}
-
-		this.controller = controller;
-		entityClass = clasz;
-
-		assert controller != null;
-		assert entityClass != null;
-
+		super(clasz, new ReadableControllerPagedSearch(controller));
 	}
 
-	/**
-	 * @see org.apache.tapestry.grid.GridDataSource#getAvailableRows()
-	 */
-	public int getAvailableRows() {
-		return controller.countAll();
-	}
+	final private static class ReadableControllerPagedSearch<T, K extends Serializable> implements
+			PagedSearch<T> {
 
-	/**
-	 * @see org.apache.tapestry.grid.GridDataSource#getRowType()
-	 */
-	@SuppressWarnings("unchecked")
-	public Class getRowType() {
-		return entityClass;
-	}
+		final private ReadableController<T, K> controller;
 
-	/**
-	 * @see org.apache.tapestry.grid.GridDataSource#getRowValue(int)
-	 */
-	public Object getRowValue(int index) {
-		final int position = index - startIndex;
-		return list.get(position);
-	}
+		/**
+		 * Single constructor of this class.
+		 * 
+		 * @param controller a {@link Controller}. It cannot be null.
+		 */
+		public ReadableControllerPagedSearch(ReadableController<T, K> controller) {
 
-	/**
-	 * @see org.apache.tapestry.grid.GridDataSource#prepare(int, int, java.util.List)
-	 */
-	public void prepare(int startIndex, int endIndex, List<SortConstraint> sortConstraints) {
-
-		this.startIndex = startIndex;
-		SortCriterion[] sortCriteria; 
-		
-		sortCriteria = convertSortConstraintToSortCriterion(sortConstraints);
-		
-		final int maxResults = (endIndex - startIndex) + 1;
-		list = controller.findAll(startIndex, maxResults, sortCriteria);
-
-	}
-
-	/**
-	 * Converts a {@link List} of {@link SortConstraint} to a {@link SortCriterion} array.
-	 * @param sortConstraints a {@link List} of {@link SortConstraint}.
-	 * @return a {@link SortCriterion} array.
-	 */
-	private SortCriterion[] convertSortConstraintToSortCriterion(
-			List<SortConstraint> sortConstraints) {
-		
-		SortCriterion[] sortCriteria;
-		if (sortConstraints.size() > 0) {
-			
-			List<SortCriterion> list = new ArrayList<SortCriterion>();
-	
-			for (SortConstraint sortConstraint : sortConstraints) {
-	
-				final ColumnSort columnSort = sortConstraint.getColumnSort();
-	
-				if (columnSort != ColumnSort.UNSORTED) {
-	
-					final String propertyName = sortConstraint.getPropertyModel().getPropertyName();
-	
-					final boolean ascending = columnSort == ColumnSort.ASCENDING;
-					list.add(new SortCriterion(propertyName, ascending));
-	
-				}
-	
+			if (controller == null) {
+				throw new IllegalArgumentException("Parameter controller cannot be null");
 			}
-			
-			sortCriteria = list.toArray(new SortCriterion[sortConstraints.size()]);
-			
+
+			this.controller = controller;
+
 		}
-		else {
-			sortCriteria = EMPTY_SORT_CRITERION_ARRAY;
+
+		public int count() {
+			return controller.countAll();
 		}
-		
-		return sortCriteria;
-		
+
+		public List<T> search(int firstIndex, int maximumResults, SortCriterion... sortingConstraints) {
+			return controller.findAll(firstIndex, maximumResults, sortingConstraints);
+		}
+
 	}
 
 }
