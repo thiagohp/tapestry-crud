@@ -50,3 +50,22 @@ div.t-crud-emptygrid p, div.t-crud-message p{
 form input[type="checkbox"], form input[type="radio"] {
 	width: auto;
 }
+
+td.action {
+	min-width: 3em;
+	text-align: center;
+}
+
+div.t-crud-actionlinks {
+	padding-left: 0.25em;
+	padding-right: 0.25em;
+}
+
+div.t-crud-actionlinks a {
+	float: left;
+} 
+
+div.t-crud-actionlinks a + a {
+	float: left;
+	margin-left: 0.5em;
+}
