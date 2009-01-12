@@ -18,11 +18,10 @@ import java.util.Set;
 
 import org.apache.tapestry5.PrimaryKeyEncoder;
 
-import br.com.arsmachina.controller.Controller;
-import br.com.arsmachina.dao.DAO;
+import br.com.arsmachina.module.Module;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
-import br.com.arsmachina.tapestrycrud.module.Module;
+import br.com.arsmachina.tapestrycrud.module.TapestryCrudModule;
 
 /**
  * Service that provides module-related methods.
@@ -30,21 +29,14 @@ import br.com.arsmachina.tapestrycrud.module.Module;
  * @see Module
  * @author Thiago H. de Paula Figueiredo
  */
-public interface ModuleService {
+public interface TapestryCrudModuleService {
 
 	/**
-	 * Returns the set of all entity classes.
+	 * Returns the set of all modules.
 	 * 
-	 * @return a {@link Set} of {@link Module} instances.
+	 * @return a {@link Set} of {@link TapestryCrudModule}s.
 	 */
-	Set<Module> getModules();
-
-	/**
-	 * Returns the set of all entity classes.
-	 * 
-	 * @return a {@link Set} of {@link Class} instances.
-	 */
-	Set<Class<?>> getEntityClasses();
+	Set<TapestryCrudModule> getModules();
 
 	/**
 	 * Returns the activation context encoder class corresponding to a given entity class.
@@ -65,42 +57,6 @@ public interface ModuleService {
 	 */
 	<T> Class<? extends ActivationContextEncoder<T>> getEncoderClass(
 			Class<T> entityClass);
-
-	/**
-	 * Returns the controller definition (interface) corresponding to a given entity class.
-	 * 
-	 * @param <T> the entity type.
-	 * @param entityClass a {@link Class} instance. It cannot be null.
-	 * @return a {@link Class} or null (if no corresponding one is found).
-	 */
-	<T> Class<? extends Controller<T, ?>> getControllerDefinitionClass(Class<T> entityClass);
-
-	/**
-	 * Returns the controller implementation class corresponding to a given entity class.
-	 * 
-	 * @param <T> the entity type.
-	 * @param entityClass a {@link Class} instance. It cannot be null.
-	 * @return a {@link Class} or null (if no corresponding one is found).
-	 */
-	<T> Class<? extends Controller<T, ?>> getControllerImplementationClass(Class<T> entityClass);
-
-	/**
-	 * Returns the DAO definition (interface) corresponding to a given entity class.
-	 * 
-	 * @param <T> the entity type.
-	 * @param entityClass a {@link Class} instance. It cannot be null.
-	 * @return a {@link Class} or null (if no corresponding one is found).
-	 */
-	<T> Class<? extends DAO<T, ?>> getDAODefinitionClass(Class<T> entityClass);
-
-	/**
-	 * Returns the DAO implementation class corresponding to a given entity class.
-	 * 
-	 * @param <T> the entity type.
-	 * @param entityClass a {@link Class} instance. It cannot be null.
-	 * @return a {@link Class} or null (if no corresponding one is found).
-	 */
-	<T> Class<? extends DAO<T, ?>> getDAOImplementationClass(Class<T> entityClass);
 
 	/**
 	 * Returns the label encoder class corresponding to a given entity class.

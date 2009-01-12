@@ -37,7 +37,7 @@ import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
 import br.com.arsmachina.tapestrycrud.selectmodel.SelectModelFactory;
 import br.com.arsmachina.tapestrycrud.services.ActivationContextEncoderSource;
-import br.com.arsmachina.tapestrycrud.services.ControllerSource;
+import br.com.arsmachina.module.service.ControllerSource;
 import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.PrimaryKeyTypeService;

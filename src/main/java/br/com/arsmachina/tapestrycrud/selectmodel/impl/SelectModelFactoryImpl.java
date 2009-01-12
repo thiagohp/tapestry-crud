@@ -21,9 +21,9 @@ import org.apache.tapestry5.Link;
 import org.apache.tapestry5.SelectModel;
 import org.apache.tapestry5.ioc.util.StrategyRegistry;
 
+import br.com.arsmachina.module.service.ControllerSource;
 import br.com.arsmachina.tapestrycrud.selectmodel.SelectModelFactory;
 import br.com.arsmachina.tapestrycrud.selectmodel.SingleTypeSelectModelFactory;
-import br.com.arsmachina.tapestrycrud.services.ControllerSource;
 import br.com.arsmachina.tapestrycrud.services.EncoderSource;
 
 /**

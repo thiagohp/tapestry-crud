@@ -36,19 +36,11 @@
 		</dependency>
 		<dependency>
 			<groupId>br.com.arsmachina</groupId>
-			<artifactId>generic-controller</artifactId>
+			<artifactId>application-module</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tapestry</groupId>
 			<artifactId>tapestry-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tapestry</groupId>
-			<artifactId>tapestry-ioc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tapestry</groupId>
-			<artifactId>tapestry5-annotations</artifactId>
 		</dependency>
 	</dependencies>
 	<build>
@@ -60,7 +52,7 @@
 					<archive>
 						<manifestEntries>
 							<Tapestry-Module-Classes>
-								br.com.arsmachina.tapestrycrud.ioc.TapestryCrudModule
+								br.com.arsmachina.tapestrycrud.ioc.TapestryCrudIoCModule
 							</Tapestry-Module-Classes>
 						</manifestEntries>
 					</archive>
