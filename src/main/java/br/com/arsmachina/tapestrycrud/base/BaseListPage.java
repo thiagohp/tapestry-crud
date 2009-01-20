@@ -111,11 +111,10 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 	}
 
 	/**
-	 * Adds an <code>action</code> property to the {@link BeanModel}.
-	 * 
-	 * @see br.com.arsmachina.tapestrycrud.base.BasePage#getBeanModel()
+	 * Creates a {@link BeanModel} and adds an <code>action</code> property to it.
+	 *
+	 * @return a {@link BeanModel}.
 	 */
-	@SuppressWarnings("unchecked")
 	public BeanModel<T> getBeanModel() {
 
 		final BeanModel<T> beanModel = beanModelSource.createDisplayModel(getEntityClass(),
