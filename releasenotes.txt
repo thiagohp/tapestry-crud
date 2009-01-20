@@ -5,4 +5,4 @@
 * Too many changes to remember . . .
 
 0.9
-Initial version
+* Initial version
