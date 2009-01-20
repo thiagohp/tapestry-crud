@@ -42,7 +42,6 @@ public class DefaultSingleTypeSelectModelFactory<T> implements SingleTypeSelectM
 	 * @param controller a {@link Controller}. It cannot be null.
 	 * @param encoder a {@link LabelEncoder}. It cannot be null.
 	 */
-	@SuppressWarnings("unchecked")
 	public DefaultSingleTypeSelectModelFactory(Controller<T, ?> controller,
 			LabelEncoder<T> labelEncoder) {
 

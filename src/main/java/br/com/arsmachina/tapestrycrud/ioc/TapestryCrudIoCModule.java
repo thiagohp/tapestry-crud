@@ -42,10 +42,12 @@ import org.slf4j.LoggerFactory;
 import br.com.arsmachina.controller.Controller;
 import br.com.arsmachina.module.DefaultModule;
 import br.com.arsmachina.module.Module;
+import br.com.arsmachina.module.factory.DAOFactory;
 import br.com.arsmachina.module.ioc.ApplicationModuleModule;
 import br.com.arsmachina.module.service.ControllerSource;
 import br.com.arsmachina.module.service.EntitySource;
 import br.com.arsmachina.module.service.ModuleService;
+import br.com.arsmachina.module.service.PrimaryKeyTypeService;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.Encoder;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
@@ -60,7 +62,6 @@ import br.com.arsmachina.tapestrycrud.services.ActivationContextEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.EncoderSource;
 import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
-import br.com.arsmachina.tapestrycrud.services.PrimaryKeyTypeService;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 import br.com.arsmachina.tapestrycrud.services.impl.ActivationContextEncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.EncoderSourceImpl;
@@ -100,7 +101,6 @@ public class TapestryCrudIoCModule {
 	 * @param contributions a {@link Map<Class, Controller>}.
 	 * @return an {@link ControllerSource}.
 	 */
-	@SuppressWarnings("unchecked")
 	public static void contributeTapestryCrudModuleService(
 			Configuration<TapestryCrudModule> contributions, ModuleService moduleService,
 			ClassNameLocator classNameLocator,
@@ -527,20 +527,6 @@ public class TapestryCrudIoCModule {
 			final List<PrimaryKeyEncoderFactory> contributions, ChainBuilder chainBuilder) {
 
 		return chainBuilder.build(PrimaryKeyEncoderFactory.class, contributions);
-
-	}
-
-	/**
-	 * Builds the {@link DefaultLabelEncoderFactory} service.
-	 * 
-	 * @param contributions a {@link List} of {@link PrimaryKeyTypeService}.
-	 * @param chainBuilder a {@link ChainBuilder}.
-	 * @return a {@link PrimaryKeyTypeService}.
-	 */
-	public PrimaryKeyTypeService buildPrimaryKeyTypeService(
-			final List<PrimaryKeyTypeService> contributions, ChainBuilder chainBuilder) {
-
-		return chainBuilder.build(PrimaryKeyTypeService.class, contributions);
 
 	}
 

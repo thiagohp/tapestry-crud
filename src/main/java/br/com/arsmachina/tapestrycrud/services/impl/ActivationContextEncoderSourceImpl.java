@@ -20,11 +20,11 @@ import java.util.Map;
 import org.apache.tapestry5.PrimaryKeyEncoder;
 import org.apache.tapestry5.ioc.util.StrategyRegistry;
 
+import br.com.arsmachina.module.service.PrimaryKeyTypeService;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.services.ActivationContextEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.EncoderSource;
 import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
-import br.com.arsmachina.tapestrycrud.services.PrimaryKeyTypeService;
 
 /**
  * {@link ActivationContextEncoderSource} implementation.

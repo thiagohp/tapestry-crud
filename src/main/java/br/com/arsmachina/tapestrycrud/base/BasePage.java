@@ -31,16 +31,16 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.services.ValueEncoderSource;
 
 import br.com.arsmachina.controller.Controller;
+import br.com.arsmachina.module.service.ControllerSource;
+import br.com.arsmachina.module.service.PrimaryKeyTypeService;
 import br.com.arsmachina.tapestrycrud.Constants;
 import br.com.arsmachina.tapestrycrud.CrudPage;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
 import br.com.arsmachina.tapestrycrud.selectmodel.SelectModelFactory;
 import br.com.arsmachina.tapestrycrud.services.ActivationContextEncoderSource;
-import br.com.arsmachina.module.service.ControllerSource;
 import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
-import br.com.arsmachina.tapestrycrud.services.PrimaryKeyTypeService;
 
 /**
  * Class that implements some common infrastructure for listing and editing pages. This class is not
