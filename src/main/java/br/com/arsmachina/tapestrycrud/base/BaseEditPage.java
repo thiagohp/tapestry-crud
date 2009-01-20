@@ -26,9 +26,11 @@ import org.apache.tapestry5.annotations.Meta;
 import org.apache.tapestry5.annotations.OnEvent;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Retain;
+import org.apache.tapestry5.beaneditor.BeanModel;
 import org.apache.tapestry5.corelib.components.Form;
 import org.apache.tapestry5.internal.services.PersistentFieldManagerImpl;
 import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.services.BeanModelSource;
 import org.apache.tapestry5.services.Request;
 
 import br.com.arsmachina.controller.ReadableController;
@@ -76,6 +78,9 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 
 	@Retain
 	private ActivationContextEncoder<T> activationContextEncoder;
+	
+	@Inject
+	private BeanModelSource beanModelSource;
 
 	/**
 	 * Single constructor of this class.
@@ -160,6 +165,20 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 		form.recordError(field, message);
 
 	}
+	
+	/**
+	 * Creates a {@link BeanModel}.
+	 * 
+	 * @return a {@link BeanModel}.
+	 */
+	public BeanModel<T> getBeanModel() {
+
+		final BeanModel<T> beanModel = beanModelSource.createEditModel(getEntityClass(),
+				getMessages());
+
+		return beanModel;
+		
+	}	
 
 	/**
 	 * Saves or updates the edited object. This method does the following steps:
