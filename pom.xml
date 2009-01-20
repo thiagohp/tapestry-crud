@@ -5,7 +5,7 @@
 	<groupId>br.com.arsmachina</groupId>
 	<artifactId>tapestry-crud</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0</version>
+	<version>1.1</version>
 	<name>Tapestry CRUD</name>
 	<description>
 		Tapestry 5 infrastructure for building CRUDs
@@ -15,7 +15,7 @@
 	<parent>
 		<groupId>br.com.arsmachina</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.0</version>
+		<version>1.1</version>
 		<relativePath>../parent/pom.xml</relativePath>
 	</parent>
 	<dependencies>
