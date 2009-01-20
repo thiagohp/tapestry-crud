@@ -38,7 +38,6 @@ class PrimaryKeyEncoderActivationContextEncoder<T, K extends Serializable> imple
 	/**
 	 * @param primaryKeyType
 	 */
-	@SuppressWarnings("unchecked")
 	public PrimaryKeyEncoderActivationContextEncoder(PrimaryKeyEncoder<K, T> primaryKeyEncoder,
 			Class<K> primaryKeyType) {
 

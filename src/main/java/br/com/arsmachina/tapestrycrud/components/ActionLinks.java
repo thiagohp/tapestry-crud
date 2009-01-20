@@ -48,14 +48,12 @@ public class ActionLinks {
 	 * Name of the page that is used to edits objects listed in this page.
 	 */
 	@Parameter(defaultPrefix = BindingConstants.LITERAL)
-	@SuppressWarnings("unused")
 	private String editPage;
 
 	/**
 	 * Name of the page that is used to edits objects listed in this page.
 	 */
 	@Parameter(defaultPrefix = BindingConstants.LITERAL)
-	@SuppressWarnings("unused")
 	private String viewPage;
 
 	/**
@@ -63,7 +61,6 @@ public class ActionLinks {
 	 */
 	@Parameter(value = "true")
 	@Property
-	@SuppressWarnings("unused")
 	private boolean edit;
 
 	/**
@@ -79,7 +76,6 @@ public class ActionLinks {
 	 */
 	@Parameter(value = "false")
 	@Property
-	@SuppressWarnings("unused")
 	private boolean view;
 
 	/**

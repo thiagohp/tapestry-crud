@@ -40,7 +40,6 @@ public class PrimaryKeyEncoderValueEncoder<T, K extends Serializable> implements
 	/**
 	 * @param primaryKeyType
 	 */
-	@SuppressWarnings("unchecked")
 	public PrimaryKeyEncoderValueEncoder(Class<K> primaryKeyType,
 			PrimaryKeyEncoder<K, T> primaryKeyEncoder, TypeCoercer typeCoercer) {
 

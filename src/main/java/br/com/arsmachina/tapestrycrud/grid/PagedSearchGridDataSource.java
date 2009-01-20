@@ -49,7 +49,6 @@ public class PagedSearchGridDataSource<T> implements GridDataSource {
 	 * @param clasz the type of the returned objects. It cannot be null.
 	 * @param pagedSearch a {@link Controller}. It cannot be null.
 	 */
-	@SuppressWarnings("unchecked")
 	public PagedSearchGridDataSource(Class<T> clasz, PagedSearch<T> pagedSearch) {
 
 		if (pagedSearch == null) {
