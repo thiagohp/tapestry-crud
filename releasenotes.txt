@@ -1,0 +1,8 @@
+1.1
+* Moved PrimaryKeyTypeService from Tapestry CRUD to Application Module-Hibernate.
+
+1.0
+* Too many changes to remember . . .
+
+0.9
+Initial version
