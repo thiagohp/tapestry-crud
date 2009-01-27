@@ -1,2 +1,2 @@
 <a xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd"
-	t:type="EventLink" t:event="newObject"><t:body/></a>
+	t:type="EventLink" t:event="newObject">${label}</a>
