@@ -1,0 +1,113 @@
+body {
+	font-family: Verdana, Arial, "Times New Roman";
+}
+
+html, body {
+	background-color: #F6F9ED;
+}
+
+body {
+	background-color: #F6F9ED;
+	padding-left: 3em;
+	padding-right: 3em;
+	height: 100%;
+}
+
+div.container {
+/*	background-color: blue;*/
+/*	background-image: url("../images/gradiente.svg");*/
+	clear: both;
+}
+
+div.header {
+/*	background-color: green;*/
+	text-align: left;
+}
+
+div.header p {
+	font-size: 2em;
+}
+
+div.navigation {
+/*	background-color: yellow;*/
+	float: left;
+	padding-left: 1em;
+	padding-right: 1em;
+	width: 6em;
+	height: auto;
+	text-align: left;
+	display: block;
+}
+
+div.content {
+/*	background-color: white;*/
+	padding-left: 1em;
+	padding-right: 1em;
+	display: block;
+	clear: none;
+	float: left;
+	width: 800px;
+	max-width: 900px;
+}
+
+div.content p {
+	text-align: justify;
+/*	background-color: magenta;*/
+}
+
+div.content p {
+	text-align: justify;
+	max-width: 36em;
+/*	background-color: magenta;*/
+}
+
+div.footer {
+/*	background-color: red;*/
+	float: none;
+	clear: both;
+	text-align: left;
+}
+
+div.header, div.footer, div.navigation, div.content {
+	padding-top: 1em;
+	padding-bottom: 1em;
+}
+
+div.navigation {
+	padding-left: 0;
+	padding-right: 1.5em;
+}
+
+br {
+	clear: both;
+}
+
+label {
+/*	background-color: yellow;*/
+	text-align: right;
+}
+
+div.navigation ul {
+	/*background-color: lightblue;*/
+	list-style-type: none;
+	/*padding-left: 0.5em;*/
+	margin: 0;
+	list-style-position: inside;
+	/*border: 1px solid black;*/
+	font-size: 0.8em;
+	border-top: 1px solid black;
+}
+
+div.navigation ul li {
+	/*background-color: yellow;*/
+	border-bottom: 1px solid black;
+}
+
+div.navigation ul li ul {
+	padding-left: 1em;
+	border: none;
+}
+
+div.navigation ul li a {
+	text-decoration: none;
+}

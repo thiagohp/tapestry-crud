@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd">
+	<head>
+		<title>${title}</title>
+	</head>
+	<body>
+		<div class="container">
+			<div class="header">
+				<p>${title}</p>
+			</div>
+			<div class="navigation">
+				<ul>
+					<li>
+						<a href="#">Link 1</a>
+					</li>
+					<li>
+						<a href="#">Link 2</a>
+					</li>
+					<li>
+						<a href="#">Link 3</a>
+					</li>
+					<li>
+						<a href="#">Link 4</a>
+					</li>
+				</ul>
+			</div>
+			<div class="content">
+				<t:body />
+			</div>
+			<div class="footer">
+				<p>
+					Temporary footer while the actual template isn't ready yet.
+					<br />
+					Built using 
+					<a href="http://www.arsmachina.com.br/project/tapestrycrud">Tapestry CRUD</a>
+					and some other packages from the 
+					<a href="http://www.arsmachina.com.br/project/">Ars Machina Project</a>.
+				</p>
+			</div>
+		</div>
+	</body>
+</html>
