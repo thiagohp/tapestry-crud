@@ -14,6 +14,8 @@
 
 package br.com.arsmachina.tapestrycrud.module;
 
+import java.util.Set;
+
 import org.apache.tapestry5.PrimaryKeyEncoder;
 
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
@@ -26,6 +28,21 @@ import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
  * @author Thiago H. de Paula Figueiredo
  */
 public interface TapestryCrudModule {
+	
+	/**
+	 * Returns a {@link Set} containing all the entity classes in this module.
+	 * 
+	 * @return a {@link Set} of {@link Class} instances.
+	 */
+	Set<Class<?>> getEntityClasses();
+	
+	/**
+	 * Does this module contain the given entity class?.
+	 * 
+	 * @param entityClass a {@link Class} instance.
+	 * @return a <code>boolean</code>.
+	 */
+	boolean contains(Class<?> entityClass);
 
 	/**
 	 * Returns the activation context encoder class corresponding to a given entity class.
@@ -34,7 +51,7 @@ public interface TapestryCrudModule {
 	 * @param entityClass a {@link Class} instance. It cannot be null.
 	 * @return an {@link ActivationContextEncoder} or null (if no corresponding one is found).
 	 */
-	public <T> Class<? extends ActivationContextEncoder<T>> getActivationContextEncoderClass(
+	<T> Class<? extends ActivationContextEncoder<T>> getActivationContextEncoderClass(
 			Class<T> entityClass);
 
 	/**
@@ -44,7 +61,7 @@ public interface TapestryCrudModule {
 	 * @param entityClass a {@link Class} instance. It cannot be null.
 	 * @return an {@link Encoder} or null (if no corresponding one is found).
 	 */
-	public <T> Class<? extends Encoder<T, ?>> getEncoderClass(
+	<T> Class<? extends Encoder<T, ?>> getEncoderClass(
 			Class<T> entityClass);
 
 	/**
@@ -54,7 +71,7 @@ public interface TapestryCrudModule {
 	 * @param entityClass a {@link Class} instance. It cannot be null.
 	 * @return a {@link LabelEncoder} or null (if no corresponding one is found).
 	 */
-	public <T> Class<? extends LabelEncoder<T>> getLabelEncoderClass(
+	<T> Class<? extends LabelEncoder<T>> getLabelEncoderClass(
 			Class<T> entityClass);
 
 	/**
@@ -64,14 +81,63 @@ public interface TapestryCrudModule {
 	 * @param entityClass a {@link Class} instance. It cannot be null.
 	 * @return a {@link PrimaryKeyEncoder} or null (if no corresponding one is found).
 	 */
-	public <T> Class<? extends PrimaryKeyEncoder<?, T>> getPrimaryKeyEncoderClass(
+	<T> Class<? extends PrimaryKeyEncoder<?, T>> getPrimaryKeyEncoderClass(
 			Class<T> entityClass);
+	
+	/**
+	 * Returns the fully-qualified name of the edition page for a given entity class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String}.
+	 */
+	String getEditPageClassName(Class<?> entityClass);
 
 	/**
-	 * Returns the module name. Just used for logging and debugging purposes.
+	 * Returns the fully-qualified name of the listing page for a given entity class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String}.
+	 */
+	String getListPageClassName(Class<?> entityClass);
+	
+	/**
+	 * Returns the URL of the edition page for a given entity class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String}.
+	 */
+	String getEditPageURL(Class<?> entityClass);
+
+	/**
+	 * Returns the URL of the listing page for a given entity class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String}.
+	 */
+	String getListPageURL(Class<?> entityClass);
+	
+	/**
+	 * Returns the {@link Class} of the edition page for a given entity class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String}.
+	 */
+	Class<?> getEditPageClass(Class<?> entityClass);
+
+	/**
+	 * Returns the {@link Class} of the listing page for a given entity class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String}.
+	 */
+	Class<?> getListPageClass(Class<?> entityClass);
+	
+	/**
+	 * Returns the module id. This can be null if this is the single module in the application.
+	 * This method cannot return the empty string.
 	 * 
 	 * @return a {@link String}.
 	 */
-	public String getName();
-
+	String getId();
+	
 }
