@@ -25,7 +25,7 @@ import org.apache.tapestry5.ioc.Messages;
 import org.apache.tapestry5.ioc.annotations.Inject;
 
 import br.com.arsmachina.tapestrycrud.EditPage;
-import br.com.arsmachina.tapestrycrud.services.RequestUtil;
+import br.com.arsmachina.tapestrycrud.services.PageUtil;
 
 /**
  * A link to edit a new object. Created because Firefox (and maybe other browsers) sometimes keeps
@@ -55,7 +55,7 @@ public class NewObjectLink {
 	private Messages messages;
 
 	@Inject
-	private RequestUtil requestUtil;
+	private PageUtil requestUtil;
 
 	@Parameter(allowNull = false, defaultPrefix = BindingConstants.MESSAGE)
 	@Property(write = false)
