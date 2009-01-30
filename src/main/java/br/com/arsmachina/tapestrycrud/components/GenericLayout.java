@@ -15,14 +15,13 @@
 package br.com.arsmachina.tapestrycrud.components;
 
 import org.apache.tapestry5.BindingConstants;
-import org.apache.tapestry5.Block;
 import org.apache.tapestry5.annotations.IncludeStylesheet;
 import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.ioc.Messages;
 import org.apache.tapestry5.ioc.annotations.Inject;
 
-import br.com.arsmachina.tapestrycrud.services.RequestUtil;
+import br.com.arsmachina.tapestrycrud.services.PageUtil;
 
 /**
  * A generic layout component. This class is meant to be used as a superclass of layout components,
@@ -33,23 +32,13 @@ import br.com.arsmachina.tapestrycrud.services.RequestUtil;
 @IncludeStylesheet("classpath:/br/com/arsmachina/tapestrycrud/components/css/main.css")
 public class GenericLayout {
 
-	final private static String PAGE_TITLE_MESSAGE_PREFIX = "page.title.";
-
 	@Parameter(allowNull = false, defaultPrefix = BindingConstants.MESSAGE)
 	@Property
 	@SuppressWarnings("unused")
 	private String title;
 	
-	/**
-	 * A {@link Block} used to render the navigation div.
-     */
-    @SuppressWarnings("unused")
-	@Parameter(value="block:notSet", allowNull = false, defaultPrefix = BindingConstants.BLOCK)
-    @Property
-    private Block navigation;
-
 	@Inject
-	private RequestUtil requestUtil;
+	private PageUtil pageUtil;
 	
 	@Inject
 	private Messages messages;
@@ -58,10 +47,7 @@ public class GenericLayout {
 	 * Provides a default value for the title parameter.
 	 */
 	String defaultTitle() {
-		
-		final String string = requestUtil.getRequestedPageURL().replace('/', '.');
-		return messages.get(PAGE_TITLE_MESSAGE_PREFIX + string);
-		
+		return pageUtil.getRequestedPageTitle(messages);
 	}
 
 }
