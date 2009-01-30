@@ -28,6 +28,7 @@ import org.apache.tapestry5.internal.InternalConstants;
 import org.apache.tapestry5.ioc.Configuration;
 import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.ObjectLocator;
+import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.annotations.Symbol;
 import org.apache.tapestry5.ioc.services.ChainBuilder;
@@ -62,12 +63,14 @@ import br.com.arsmachina.tapestrycrud.services.ActivationContextEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.EncoderSource;
 import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
+import br.com.arsmachina.tapestrycrud.services.PageUtil;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 import br.com.arsmachina.tapestrycrud.services.impl.ActivationContextEncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.EncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.LabelEncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.PrimaryKeyEncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.PrimaryKeyEncoderValueEncoder;
+import br.com.arsmachina.tapestrycrud.services.impl.PageUtilImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.TapestryCrudModuleServiceImpl;
 
 /**
@@ -76,6 +79,15 @@ import br.com.arsmachina.tapestrycrud.services.impl.TapestryCrudModuleServiceImp
  * @author Thiago H. de Paula Figueiredo
  */
 public class TapestryCrudIoCModule {
+	
+	/**
+	 * Binds some Tapestry CRUD services.
+	 * 
+	 * @param binder a {@link ServiceBinder}.
+	 */
+	public static void bind(ServiceBinder binder) {
+		binder.bind(PageUtil.class, PageUtilImpl.class);
+	}
 
 	/**
 	 * Tapestry CRUD component prefix.
@@ -102,21 +114,16 @@ public class TapestryCrudIoCModule {
 	 * @return an {@link ControllerSource}.
 	 */
 	public static void contributeTapestryCrudModuleService(
-			Configuration<TapestryCrudModule> contributions, ModuleService moduleService,
+			Configuration<TapestryCrudModule> contributions,
+			ModuleService moduleService,
 			ClassNameLocator classNameLocator,
-			@Inject
-			@Symbol(ApplicationModuleModule.DAO_IMPLEMENTATION_SUBPACKAGE_SYMBOL)
-			String daoImplementationSubpackage) {
+			@Inject @Symbol(ApplicationModuleModule.DAO_IMPLEMENTATION_SUBPACKAGE_SYMBOL) String daoImplementationSubpackage,
+			@Inject @Symbol(InternalConstants.TAPESTRY_APP_PACKAGE_PARAM) final String tapestryRootPackage) {
 
 		final Set<Module> modules = moduleService.getModules();
 
 		for (Module module : modules) {
-
-			final String name = module.getName();
-			final String rootPackage = module.getRootPackage();
-			final DefaultTapestryCrudModule dtcModule = new DefaultTapestryCrudModule(name,
-					rootPackage, classNameLocator, daoImplementationSubpackage);
-			contributions.add(dtcModule);
+			contributions.add(new DefaultTapestryCrudModule(module));
 		}
 
 	}
@@ -136,8 +143,8 @@ public class TapestryCrudIoCModule {
 	}
 
 	/**
-	 * Contributes all ({@link Class}, {@link Encoder} pairs registered in {@link EncoderSource}
-	 * to {@link ValueEncoderSource}. If no {@link Encoder} is found for a given entity class, if a
+	 * Contributes all ({@link Class}, {@link Encoder} pairs registered in {@link EncoderSource} to
+	 * {@link ValueEncoderSource}. If no {@link Encoder} is found for a given entity class, if a
 	 * {@link PrimaryKeyEncoder} is found, a {@link ValueEncoderFactory} is automatically created
 	 * using the {@link PrimaryKeyEncoder}.
 	 * 
@@ -221,10 +228,10 @@ public class TapestryCrudIoCModule {
 	public static PrimaryKeyEncoderSource buildPrimaryKeyEncoderSource(
 			Map<Class, PrimaryKeyEncoder> contributions, EncoderSource encoderSource,
 			PrimaryKeyEncoderFactory primaryKeyEncoderFactory) {
-		
+
 		return new PrimaryKeyEncoderSourceImpl(contributions, encoderSource,
 				primaryKeyEncoderFactory);
-		
+
 	}
 
 	/**
@@ -272,14 +279,11 @@ public class TapestryCrudIoCModule {
 	 * 
 	 * @param configuration a {@link Configuration} of {@link Module}s.
 	 */
-	public static void contributeModuleService(Configuration<Module> configuration,
-			ClassNameLocator classNameLocator, 
-			@Inject
-			@Symbol(InternalConstants.TAPESTRY_APP_PACKAGE_PARAM)
-			final String tapestryRootPackage,
-			@Inject
-			@Symbol(ApplicationModuleModule.DAO_IMPLEMENTATION_SUBPACKAGE_SYMBOL)
-			String daoImplementationSubpackage) {
+	public static void contributeModuleService(
+			Configuration<Module> configuration,
+			ClassNameLocator classNameLocator,
+			@Inject @Symbol(InternalConstants.TAPESTRY_APP_PACKAGE_PARAM) final String tapestryRootPackage,
+			@Inject @Symbol(ApplicationModuleModule.DAO_IMPLEMENTATION_SUBPACKAGE_SYMBOL) String daoImplementationSubpackage) {
 
 		// The convention is that the module root is one package level above the
 		// Tapestry root package
@@ -287,13 +291,9 @@ public class TapestryCrudIoCModule {
 		String modulePackage = tapestryRootPackage.substring(0,
 				tapestryRootPackage.lastIndexOf('.'));
 
-		final DefaultModule module = new DefaultModule("Root", modulePackage, classNameLocator, 
+		final DefaultModule module = new DefaultModule(modulePackage, classNameLocator,
 				daoImplementationSubpackage);
 		configuration.add(module);
-
-		final DefaultModule module2 = new DefaultModule("Root 2", "sdfasdfas", classNameLocator, 
-				daoImplementationSubpackage);
-		configuration.add(module2);
 
 	}
 
