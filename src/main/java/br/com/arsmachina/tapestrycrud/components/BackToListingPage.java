@@ -47,24 +47,24 @@ import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
  */
 @SupportsInformalParameters
 public class BackToListingPage {
-	
+
 	private static final String BACK_TO_LISTING_MESSAGE = "link.backtolisting";
-	
+
 	@Inject
 	private ComponentResources resources;
-	
+
 	@Inject
 	private LinkFactory linkFactory;
-	
+
 	@Inject
 	private PageUtil pageUtil;
-	
+
 	@InjectContainer
 	private Object page;
-	
+
 	@Inject
 	private TapestryCrudModuleService tapestryCrudModuleService;
-	
+
 	private Class<?> entityClass;
 
 	/**
@@ -74,54 +74,57 @@ public class BackToListingPage {
 	 */
 	@Parameter(value = "true")
 	private boolean ignoreBody;
-	
+
 	private Element element;
 
 	private String listPageURL;
 
 	@SuppressWarnings("unchecked")
 	boolean beginRender(MarkupWriter writer) {
-		
+
 		if (page instanceof EditPage == false) {
-			
-			throw new RuntimeException("The BackToListingPage must be used inside a page " +
-					"that implements BasePage or subclasses BaseEditPage");
-			
+
+			throw new RuntimeException("The BackToListingPage must be used inside a page "
+					+ "that implements BasePage or subclasses BaseEditPage");
+
 		}
-		
+
 		EditPage editPage = (EditPage) page;
 		entityClass = editPage.getEntityClass();
 		listPageURL = tapestryCrudModuleService.getListPageURL(entityClass);
-		
-		Link link = linkFactory.createPageRenderLink(listPageURL, true); 
-		
+
+		Link link = linkFactory.createPageRenderLink(listPageURL, true);
+
 		element = writer.element("a", "href", link.toURI(), "class", "t-back-to-listing-page");
 
 		resources.renderInformalParameters(writer);
 
 		return !ignoreBody;
-		
+
 	}
 
 	void afterRender(MarkupWriter writer) {
-		
+
 		boolean bodyIsBlank = InternalUtils.isBlank(element.getChildMarkup());
 
 		String label;
-		
+
 		if (bodyIsBlank || ignoreBody) {
-			
+
 			final Messages messages = resources.getMessages();
-			
-			label = messages.get(BACK_TO_LISTING_MESSAGE + "." + 
-						pageUtil.getListPageURL(entityClass));
-			
-			if (label.startsWith("[[missing key:")) {
+
+			final String key = BACK_TO_LISTING_MESSAGE + "."
+					+ pageUtil.getListPageURL(entityClass).replace('/', '.');
+
+			if (messages.contains(key)) {
+				label = messages.get(key);
+			}
+			else {
 				label = messages.get(BACK_TO_LISTING_MESSAGE);
 			}
-			
+
 			writer.write(label);
-			
+
 		}
 
 		writer.end(); // a
