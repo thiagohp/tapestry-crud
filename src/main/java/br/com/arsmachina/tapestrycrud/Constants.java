@@ -45,7 +45,7 @@ final public class Constants {
 	/**
 	 * Tapestry CRUD CSS asset path.
 	 */
-	public static final String TAPESTRY_CRUD_CSS_ASSET = "classpath:/br/com/arsmachina/tapestrycrud/components/tapestry-crud.css";
+	public static final String TAPESTRY_CRUD_CSS_ASSET = "classpath:/br/com/arsmachina/tapestrycrud/components/css/tapestry-crud.css";
 
 	/**
 	 * Remove object success message key.
@@ -85,14 +85,18 @@ final public class Constants {
 	public static final String DEFAULT_FORM_BLOCK_ID = "block";
 
 	/**
+	 * New object event.
+	 */
+	public static final String NEW_OBJECT_EVENT = "newObject";
+
+	/**
+	 * Prefix used in page title keys.
+	 */
+	public static final String PAGE_TITLE_MESSAGE_PREFIX = "page.title.";
+	/**
 	 * Single constructor of this class.
 	 */
 	private Constants() {
 	}
 
-	/**
-	 * New object event.
-	 */
-	public static final String NEW_OBJECT_EVENT = "newObject";
-
-	}
+}
