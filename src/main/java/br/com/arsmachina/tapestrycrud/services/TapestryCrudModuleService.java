@@ -39,6 +39,21 @@ public interface TapestryCrudModuleService {
 	Set<TapestryCrudModule> getModules();
 
 	/**
+	 * Returns the set of all entity classes.
+	 * 
+	 * @return a {@link Set} of {@link Class} instances.
+	 */
+	Set<Class<?>> getEntityClasses();
+	
+	/**
+	 * Does one of the available Tapestry CRUD modules contain the given entity class?.
+	 * 
+	 * @param entityClass a {@link Class} instance.
+	 * @return a <code>boolean</code>.
+	 */
+	boolean contains(Class<?> entityClass);
+
+	/**
 	 * Returns the activation context encoder class corresponding to a given entity class.
 	 * 
 	 * @param <T> the entity type.
@@ -75,5 +90,53 @@ public interface TapestryCrudModuleService {
 	 * @return a {@link Class} or null (if no corresponding one is found).
 	 */
 	<T> Class<? extends PrimaryKeyEncoder<?, T>> getPrimaryKeyEncoderClass(Class<T> entityClass);
+	
+	/**
+	 * Returns the fully-qualified name of the edition page for a given entity class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String}.
+	 */
+	String getEditPageClassName(Class<?> entityClass);
 
+	/**
+	 * Returns the fully-qualified name of the listing page for a given entity class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String}.
+	 */
+	String getListPageClassName(Class<?> entityClass);
+	
+	/**
+	 * Returns the URL of the edition page for a given entity class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String}.
+	 */
+	String getEditPageURL(Class<?> entityClass);
+
+	/**
+	 * Returns the URL of the listing page for a given entity class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String}.
+	 */
+	String getListPageURL(Class<?> entityClass);
+	
+	/**
+	 * Returns the {@link Class} of the edition page for a given entity class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String}.
+	 */
+	Class<?> getEditPageClass(Class<?> entityClass);
+
+	/**
+	 * Returns the {@link Class} of the listing page for a given entity class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String}.
+	 */
+	Class<?> getListPageClass(Class<?> entityClass);
+	
 }

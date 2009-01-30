@@ -15,6 +15,7 @@
 package br.com.arsmachina.tapestrycrud.services.impl;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.tapestry5.PrimaryKeyEncoder;
@@ -35,6 +36,8 @@ public class TapestryCrudModuleServiceImpl implements TapestryCrudModuleService 
 
 	final private Set<TapestryCrudModule> modules;
 
+	final private Set<Class<?>> entityClasses = new HashSet<Class<?>>();
+
 	/**
 	 * Single constructor of this class.
 	 * 
@@ -47,6 +50,7 @@ public class TapestryCrudModuleServiceImpl implements TapestryCrudModuleService 
 		}
 
 		this.modules = Collections.unmodifiableSet(modules);
+		fillEntityClasses();
 
 	}
 
@@ -56,77 +60,190 @@ public class TapestryCrudModuleServiceImpl implements TapestryCrudModuleService 
 
 	public <T> Class<? extends ActivationContextEncoder<T>> getActivationContextEncoderClass(
 			Class<T> entityClass) {
-		
+
 		Class<? extends ActivationContextEncoder<T>> encoder = null;
-		
+
 		for (TapestryCrudModule module : modules) {
-			
+
 			encoder = module.getActivationContextEncoderClass(entityClass);
-			
+
 			if (encoder != null) {
 				break;
 			}
-			
+
 		}
-		
+
 		return encoder;
-		
+
 	}
 
-	public <T> Class<? extends Encoder<T, ?>> getEncoderClass(
-			Class<T> entityClass) {
-		
+	public <T> Class<? extends Encoder<T, ?>> getEncoderClass(Class<T> entityClass) {
+
 		Class<? extends Encoder<T, ?>> encoder = null;
-		
+
 		for (TapestryCrudModule module : modules) {
-			
+
 			encoder = module.getEncoderClass(entityClass);
-			
+
 			if (encoder != null) {
 				break;
 			}
-			
+
 		}
-		
+
 		return encoder;
-		
+
 	}
 
 	public <T> Class<? extends LabelEncoder<T>> getLabelEncoderClass(Class<T> entityClass) {
-		
+
 		Class<? extends LabelEncoder<T>> encoder = null;
-		
+
 		for (TapestryCrudModule module : modules) {
-			
+
 			encoder = module.getLabelEncoderClass(entityClass);
-			
+
 			if (encoder != null) {
 				break;
 			}
-			
+
 		}
-		
+
 		return encoder;
 
-		
 	}
 
 	public <T> Class<? extends PrimaryKeyEncoder<?, T>> getPrimaryKeyEncoderClass(
 			Class<T> entityClass) {
 
 		Class<? extends PrimaryKeyEncoder<?, T>> encoder = null;
-		
+
 		for (TapestryCrudModule module : modules) {
-			
+
 			encoder = module.getPrimaryKeyEncoderClass(entityClass);
-			
+
 			if (encoder != null) {
 				break;
 			}
-			
+
 		}
-		
+
 		return encoder;
+
+	}
+
+	public String getEditPageClassName(Class<?> entityClass) {
+
+		String className = null;
+
+		for (TapestryCrudModule module : getModules()) {
+
+			if (module.contains(entityClass)) {
+				className = module.getEditPageClassName(entityClass);
+			}
+
+		}
+
+		return className;
+
+	}
+
+	public String getEditPageURL(Class<?> entityClass) {
+
+		String url = null;
+
+		for (TapestryCrudModule module : getModules()) {
+
+			if (module.contains(entityClass)) {
+				url = module.getEditPageURL(entityClass);
+			}
+
+		}
+
+		return url;
+
+	}
+
+	public String getListPageURL(Class<?> entityClass) {
+
+		String url = null;
+
+		for (TapestryCrudModule module : getModules()) {
+
+			if (module.contains(entityClass)) {
+				url = module.getListPageURL(entityClass);
+			}
+
+		}
+
+		return url;
+
+	}
+
+	public String getListPageClassName(Class<?> entityClass) {
+
+		String className = null;
+
+		for (TapestryCrudModule module : getModules()) {
+
+			if (module.contains(entityClass)) {
+				className = module.getListPageClassName(entityClass);
+			}
+
+		}
+
+		return className;
+
+	}
+
+	public Class<?> getEditPageClass(Class<?> entityClass) {
+
+		Class<?> clasz = null;
+
+		for (TapestryCrudModule module : getModules()) {
+
+			if (module.contains(entityClass)) {
+				clasz = module.getEditPageClass(entityClass);
+			}
+
+		}
+
+		return clasz;
+
+	}
+
+	public Class<?> getListPageClass(Class<?> entityClass) {
+
+		Class<?> clasz = null;
+
+		for (TapestryCrudModule module : getModules()) {
+
+			if (module.contains(entityClass)) {
+				clasz = module.getListPageClass(entityClass);
+			}
+
+		}
+
+		return clasz;
+
+	}
+
+	public Set<Class<?>> getEntityClasses() {
+		return entityClasses;
+	}
+
+	public boolean contains(Class<?> entityClass) {
+		return getEntityClasses().contains(entityClass);
+	}
+
+	private void fillEntityClasses() {
+
+		for (TapestryCrudModule module : modules) {
+
+			final Set<Class<?>> moduleEntityClasses = module.getEntityClasses();
+			entityClasses.addAll(moduleEntityClasses);
+
+		}
 
 	}
 
