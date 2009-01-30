@@ -55,9 +55,6 @@ import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T, K> implements
 		EditPage<T, K> {
 
-	/**
-	 * 
-	 */
 	private static final String DEFAULT_CONSTRUCTOR_NOT_FOUND_MESSAGE = "Class %s does not have a single argument constructor";
 
 	/**
@@ -193,11 +190,22 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 
 		prepareObjectForSaveOrUpdate();
 		T entity = getObject();
-		entity = getController().saveOrUpdate(entity);
+		entity = saveOrUpdate(entity);
 		setObject(entity);
 
 		return returnFromRemove();
 
+	}
+
+	/**
+	 * Saves or updates an entity object. This implementation returns
+	 * <code>getController().saveOrUpdate(entity)</code>.
+	 * 
+	 * @param entity a <code>T</code>. It cannot be null.
+	 * @return a <code>T</code>.
+	 */
+	protected T saveOrUpdate(T entity) {
+		return getController().saveOrUpdate(entity);
 	}
 
 	/**
