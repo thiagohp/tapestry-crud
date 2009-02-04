@@ -34,36 +34,19 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 
 	final private Module module;
 
-	final private TapestryCrudModuleConfiguration configuration;
-
 	final private Logger logger = LoggerFactory.getLogger(DefaultTapestryCrudModule.class);
-
+	
 	/**
-	 * Constructor that receives a {@link Module} and uses default configuration.
+	 * Single constructor of this class.
 	 * 
 	 * @param module a {@link Module}. It cannot be null.
 	 */
 	public DefaultTapestryCrudModule(Module module) {
-		this(module, new TapestryCrudModuleConfiguration());
-	}
-
-	/**
-	 * Constructor that receives a {@link Module} and a {@link TapestryCrudModuleConfiguration}.
-	 * 
-	 * @param module a {@link Module}. It cannot be null.
-	 * @param configuration a {@link TapestryCrudModuleConfiguration}. It cannot be null.
-	 */
-	public DefaultTapestryCrudModule(Module module, TapestryCrudModuleConfiguration configuration) {
 
 		if (module == null) {
 			throw new IllegalArgumentException("Parameter module cannot be null");
 		}
 
-		if (configuration == null) {
-			throw new IllegalArgumentException("Parameter configuration cannot be null");
-		}
-
-		this.configuration = configuration;
 		this.module = module;
 
 	}
@@ -297,11 +280,11 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 	}
 
 	public String getEditPageURL(Class<?> entityClass) {
-		return getURL(entityClass, configuration.getEditPage());
+		return getURL(entityClass, getEditPagePrefix());
 	}
 
 	public String getListPageURL(Class<?> entityClass) {
-		return getURL(entityClass, configuration.getListPage());
+		return getURL(entityClass, getListPagePrefix());
 	}
 
 	/**
@@ -324,6 +307,34 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 
 	public Class<?> getListPageClass(Class<?> entityClass) {
 		return getClass(getListPageClassName(entityClass));
+	}
+
+	/**
+	 * Returns the value of the <code>editPagePrefix</code> property.
+	 * 
+	 * @return a {@link String}.
+	 */
+	public String getEditPagePrefix() {
+		return "edit";
+	}
+
+	
+	/**
+	 * Returns the value of the <code>listPagePrefix</code> property.
+	 * 
+	 * @return a {@link String}.
+	 */
+	public String getListPagePrefix() {
+		return "list";
+	}
+
+	/**
+	 * Returns the value of the <code>viewPagePrefix</code> property.
+	 * 
+	 * @return a {@link String}.
+	 */
+	public String getViewPagePrefix() {
+		return "view";
 	}
 
 }

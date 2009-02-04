@@ -58,7 +58,6 @@ import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.Encoder;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
 import br.com.arsmachina.tapestrycrud.factory.PrimaryKeyEncoderFactory;
-import br.com.arsmachina.tapestrycrud.module.DefaultTapestryCrudModule;
 import br.com.arsmachina.tapestrycrud.module.TapestryCrudModule;
 import br.com.arsmachina.tapestrycrud.selectmodel.DefaultSingleTypeSelectModelFactory;
 import br.com.arsmachina.tapestrycrud.selectmodel.SelectModelFactory;
@@ -69,6 +68,7 @@ import br.com.arsmachina.tapestrycrud.services.EncoderSource;
 import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.PageUtil;
 import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
+import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleFactory;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 import br.com.arsmachina.tapestrycrud.services.impl.ActivationContextEncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.EncoderSourceImpl;
@@ -76,6 +76,7 @@ import br.com.arsmachina.tapestrycrud.services.impl.LabelEncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.PageUtilImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.PrimaryKeyEncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.PrimaryKeyEncoderValueEncoder;
+import br.com.arsmachina.tapestrycrud.services.impl.TapestryCrudModuleFactoryImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.TapestryCrudModuleServiceImpl;
 
 /**
@@ -126,12 +127,13 @@ public class TapestryCrudIoCModule {
 			ModuleService moduleService,
 			ClassNameLocator classNameLocator,
 			@Inject @Symbol(ApplicationModuleModule.DAO_IMPLEMENTATION_SUBPACKAGE_SYMBOL) String daoImplementationSubpackage,
-			@Inject @Symbol(InternalConstants.TAPESTRY_APP_PACKAGE_PARAM) final String tapestryRootPackage) {
+			@Inject @Symbol(InternalConstants.TAPESTRY_APP_PACKAGE_PARAM) final String tapestryRootPackage,
+			TapestryCrudModuleFactory tapestryCrudModuleBuilder) {
 
 		final Set<Module> modules = moduleService.getModules();
 
 		for (Module module : modules) {
-			contributions.add(new DefaultTapestryCrudModule(module));
+			contributions.add(tapestryCrudModuleBuilder.build(module));
 		}
 
 	}
@@ -535,6 +537,23 @@ public class TapestryCrudIoCModule {
 			final List<PrimaryKeyEncoderFactory> contributions, ChainBuilder chainBuilder) {
 
 		return chainBuilder.build(PrimaryKeyEncoderFactory.class, contributions);
+
+	}
+
+	/**
+	 * Builds the {@link TapestryCrudModuleBuilderFactory} service.
+	 * 
+	 * @param contributions a {@link List} of {@link TapestryCrudModuleFactory}.
+	 * @param chainBuilder a {@link ChainBuilder}.
+	 * @return a {@link DAOFactory}.
+	 */
+	public static TapestryCrudModuleFactory buildTapestryCrudModuleFactory(
+			final List<TapestryCrudModuleFactory> contributions, ChainBuilder chainBuilder) {
+		
+		// default implementation.
+		contributions.add(new TapestryCrudModuleFactoryImpl());
+
+		return chainBuilder.build(TapestryCrudModuleFactory.class, contributions);
 
 	}
 

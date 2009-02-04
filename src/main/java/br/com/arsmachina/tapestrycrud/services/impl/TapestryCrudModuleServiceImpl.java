@@ -140,6 +140,7 @@ public class TapestryCrudModuleServiceImpl implements TapestryCrudModuleService 
 
 			if (module.contains(entityClass)) {
 				className = module.getEditPageClassName(entityClass);
+				break;
 			}
 
 		}
@@ -156,6 +157,7 @@ public class TapestryCrudModuleServiceImpl implements TapestryCrudModuleService 
 
 			if (module.contains(entityClass)) {
 				url = module.getEditPageURL(entityClass);
+				break;
 			}
 
 		}
@@ -172,6 +174,7 @@ public class TapestryCrudModuleServiceImpl implements TapestryCrudModuleService 
 
 			if (module.contains(entityClass)) {
 				url = module.getListPageURL(entityClass);
+				break;
 			}
 
 		}
@@ -188,6 +191,7 @@ public class TapestryCrudModuleServiceImpl implements TapestryCrudModuleService 
 
 			if (module.contains(entityClass)) {
 				className = module.getListPageClassName(entityClass);
+				break;
 			}
 
 		}
@@ -204,6 +208,7 @@ public class TapestryCrudModuleServiceImpl implements TapestryCrudModuleService 
 
 			if (module.contains(entityClass)) {
 				clasz = module.getEditPageClass(entityClass);
+				break;
 			}
 
 		}
@@ -220,6 +225,7 @@ public class TapestryCrudModuleServiceImpl implements TapestryCrudModuleService 
 
 			if (module.contains(entityClass)) {
 				clasz = module.getListPageClass(entityClass);
+				break;
 			}
 
 		}
