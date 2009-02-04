@@ -9,7 +9,7 @@ form input {
 	width: 10em;
 }
 
-form label {
+form label, form div.t-submit input {
 	width: 10em;
 	height: auto;
 	margin-right: 1em;
@@ -68,4 +68,14 @@ div.t-crud-actionlinks a {
 div.t-crud-actionlinks a + a {
 	float: left;
 	margin-left: 0.5em;
+}
+
+form div.t-submit {
+	padding: 1em;
+	text-align: right;
+}
+
+div.t-new-object, div.t-listing-link {
+	clear: both;
+	margin: 1em;
 }

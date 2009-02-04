@@ -28,12 +28,15 @@ import org.apache.tapestry5.internal.InternalConstants;
 import org.apache.tapestry5.ioc.Configuration;
 import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.ObjectLocator;
+import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.annotations.Symbol;
 import org.apache.tapestry5.ioc.services.ChainBuilder;
 import org.apache.tapestry5.ioc.services.ClassNameLocator;
 import org.apache.tapestry5.ioc.services.TypeCoercer;
+import org.apache.tapestry5.services.BeanBlockContribution;
+import org.apache.tapestry5.services.DataTypeAnalyzer;
 import org.apache.tapestry5.services.LibraryMapping;
 import org.apache.tapestry5.services.ValueEncoderFactory;
 import org.apache.tapestry5.services.ValueEncoderSource;
@@ -49,6 +52,8 @@ import br.com.arsmachina.module.service.ControllerSource;
 import br.com.arsmachina.module.service.EntitySource;
 import br.com.arsmachina.module.service.ModuleService;
 import br.com.arsmachina.module.service.PrimaryKeyTypeService;
+import br.com.arsmachina.tapestrycrud.Constants;
+import br.com.arsmachina.tapestrycrud.beanmodel.EntityDataTypeAnalyzer;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.Encoder;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
@@ -62,15 +67,15 @@ import br.com.arsmachina.tapestrycrud.selectmodel.impl.SelectModelFactoryImpl;
 import br.com.arsmachina.tapestrycrud.services.ActivationContextEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.EncoderSource;
 import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
-import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.PageUtil;
+import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 import br.com.arsmachina.tapestrycrud.services.impl.ActivationContextEncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.EncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.LabelEncoderSourceImpl;
+import br.com.arsmachina.tapestrycrud.services.impl.PageUtilImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.PrimaryKeyEncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.PrimaryKeyEncoderValueEncoder;
-import br.com.arsmachina.tapestrycrud.services.impl.PageUtilImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.TapestryCrudModuleServiceImpl;
 
 /**
@@ -79,20 +84,23 @@ import br.com.arsmachina.tapestrycrud.services.impl.TapestryCrudModuleServiceImp
  * @author Thiago H. de Paula Figueiredo
  */
 public class TapestryCrudIoCModule {
-	
+
 	/**
 	 * Binds some Tapestry CRUD services.
 	 * 
 	 * @param binder a {@link ServiceBinder}.
 	 */
 	public static void bind(ServiceBinder binder) {
+
+		binder.bind(EntityDataTypeAnalyzer.class);
 		binder.bind(PageUtil.class, PageUtilImpl.class);
+
 	}
 
 	/**
-	 * Tapestry CRUD component prefix.
+	 * Tapestry CRUD library prefix.
 	 */
-	final public static String TAPESTRY_CRUD_COMPONENT_PREFIX = "crud";
+	final public static String TAPESTRY_CRUD_COMPONENT_PREFIX = Constants.TAPESTRY_CRUD_LIBRARY_PREFIX;
 
 	/**
 	 * Tapestry CRUD version.
@@ -264,7 +272,7 @@ public class TapestryCrudIoCModule {
 	 */
 	public static void contributeComponentClassResolver(Configuration<LibraryMapping> configuration) {
 
-		configuration.add(new LibraryMapping(TAPESTRY_CRUD_COMPONENT_PREFIX,
+		configuration.add(new LibraryMapping(Constants.TAPESTRY_CRUD_LIBRARY_PREFIX,
 				"br.com.arsmachina.tapestrycrud"));
 
 	}
@@ -527,6 +535,35 @@ public class TapestryCrudIoCModule {
 			final List<PrimaryKeyEncoderFactory> contributions, ChainBuilder chainBuilder) {
 
 		return chainBuilder.build(PrimaryKeyEncoderFactory.class, contributions);
+
+	}
+
+	/**
+	 * Contributes {@link EntityDataTypeAnalyzer} to the {@link DataTypeAnalyzer} service.
+	 * 
+	 * @param configuration an {@link OrderedConfiguration}.
+	 * @param entityDataTypeAnalyzer an {@link EntityDataTypeAnalyzer}.
+	 */
+	public static void contributeDataTypeAnalyzer(
+			OrderedConfiguration<DataTypeAnalyzer> configuration,
+			EntityDataTypeAnalyzer entityDataTypeAnalyzer) {
+
+		configuration.add(Constants.ENTITY_DATA_TYPE, entityDataTypeAnalyzer, "before:Annotation");
+
+	}
+
+	/**
+	 * Contributes
+	 * 
+	 * @param configuration a {@link Configuration}.
+	 */
+	public static void contributeBeanBlockSource(Configuration<BeanBlockContribution> configuration) {
+
+		configuration.add(new BeanBlockContribution(Constants.ENTITY_DATA_TYPE,
+				Constants.BEAN_MODEL_BLOCKS_PAGE, "editEntity", true));
+
+		configuration.add(new BeanBlockContribution(Constants.ENTITY_DATA_TYPE,
+				Constants.BEAN_MODEL_BLOCKS_PAGE, "viewEntity", false));
 
 	}
 

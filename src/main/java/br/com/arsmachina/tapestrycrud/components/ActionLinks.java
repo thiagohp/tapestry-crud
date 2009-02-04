@@ -20,13 +20,14 @@ import org.apache.tapestry5.annotations.IncludeStylesheet;
 import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.corelib.components.Grid;
+import org.apache.tapestry5.ioc.annotations.Inject;
 
 import br.com.arsmachina.tapestrycrud.Constants;
+import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 
 /**
  * Component that renders the action links in a listing page. It is meant to be used in a
- * {@link Grid} column. <a
- * href="http://ars-machina.svn.sourceforge.net/viewvc/ars-machina/example/trunk/src/main/webapp/project/ListProject.tml?view=markup"
+ * {@link Grid} column. <a href="http://ars-machina.svn.sourceforge.net/viewvc/ars-machina/example/trunk/src/main/webapp/project/ListProject.tml?view=markup"
  * >Ars Machina Project Example</a>. The default icons used are taken from the <a
  * href="http://www.famfamfam.com/lab/icons/silk/">Silk</a> icon set (Creative Commons Attribution
  * 2.5 License).
@@ -81,9 +82,8 @@ public class ActionLinks {
 	/**
 	 * The object that the links will refer to.
 	 */
-	@Parameter(required = true)
+	@Parameter(required = true, allowNull = false)
 	@Property
-	@SuppressWarnings("unused")
 	private Object object;
 
 	@Parameter(defaultPrefix = BindingConstants.ASSET, value = DEFAULT_EDIT_ICON_ASSET)
@@ -101,6 +101,9 @@ public class ActionLinks {
 	@SuppressWarnings("unused")
 	private Asset deleteIcon;
 
+	@Inject
+	private TapestryCrudModuleService tapestryCrudModuleService;
+
 	/**
 	 * Returns the value of the <code>editPage</code> property.
 	 * 
@@ -108,14 +111,22 @@ public class ActionLinks {
 	 */
 	public String getEditPage() {
 
+		if (editPage == null) {
+		
+			final Class<? extends Object> clasz = object.getClass();
+			editPage = tapestryCrudModuleService.getEditPageURL(clasz);
+			
+		}
+		
 		if (edit && (editPage == null || editPage.trim().length() == 0)) {
-			
+
 			throw new IllegalArgumentException(
-					"When parameter edit is true, parameter editPage must have a non-empty value");
-			
+					"Could not find an edit page for " + object.getClass().getName());
+
 		}
 
 		return editPage;
+		
 	}
 
 	/**
@@ -126,14 +137,14 @@ public class ActionLinks {
 	public String getViewPage() {
 
 		if (view && viewPage == null || viewPage.trim().length() == 0) {
-			
+
 			throw new IllegalArgumentException(
 					"When parameter view is true, parameter viewPage must have a non-empty value");
-			
+
 		}
-		
+
 		return viewPage;
-		
+
 	}
 
 }

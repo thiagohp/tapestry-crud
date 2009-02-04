@@ -65,7 +65,7 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 
 	@Inject
 	private BeanModelSource beanModelSource;
-
+	
 	private T object;
 
 	/**

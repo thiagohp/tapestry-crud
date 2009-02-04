@@ -1,5 +1,11 @@
 1.1
+* Improved the NewObjectPageLink component.
+* Added the NewObjectEventLink component.
+* Improved the BackToListingPageLink component.
+* Created the GenericLayout component.
+* Many improvements to the Tapestry CRUD module interfaces and classes.
 * Moved PrimaryKeyTypeService from Tapestry CRUD to Application Module-Hibernate.
+* Added entity support for BeanEditor.
 
 1.0
 * Too many changes to remember . . .

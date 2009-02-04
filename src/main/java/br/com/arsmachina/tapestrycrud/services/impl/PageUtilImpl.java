@@ -22,7 +22,6 @@ import org.apache.tapestry5.services.ComponentClassResolver;
 
 import br.com.arsmachina.tapestrycrud.Constants;
 import br.com.arsmachina.tapestrycrud.services.PageUtil;
-import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 
 /**
  * Default {@link PageUtil} implementation.
@@ -36,9 +35,6 @@ public class PageUtilImpl implements PageUtil {
 
 	@Inject
 	private ComponentClassResolver componentClassResolver;
-
-	@Inject
-	private TapestryCrudModuleService tapestryCrudModuleService;
 
 	public String getRequestedPageURL() {
 
@@ -96,24 +92,6 @@ public class PageUtilImpl implements PageUtil {
 
 	public String getRequestedPageTitle(Messages messages) {
 		return getPageTitle(getRequestedPageURL(), messages);
-	}
-
-	public String getEditPageURL(Class<?> entityClass) {
-		
-		Class<?> editPageClass = tapestryCrudModuleService.getEditPageClass(entityClass);
-		return getPageName(editPageClass);
-		
-	}
-
-	public String getListPageURL(Class<?> entityClass) {
-		
-		Class<?> listPageClass = tapestryCrudModuleService.getListPageClass(entityClass);
-		return getPageName(listPageClass);
-		
-	}
-
-	private String getPageName(Class<?> editPageClass) {
-		return componentClassResolver.resolvePageClassNameToPageName(editPageClass.getName());
 	}
 
 }

@@ -48,14 +48,4 @@ public interface PageUtil {
 	 */
 	String getRequestedPageTitle(Messages messages);
 	
-	/**
-	 * Returns the Tapestry stripped URL of the edition page of a given entity class.
-	 */
-	String getEditPageURL(Class<?> entityClass);
-
-	/**
-	 * Returns the Tapestry stripped URL of the listing page of a given entity class.
-	 */
-	String getListPageURL(Class<?> entityClass);
-
 }

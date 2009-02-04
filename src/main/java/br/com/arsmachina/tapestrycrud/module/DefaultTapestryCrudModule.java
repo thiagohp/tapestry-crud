@@ -219,6 +219,21 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 
 	}
 
+	private String getModulePath() {
+
+		String path = getId();
+
+		if (path != null) {
+			path = path + "/";
+		}
+		else {
+			path = "";
+		}
+
+		return path;
+
+	}
+
 	public boolean contains(Class<?> entityClass) {
 		return module.contains(entityClass);
 	}
@@ -282,21 +297,25 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 	}
 
 	public String getEditPageURL(Class<?> entityClass) {
-
-		final String moduleSubpackage = getModuleSubpackage().replace('.', '/');
-
-		final String className = entityClass.getSimpleName().toLowerCase();
-		return String.format("%s%s/%s", moduleSubpackage, className, configuration.getEditPage());
-
+		return getURL(entityClass, configuration.getEditPage());
 	}
 
 	public String getListPageURL(Class<?> entityClass) {
+		return getURL(entityClass, configuration.getListPage());
+	}
 
-		final String moduleSubpackage = getModuleSubpackage().replace('.', '/');
-
+	/**
+	 * Returns the URL for a given entity class and page name prefix.
+	 * @param entityClass a {@link Class} instance.
+	 * @param prefix a {@link String}.
+	 * @return a {@link String}.
+	 */
+	private String getURL(Class<?> entityClass, final String prefix) {
+		
+		final String moduleSubpackage = getModulePath();
 		final String className = entityClass.getSimpleName().toLowerCase();
-		return String.format("%s%s/%s", moduleSubpackage, className, configuration.getListPage());
-
+		return String.format("%s%s/%s", moduleSubpackage, className, prefix);
+		
 	}
 
 	public Class<?> getEditPageClass(Class<?> entityClass) {

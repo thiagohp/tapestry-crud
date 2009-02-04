@@ -1,0 +1,12 @@
+<t:container xml:space="default" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd">
+
+    <t:block id="viewEntity">
+        ${entity}
+    </t:block>
+
+    <t:block id="editEntity">
+        <t:label for="entityField"/>
+        <t:selectEntity t:id="entityField"/>
+    </t:block>
+
+</t:container>

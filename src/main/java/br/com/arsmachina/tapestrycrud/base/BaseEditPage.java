@@ -34,6 +34,7 @@ import org.apache.tapestry5.services.BeanModelSource;
 import org.apache.tapestry5.services.Request;
 
 import br.com.arsmachina.controller.ReadableController;
+import br.com.arsmachina.module.service.PrimaryKeyTypeService;
 import br.com.arsmachina.tapestrycrud.Constants;
 import br.com.arsmachina.tapestrycrud.EditPage;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
@@ -78,6 +79,9 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 	
 	@Inject
 	private BeanModelSource beanModelSource;
+	
+	@Inject
+	private PrimaryKeyTypeService primaryKeyTypeService;
 
 	/**
 	 * Single constructor of this class.
@@ -164,7 +168,7 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 	}
 	
 	/**
-	 * Creates a {@link BeanModel}.
+	 * Creates a {@link BeanModel} and removes the primary key property from it.
 	 * 
 	 * @return a {@link BeanModel}.
 	 */
@@ -172,6 +176,8 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 
 		final BeanModel<T> beanModel = beanModelSource.createEditModel(getEntityClass(),
 				getMessages());
+		
+		beanModel.exclude(primaryKeyTypeService.getPrimaryKeyPropertyName(getEntityClass()));
 
 		return beanModel;
 		
@@ -384,5 +390,5 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 	public final void clearObject() {
 		setObject(null);
 	}
-
+	
 }

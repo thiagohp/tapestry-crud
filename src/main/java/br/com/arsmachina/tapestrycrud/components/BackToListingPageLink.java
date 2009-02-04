@@ -17,7 +17,6 @@ package br.com.arsmachina.tapestrycrud.components;
 import org.apache.tapestry5.ComponentResources;
 import org.apache.tapestry5.Link;
 import org.apache.tapestry5.MarkupWriter;
-import org.apache.tapestry5.annotations.InjectContainer;
 import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.SupportsInformalParameters;
 import org.apache.tapestry5.corelib.components.Label;
@@ -26,11 +25,11 @@ import org.apache.tapestry5.internal.services.LinkFactory;
 import org.apache.tapestry5.ioc.Messages;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.internal.util.InternalUtils;
+import org.apache.tapestry5.runtime.Component;
 
 import br.com.arsmachina.tapestrycrud.EditPage;
 import br.com.arsmachina.tapestrycrud.base.BaseEditPage;
 import br.com.arsmachina.tapestrycrud.base.BaseListPage;
-import br.com.arsmachina.tapestrycrud.services.PageUtil;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 
 /**
@@ -46,7 +45,7 @@ import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
  * @author Thiago H. de Paula Figueiredo
  */
 @SupportsInformalParameters
-public class BackToListingPage {
+public class BackToListingPageLink {
 
 	private static final String BACK_TO_LISTING_MESSAGE = "link.backtolisting";
 
@@ -57,16 +56,10 @@ public class BackToListingPage {
 	private LinkFactory linkFactory;
 
 	@Inject
-	private PageUtil pageUtil;
-
-	@InjectContainer
-	private Object page;
-
-	@Inject
 	private TapestryCrudModuleService tapestryCrudModuleService;
 
 	private Class<?> entityClass;
-
+	
 	/**
 	 * If false (default value), the body of the tag will be ignored and the intertionalized name of
 	 * thelisting page is used. If true, then the body of the label element (in the template) is not
@@ -81,6 +74,8 @@ public class BackToListingPage {
 
 	@SuppressWarnings("unchecked")
 	boolean beginRender(MarkupWriter writer) {
+		
+		Component page = resources.getPage();
 
 		if (page instanceof EditPage == false) {
 
@@ -114,7 +109,7 @@ public class BackToListingPage {
 			final Messages messages = resources.getMessages();
 
 			final String key = BACK_TO_LISTING_MESSAGE + "."
-					+ pageUtil.getListPageURL(entityClass).replace('/', '.');
+					+ tapestryCrudModuleService.getListPageURL(entityClass).replace('/', '.');
 
 			if (messages.contains(key)) {
 				label = messages.get(key);

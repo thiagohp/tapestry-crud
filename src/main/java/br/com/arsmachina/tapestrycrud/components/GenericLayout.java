@@ -21,6 +21,7 @@ import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.ioc.Messages;
 import org.apache.tapestry5.ioc.annotations.Inject;
 
+import br.com.arsmachina.tapestrycrud.Constants;
 import br.com.arsmachina.tapestrycrud.services.PageUtil;
 
 /**
@@ -29,7 +30,8 @@ import br.com.arsmachina.tapestrycrud.services.PageUtil;
  * 
  * @author Thiago H. de Paula Figueiredo
  */
-@IncludeStylesheet("classpath:/br/com/arsmachina/tapestrycrud/components/css/main.css")
+@IncludeStylesheet({"classpath:/br/com/arsmachina/tapestrycrud/components/css/main.css",
+	Constants.TAPESTRY_CRUD_CSS_ASSET})
 public class GenericLayout {
 
 	@Parameter(allowNull = false, defaultPrefix = BindingConstants.MESSAGE)
