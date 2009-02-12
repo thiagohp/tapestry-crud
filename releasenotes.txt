@@ -6,6 +6,10 @@
 * Many improvements to the Tapestry CRUD module interfaces and classes.
 * Moved PrimaryKeyTypeService from Tapestry CRUD to Application Module-Hibernate.
 * Added entity support for BeanEditor.
+* Moved FormValidationSupport and FormValidationSupportImpl from Tapestry CRUD-Hibernate Validator
+  to Tapestry CRUD.
+* Added the dependency on Generic Authentication and the UserServiceImpl class.
+  
 
 1.0
 * Too many changes to remember . . .
