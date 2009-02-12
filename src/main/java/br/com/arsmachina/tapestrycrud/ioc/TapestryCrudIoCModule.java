@@ -43,6 +43,7 @@ import org.apache.tapestry5.services.ValueEncoderSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import br.com.arsmachina.authentication.service.UserService;
 import br.com.arsmachina.controller.Controller;
 import br.com.arsmachina.module.DefaultModule;
 import br.com.arsmachina.module.Module;
@@ -65,6 +66,7 @@ import br.com.arsmachina.tapestrycrud.selectmodel.SingleTypeSelectModelFactory;
 import br.com.arsmachina.tapestrycrud.selectmodel.impl.SelectModelFactoryImpl;
 import br.com.arsmachina.tapestrycrud.services.ActivationContextEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.EncoderSource;
+import br.com.arsmachina.tapestrycrud.services.FormValidationSupport;
 import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.PageUtil;
 import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
@@ -72,12 +74,14 @@ import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleFactory;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 import br.com.arsmachina.tapestrycrud.services.impl.ActivationContextEncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.EncoderSourceImpl;
+import br.com.arsmachina.tapestrycrud.services.impl.FormValidationSupportImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.LabelEncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.PageUtilImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.PrimaryKeyEncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.PrimaryKeyEncoderValueEncoder;
 import br.com.arsmachina.tapestrycrud.services.impl.TapestryCrudModuleFactoryImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.TapestryCrudModuleServiceImpl;
+import br.com.arsmachina.tapestrycrud.services.impl.UserServiceImpl;
 
 /**
  * Tapestry-IoC module for Tapestry CRUD.
@@ -93,8 +97,10 @@ public class TapestryCrudIoCModule {
 	 */
 	public static void bind(ServiceBinder binder) {
 
+		binder.bind(UserService.class, UserServiceImpl.class);
 		binder.bind(EntityDataTypeAnalyzer.class);
 		binder.bind(PageUtil.class, PageUtilImpl.class);
+		binder.bind(FormValidationSupport.class, FormValidationSupportImpl.class);
 
 	}
 
