@@ -140,4 +140,12 @@ public interface TapestryCrudModule {
 	 */
 	String getId();
 	
+	/**
+	 * Returns the name of the package where the Tapestry-related packages are located (i.e. under
+	 * which the <code>pages</code> component is located).
+	 * 
+	 * @return a {@link String}.
+	 */
+	String getTapestryPackage();
+	
 }

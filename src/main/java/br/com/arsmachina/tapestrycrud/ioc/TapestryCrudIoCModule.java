@@ -100,14 +100,16 @@ public class TapestryCrudIoCModule {
 		binder.bind(UserService.class, UserServiceImpl.class);
 		binder.bind(EntityDataTypeAnalyzer.class);
 		binder.bind(PageUtil.class, PageUtilImpl.class);
-		binder.bind(FormValidationSupport.class, FormValidationSupportImpl.class);
+		binder.bind(FormValidationSupport.class,
+				FormValidationSupportImpl.class);
 
 	}
 
 	/**
 	 * Tapestry CRUD library prefix.
 	 */
-	final public static String TAPESTRY_CRUD_COMPONENT_PREFIX = Constants.TAPESTRY_CRUD_LIBRARY_PREFIX;
+	final public static String TAPESTRY_CRUD_COMPONENT_PREFIX =
+		Constants.TAPESTRY_CRUD_LIBRARY_PREFIX;
 
 	/**
 	 * Tapestry CRUD version.
@@ -117,10 +119,11 @@ public class TapestryCrudIoCModule {
 	/**
 	 * Path under with the Tapestry CRUDs assets will be accessed.
 	 */
-	final public static String TAPESTRY_CRUD_ASSET_PREFIX = "tapestry-crud/"
-			+ TAPESTRY_CRUD_VERSION;
+	final public static String TAPESTRY_CRUD_ASSET_PREFIX =
+		"tapestry-crud/" + TAPESTRY_CRUD_VERSION;
 
-	final private static Logger LOGGER = LoggerFactory.getLogger(TapestryCrudIoCModule.class);
+	final private static Logger LOGGER =
+		LoggerFactory.getLogger(TapestryCrudIoCModule.class);
 
 	/**
 	 * Builds the {@link ModuleService} service.
@@ -159,10 +162,11 @@ public class TapestryCrudIoCModule {
 	}
 
 	/**
-	 * Contributes all ({@link Class}, {@link Encoder} pairs registered in {@link EncoderSource} to
-	 * {@link ValueEncoderSource}. If no {@link Encoder} is found for a given entity class, if a
-	 * {@link PrimaryKeyEncoder} is found, a {@link ValueEncoderFactory} is automatically created
-	 * using the {@link PrimaryKeyEncoder}.
+	 * Contributes all ({@link Class}, {@link Encoder} pairs registered in
+	 * {@link EncoderSource} to {@link ValueEncoderSource}. If no
+	 * {@link Encoder} is found for a given entity class, if a
+	 * {@link PrimaryKeyEncoder} is found, a {@link ValueEncoderFactory} is
+	 * automatically created using the {@link PrimaryKeyEncoder}.
 	 * 
 	 * @param configuration
 	 * @param encoderSource
@@ -182,16 +186,18 @@ public class TapestryCrudIoCModule {
 
 			if (encoder != null) {
 				configuration.add(clasz, encoder);
-			}
-			else {
+			} else {
 
-				PrimaryKeyEncoder primaryKeyEncoder = primaryKeyEncoderSource.get(clasz);
+				PrimaryKeyEncoder primaryKeyEncoder =
+					primaryKeyEncoderSource.get(clasz);
 
 				if (primaryKeyEncoder != null) {
 
-					final Class primaryKeyType = primaryKeyTypeService.getPrimaryKeyType(clasz);
-					ValueEncoderFactory valueEncoderFactory = new PrimaryKeyEncoderValueEncoder(
-							primaryKeyType, primaryKeyEncoder, typeCoercer);
+					final Class primaryKeyType =
+						primaryKeyTypeService.getPrimaryKeyType(clasz);
+					ValueEncoderFactory valueEncoderFactory =
+						new PrimaryKeyEncoderValueEncoder(primaryKeyType,
+								primaryKeyEncoder, typeCoercer);
 
 					configuration.add(clasz, valueEncoderFactory);
 
@@ -211,12 +217,13 @@ public class TapestryCrudIoCModule {
 	 */
 	@SuppressWarnings("unchecked")
 	public static ActivationContextEncoderSource buildActivationContextEncoderSource(
-			Map<Class, ActivationContextEncoder> contributions, EncoderSource encoderSource,
+			Map<Class, ActivationContextEncoder> contributions,
+			EncoderSource encoderSource,
 			PrimaryKeyEncoderSource primaryKeyEncoderSource,
 			PrimaryKeyTypeService primaryKeyTypeService) {
 
-		return new ActivationContextEncoderSourceImpl(contributions, encoderSource,
-				primaryKeyEncoderSource, primaryKeyTypeService);
+		return new ActivationContextEncoderSourceImpl(contributions,
+				encoderSource, primaryKeyEncoderSource, primaryKeyTypeService);
 
 	}
 
@@ -242,7 +249,8 @@ public class TapestryCrudIoCModule {
 	 */
 	@SuppressWarnings("unchecked")
 	public static PrimaryKeyEncoderSource buildPrimaryKeyEncoderSource(
-			Map<Class, PrimaryKeyEncoder> contributions, EncoderSource encoderSource,
+			Map<Class, PrimaryKeyEncoder> contributions,
+			EncoderSource encoderSource,
 			PrimaryKeyEncoderFactory primaryKeyEncoderFactory) {
 
 		return new PrimaryKeyEncoderSourceImpl(contributions, encoderSource,
@@ -257,7 +265,8 @@ public class TapestryCrudIoCModule {
 	 * @return an {@link EncoderSource}.
 	 */
 	@SuppressWarnings("unchecked")
-	public static EncoderSource buildEncoderSource(Map<Class, Encoder> contributions) {
+	public static EncoderSource buildEncoderSource(
+			Map<Class, Encoder> contributions) {
 		return new EncoderSourceImpl(contributions);
 	}
 
@@ -274,24 +283,47 @@ public class TapestryCrudIoCModule {
 	}
 
 	/**
-	 * Contributes the Tapestry CRUD components under the <code>crud</code> prefix.
+	 * Contributes the Tapestry CRUD components under the <code>crud</code>
+	 * prefix and all the {@link TapestryCrudModule}s with their id property as
+	 * the prefix.
 	 * 
 	 * @param configuration a {@link Configuration}.
 	 */
-	public static void contributeComponentClassResolver(Configuration<LibraryMapping> configuration) {
+	public static void contributeComponentClassResolver(
+			Configuration<LibraryMapping> configuration,
+			TapestryCrudModuleService tapestryCrudModuleService) {
 
-		configuration.add(new LibraryMapping(Constants.TAPESTRY_CRUD_LIBRARY_PREFIX,
+		configuration.add(new LibraryMapping(
+				Constants.TAPESTRY_CRUD_LIBRARY_PREFIX,
 				"br.com.arsmachina.tapestrycrud"));
+
+		final Set<TapestryCrudModule> modules =
+			tapestryCrudModuleService.getModules();
+
+		for (TapestryCrudModule module : modules) {
+
+			final String id = module.getId();
+			
+			if (id != null && id.trim().length() > 0) {
+
+				final String tapestryPackage = module.getTapestryPackage();
+				configuration.add(new LibraryMapping(id, tapestryPackage));
+				
+			}
+
+		}
 
 	}
 
 	public static void contributeClasspathAssetAliasManager(
 			MappedConfiguration<String, String> configuration) {
-		configuration.add(TAPESTRY_CRUD_ASSET_PREFIX, "br/com/arsmachina/tapestrycrud/components");
+		configuration.add(TAPESTRY_CRUD_ASSET_PREFIX,
+				"br/com/arsmachina/tapestrycrud/components");
 	}
 
 	/**
-	 * Contributes the main (default module) to the {@link ModuleService} service.
+	 * Contributes the main (default module) to the {@link ModuleService}
+	 * service.
 	 * 
 	 * @param configuration a {@link Configuration} of {@link Module}s.
 	 */
@@ -304,11 +336,13 @@ public class TapestryCrudIoCModule {
 		// The convention is that the module root is one package level above the
 		// Tapestry root package
 
-		String modulePackage = tapestryRootPackage.substring(0,
-				tapestryRootPackage.lastIndexOf('.'));
+		String modulePackage =
+			tapestryRootPackage.substring(0,
+					tapestryRootPackage.lastIndexOf('.'));
 
-		final DefaultModule module = new DefaultModule(modulePackage, classNameLocator,
-				daoImplementationSubpackage);
+		final DefaultModule module =
+			new DefaultModule(modulePackage, classNameLocator,
+					daoImplementationSubpackage);
 		configuration.add(module);
 
 	}
@@ -333,8 +367,9 @@ public class TapestryCrudIoCModule {
 
 			if (controller != null && labelEncoder != null) {
 
-				SingleTypeSelectModelFactory stsmf = new DefaultSingleTypeSelectModelFactory(
-						controller, labelEncoder);
+				SingleTypeSelectModelFactory stsmf =
+					new DefaultSingleTypeSelectModelFactory(controller,
+							labelEncoder);
 
 				contributions.add(entityClass, stsmf);
 
@@ -350,20 +385,24 @@ public class TapestryCrudIoCModule {
 	 * @param contributions a {@link MappedConfiguration}.
 	 */
 	@SuppressWarnings("unchecked")
-	public static void contributeEncoderSource(MappedConfiguration<Class, Encoder> contributions,
+	public static void contributeEncoderSource(
+			MappedConfiguration<Class, Encoder> contributions,
 			EntitySource entitySource, ModuleService moduleService,
-			TapestryCrudModuleService tapestryCrudModuleService, ObjectLocator objectLocator) {
+			TapestryCrudModuleService tapestryCrudModuleService,
+			ObjectLocator objectLocator) {
 
 		final Set<Class<?>> entityClasses = entitySource.getEntityClasses();
 		Encoder encoder = null;
 
 		for (Class<?> entityClass : entityClasses) {
 
-			final Class<?> encoderClass = tapestryCrudModuleService.getEncoderClass(entityClass);
+			final Class<?> encoderClass =
+				tapestryCrudModuleService.getEncoderClass(entityClass);
 
 			if (encoderClass != null) {
 
-				encoder = (Encoder) getServiceIfExists(encoderClass, objectLocator);
+				encoder =
+					(Encoder) getServiceIfExists(encoderClass, objectLocator);
 
 				if (encoder == null) {
 					encoder = (Encoder) objectLocator.autobuild(encoderClass);
@@ -374,9 +413,11 @@ public class TapestryCrudIoCModule {
 				if (LOGGER.isInfoEnabled()) {
 
 					final String entityName = entityClass.getSimpleName();
-					final String encoderClassName = encoder.getClass().getName();
-					final String message = String.format("Associating entity %s with encoder %s",
-							entityName, encoderClassName);
+					final String encoderClassName =
+						encoder.getClass().getName();
+					final String message =
+						String.format("Associating entity %s with encoder %s",
+								entityName, encoderClassName);
 
 					LOGGER.info(message);
 
@@ -397,23 +438,29 @@ public class TapestryCrudIoCModule {
 	public static void contributeActivationContextEncoderSource(
 			MappedConfiguration<Class, ActivationContextEncoder> contributions,
 			EntitySource entitySource, ModuleService moduleService,
-			TapestryCrudModuleService tapestryCrudModuleService, ObjectLocator objectLocator) {
+			TapestryCrudModuleService tapestryCrudModuleService,
+			ObjectLocator objectLocator) {
 
 		final Set<Class<?>> entityClasses = entitySource.getEntityClasses();
 		ActivationContextEncoder encoder = null;
 
 		for (Class<?> entityClass : entityClasses) {
 
-			final Class<?> encoderClass = tapestryCrudModuleService.getActivationContextEncoderClass(entityClass);
+			final Class<?> encoderClass =
+				tapestryCrudModuleService.getActivationContextEncoderClass(entityClass);
 
-			// If the entity class has no activation context encoder, we don't register
+			// If the entity class has no activation context encoder, we don't
+			// register
 			// a one for it for it.
 			if (encoderClass != null) {
 
-				encoder = (ActivationContextEncoder) getServiceIfExists(encoderClass, objectLocator);
+				encoder =
+					(ActivationContextEncoder) getServiceIfExists(encoderClass,
+							objectLocator);
 
 				if (encoder == null) {
-					encoder = (ActivationContextEncoder) objectLocator.autobuild(encoderClass);
+					encoder =
+						(ActivationContextEncoder) objectLocator.autobuild(encoderClass);
 				}
 
 				contributions.add(entityClass, encoder);
@@ -421,10 +468,12 @@ public class TapestryCrudIoCModule {
 				if (LOGGER.isInfoEnabled()) {
 
 					final String entityName = entityClass.getSimpleName();
-					final String encoderClassName = encoder.getClass().getName();
-					final String message = String.format(
-							"Associating entity %s with activation context encoder %s", entityName,
-							encoderClassName);
+					final String encoderClassName =
+						encoder.getClass().getName();
+					final String message =
+						String.format(
+								"Associating entity %s with activation context encoder %s",
+								entityName, encoderClassName);
 
 					LOGGER.info(message);
 
@@ -443,8 +492,9 @@ public class TapestryCrudIoCModule {
 	 */
 	@SuppressWarnings("unchecked")
 	public static void contributeLabelEncoderSource(
-			MappedConfiguration<Class, LabelEncoder> contributions, EntitySource entitySource,
-			ModuleService moduleService, TapestryCrudModuleService tapestryCrudModuleService,
+			MappedConfiguration<Class, LabelEncoder> contributions,
+			EntitySource entitySource, ModuleService moduleService,
+			TapestryCrudModuleService tapestryCrudModuleService,
 			ObjectLocator objectLocator) {
 
 		final Set<Class<?>> entityClasses = entitySource.getEntityClasses();
@@ -452,16 +502,21 @@ public class TapestryCrudIoCModule {
 
 		for (Class<?> entityClass : entityClasses) {
 
-			final Class<?> encoderClass = tapestryCrudModuleService.getLabelEncoderClass(entityClass);
+			final Class<?> encoderClass =
+				tapestryCrudModuleService.getLabelEncoderClass(entityClass);
 
-			// If the entity class has no activation context encoder, we don't register
+			// If the entity class has no activation context encoder, we don't
+			// register
 			// a one for it for it.
 			if (encoderClass != null) {
 
-				encoder = (LabelEncoder) getServiceIfExists(encoderClass, objectLocator);
+				encoder =
+					(LabelEncoder) getServiceIfExists(encoderClass,
+							objectLocator);
 
 				if (encoder == null) {
-					encoder = (LabelEncoder) objectLocator.autobuild(encoderClass);
+					encoder =
+						(LabelEncoder) objectLocator.autobuild(encoderClass);
 				}
 
 				contributions.add(entityClass, encoder);
@@ -469,10 +524,12 @@ public class TapestryCrudIoCModule {
 				if (LOGGER.isInfoEnabled()) {
 
 					final String entityName = entityClass.getSimpleName();
-					final String encoderClassName = encoder.getClass().getName();
-					final String message = String.format(
-							"Associating entity %s with label encoder %s", entityName,
-							encoderClassName);
+					final String encoderClassName =
+						encoder.getClass().getName();
+					final String message =
+						String.format(
+								"Associating entity %s with label encoder %s",
+								entityName, encoderClassName);
 
 					LOGGER.info(message);
 
@@ -491,8 +548,9 @@ public class TapestryCrudIoCModule {
 	 */
 	@SuppressWarnings("unchecked")
 	public static void contributePrimaryKeyEncoderSource(
-			MappedConfiguration<Class, PrimaryKeyEncoder> contributions, EntitySource entitySource,
-			ModuleService moduleService, TapestryCrudModuleService tapestryCrudModuleService,
+			MappedConfiguration<Class, PrimaryKeyEncoder> contributions,
+			EntitySource entitySource, ModuleService moduleService,
+			TapestryCrudModuleService tapestryCrudModuleService,
 			ObjectLocator objectLocator) {
 
 		final Set<Class<?>> entityClasses = entitySource.getEntityClasses();
@@ -500,16 +558,20 @@ public class TapestryCrudIoCModule {
 
 		for (Class<?> entityClass : entityClasses) {
 
-			final Class<?> encoderClass = tapestryCrudModuleService.getPrimaryKeyEncoderClass(entityClass);
+			final Class<?> encoderClass =
+				tapestryCrudModuleService.getPrimaryKeyEncoderClass(entityClass);
 
 			// If the entity class has no primary key encoder, we don't register
 			// a one for it for it.
 			if (encoderClass != null) {
 
-				encoder = (PrimaryKeyEncoder) getServiceIfExists(encoderClass, objectLocator);
+				encoder =
+					(PrimaryKeyEncoder) getServiceIfExists(encoderClass,
+							objectLocator);
 
 				if (encoder == null) {
-					encoder = (PrimaryKeyEncoder) objectLocator.autobuild(encoderClass);
+					encoder =
+						(PrimaryKeyEncoder) objectLocator.autobuild(encoderClass);
 				}
 
 				contributions.add(entityClass, encoder);
@@ -517,10 +579,12 @@ public class TapestryCrudIoCModule {
 				if (LOGGER.isInfoEnabled()) {
 
 					final String entityName = entityClass.getSimpleName();
-					final String encoderClassName = encoder.getClass().getName();
-					final String message = String.format(
-							"Associating entity %s with primary key encoder %s", entityName,
-							encoderClassName);
+					final String encoderClassName =
+						encoder.getClass().getName();
+					final String message =
+						String.format(
+								"Associating entity %s with primary key encoder %s",
+								entityName, encoderClassName);
 
 					LOGGER.info(message);
 
@@ -540,7 +604,8 @@ public class TapestryCrudIoCModule {
 	 * @return a {@link DAOFactory}.
 	 */
 	public PrimaryKeyEncoderFactory buildPrimaryKeyEncoderFactory(
-			final List<PrimaryKeyEncoderFactory> contributions, ChainBuilder chainBuilder) {
+			final List<PrimaryKeyEncoderFactory> contributions,
+			ChainBuilder chainBuilder) {
 
 		return chainBuilder.build(PrimaryKeyEncoderFactory.class, contributions);
 
@@ -554,17 +619,20 @@ public class TapestryCrudIoCModule {
 	 * @return a {@link DAOFactory}.
 	 */
 	public static TapestryCrudModuleFactory buildTapestryCrudModuleFactory(
-			final List<TapestryCrudModuleFactory> contributions, ChainBuilder chainBuilder) {
-		
+			final List<TapestryCrudModuleFactory> contributions,
+			ChainBuilder chainBuilder) {
+
 		// default implementation.
 		contributions.add(new TapestryCrudModuleFactoryImpl());
 
-		return chainBuilder.build(TapestryCrudModuleFactory.class, contributions);
+		return chainBuilder.build(TapestryCrudModuleFactory.class,
+				contributions);
 
 	}
 
 	/**
-	 * Contributes {@link EntityDataTypeAnalyzer} to the {@link DataTypeAnalyzer} service.
+	 * Contributes {@link EntityDataTypeAnalyzer} to the
+	 * {@link DataTypeAnalyzer} service.
 	 * 
 	 * @param configuration an {@link OrderedConfiguration}.
 	 * @param entityDataTypeAnalyzer an {@link EntityDataTypeAnalyzer}.
@@ -573,7 +641,8 @@ public class TapestryCrudIoCModule {
 			OrderedConfiguration<DataTypeAnalyzer> configuration,
 			EntityDataTypeAnalyzer entityDataTypeAnalyzer) {
 
-		configuration.add(Constants.ENTITY_DATA_TYPE, entityDataTypeAnalyzer, "before:Annotation");
+		configuration.add(Constants.ENTITY_DATA_TYPE, entityDataTypeAnalyzer,
+				"before:Annotation");
 
 	}
 
@@ -582,7 +651,8 @@ public class TapestryCrudIoCModule {
 	 * 
 	 * @param configuration a {@link Configuration}.
 	 */
-	public static void contributeBeanBlockSource(Configuration<BeanBlockContribution> configuration) {
+	public static void contributeBeanBlockSource(
+			Configuration<BeanBlockContribution> configuration) {
 
 		configuration.add(new BeanBlockContribution(Constants.ENTITY_DATA_TYPE,
 				Constants.BEAN_MODEL_BLOCKS_PAGE, "editEntity", true));
