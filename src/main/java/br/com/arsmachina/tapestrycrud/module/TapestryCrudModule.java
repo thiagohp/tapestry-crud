@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.apache.tapestry5.PrimaryKeyEncoder;
 
+import br.com.arsmachina.tapestrycrud.beanmodel.BeanModelCustomizer;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.Encoder;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
@@ -84,6 +85,24 @@ public interface TapestryCrudModule {
 	<T> Class<? extends PrimaryKeyEncoder<?, T>> getPrimaryKeyEncoderClass(
 			Class<T> entityClass);
 	
+	/**
+	 * Returns the bean model customizer class corresponding to a given entity class.
+	 * 
+	 * @param <T> the entity type.
+	 * @param entityClass a {@link Class} instance. It cannot be null.
+	 * @return a {@link BeanModelCustomizer} or null (if no corresponding one is found).
+	 */
+	<T> Class<? extends BeanModelCustomizer<T>> getBeanModelCustomizerClass(
+			Class<T> entityClass);
+	
+	/**
+	 * Returns the fully-qualified name of the bean model customizer for a given entity class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String}.
+	 */
+	String getBeanModelCustomizerClassName(Class<?> entityClass);
+
 	/**
 	 * Returns the fully-qualified name of the edition page for a given entity class.
 	 * 

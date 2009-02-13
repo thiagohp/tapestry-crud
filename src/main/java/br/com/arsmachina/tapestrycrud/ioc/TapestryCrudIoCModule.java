@@ -16,6 +16,7 @@ package br.com.arsmachina.tapestrycrud.ioc;
 
 import static br.com.arsmachina.module.ioc.ApplicationModuleModule.getServiceIfExists;
 
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -24,18 +25,25 @@ import java.util.Set;
 
 import org.apache.tapestry5.PrimaryKeyEncoder;
 import org.apache.tapestry5.SelectModel;
+import org.apache.tapestry5.beaneditor.BeanModel;
 import org.apache.tapestry5.internal.InternalConstants;
 import org.apache.tapestry5.ioc.Configuration;
+import org.apache.tapestry5.ioc.Invocation;
 import org.apache.tapestry5.ioc.MappedConfiguration;
+import org.apache.tapestry5.ioc.Messages;
+import org.apache.tapestry5.ioc.MethodAdvice;
 import org.apache.tapestry5.ioc.ObjectLocator;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.annotations.Symbol;
+import org.apache.tapestry5.ioc.services.AspectDecorator;
+import org.apache.tapestry5.ioc.services.AspectInterceptorBuilder;
 import org.apache.tapestry5.ioc.services.ChainBuilder;
 import org.apache.tapestry5.ioc.services.ClassNameLocator;
 import org.apache.tapestry5.ioc.services.TypeCoercer;
 import org.apache.tapestry5.services.BeanBlockContribution;
+import org.apache.tapestry5.services.BeanModelSource;
 import org.apache.tapestry5.services.DataTypeAnalyzer;
 import org.apache.tapestry5.services.LibraryMapping;
 import org.apache.tapestry5.services.ValueEncoderFactory;
@@ -54,6 +62,7 @@ import br.com.arsmachina.module.service.EntitySource;
 import br.com.arsmachina.module.service.ModuleService;
 import br.com.arsmachina.module.service.PrimaryKeyTypeService;
 import br.com.arsmachina.tapestrycrud.Constants;
+import br.com.arsmachina.tapestrycrud.beanmodel.BeanModelCustomizer;
 import br.com.arsmachina.tapestrycrud.beanmodel.EntityDataTypeAnalyzer;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.Encoder;
@@ -65,6 +74,7 @@ import br.com.arsmachina.tapestrycrud.selectmodel.SelectModelFactory;
 import br.com.arsmachina.tapestrycrud.selectmodel.SingleTypeSelectModelFactory;
 import br.com.arsmachina.tapestrycrud.selectmodel.impl.SelectModelFactoryImpl;
 import br.com.arsmachina.tapestrycrud.services.ActivationContextEncoderSource;
+import br.com.arsmachina.tapestrycrud.services.BeanModelCustomizerSource;
 import br.com.arsmachina.tapestrycrud.services.EncoderSource;
 import br.com.arsmachina.tapestrycrud.services.FormValidationSupport;
 import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
@@ -73,6 +83,7 @@ import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleFactory;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 import br.com.arsmachina.tapestrycrud.services.impl.ActivationContextEncoderSourceImpl;
+import br.com.arsmachina.tapestrycrud.services.impl.BeanModelCustomizerSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.EncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.FormValidationSupportImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.LabelEncoderSourceImpl;
@@ -89,21 +100,6 @@ import br.com.arsmachina.tapestrycrud.services.impl.UserServiceImpl;
  * @author Thiago H. de Paula Figueiredo
  */
 public class TapestryCrudIoCModule {
-
-	/**
-	 * Binds some Tapestry CRUD services.
-	 * 
-	 * @param binder a {@link ServiceBinder}.
-	 */
-	public static void bind(ServiceBinder binder) {
-
-		binder.bind(UserService.class, UserServiceImpl.class);
-		binder.bind(EntityDataTypeAnalyzer.class);
-		binder.bind(PageUtil.class, PageUtilImpl.class);
-		binder.bind(FormValidationSupport.class,
-				FormValidationSupportImpl.class);
-
-	}
 
 	/**
 	 * Tapestry CRUD library prefix.
@@ -124,6 +120,164 @@ public class TapestryCrudIoCModule {
 
 	final private static Logger LOGGER =
 		LoggerFactory.getLogger(TapestryCrudIoCModule.class);
+
+	/**
+	 * Binds some Tapestry CRUD services.
+	 * 
+	 * @param binder a {@link ServiceBinder}.
+	 */
+	public static void bind(ServiceBinder binder) {
+
+		binder.bind(UserService.class, UserServiceImpl.class);
+		binder.bind(EntityDataTypeAnalyzer.class);
+		binder.bind(PageUtil.class, PageUtilImpl.class);
+		binder.bind(FormValidationSupport.class,
+				FormValidationSupportImpl.class);
+
+	}
+
+	/**
+	 * Decoratesthe {@link BeanModelSource} to apply the customizations
+	 * implemented by {@link BeanModelCustomizer}s.
+	 * 
+	 * @param beanModelSource the decorated {@link BeanModelSource} object.
+	 * @param aspectDecorator an {@link AspectDecorator}.
+	 * @return a decorated {@link BeanModelSource}.
+	 */
+	public static BeanModelSource decorateBeanModelSource(
+			BeanModelSource beanModelSource, AspectDecorator aspectDecorator,
+			final BeanModelCustomizerSource beanModelCustomizerSource) {
+
+		MethodAdvice methodAdvice = new MethodAdvice() {
+
+			@SuppressWarnings("unchecked")
+			public void advise(Invocation invocation) {
+
+				final Class clasz = (Class) invocation.getParameter(0);
+				final BeanModelCustomizer customizer =
+					beanModelCustomizerSource.get(clasz);
+
+				assert customizer != null;
+
+				invocation.proceed();
+
+				BeanModel model = (BeanModel) invocation.getResult();
+
+				model = customizer.customizeModel(model);
+
+				assert model != null;
+
+				if (invocation.getMethodName().equals("createEditModel")) {
+					model = customizer.customizeEditModel(model);
+				} else if (invocation.getMethodName().equals(
+						"createDisplayModel")) {
+					model = customizer.customizeDisplayModel(model);
+				}
+
+				assert model != null;
+
+				invocation.overrideResult(model);
+
+			}
+
+		};
+
+		final AspectInterceptorBuilder<BeanModelSource> builder =
+			aspectDecorator.createBuilder(BeanModelSource.class,
+					beanModelSource, "Customizes BeanModels");
+
+		Method createDisplayModel = null;
+		Method createEditModel = null;
+
+		try {
+
+			Class<BeanModelSource> serviceInterface = BeanModelSource.class;
+			createDisplayModel =
+				serviceInterface.getMethod("createDisplayModel", Class.class,
+						Messages.class);
+			createEditModel =
+				serviceInterface.getMethod("createEditModel", Class.class,
+						Messages.class);
+
+		}
+		catch (Exception e) {
+			LOGGER.error("Exception decorating BeanModelSource", e);
+			throw new RuntimeException(e);
+		}
+
+		builder.adviseMethod(createDisplayModel, methodAdvice);
+		builder.adviseMethod(createEditModel, methodAdvice);
+
+		return builder.build();
+
+	}
+
+	/**
+	 * Builds the {@link BeanModelCustomizerSource} service.
+	 * 
+	 * @param contributions a {@link Map}.
+	 * @return a {@link BeanModelCustomizerSource}.
+	 */
+	@SuppressWarnings("unchecked")
+	public static BeanModelCustomizerSource buildBeanModelCustomizerSource(
+			Map<Class, BeanModelCustomizer> contributions) {
+
+		return new BeanModelCustomizerSourceImpl(contributions);
+
+	}
+
+	/**
+	 * Contributes all ({@link Class}, {@link Encoder} pairs registered in
+	 * {@link EncoderSource} to {@link ValueEncoderSource}. If no
+	 * {@link Encoder} is found for a given entity class, if a
+	 * {@link PrimaryKeyEncoder} is found, a {@link ValueEncoderFactory} is
+	 * automatically created using the {@link PrimaryKeyEncoder}.
+	 * 
+	 * @param configuration um {@link MappedConfiguration}.
+	 * @param tapestryCrudModuleService a {@link TapestryCrudModuleService}.
+	 * @param objectLocator an {@link ObjectLocator}.
+	 */
+	@SuppressWarnings("unchecked")
+	public static void contributeBeanModelCustomizerSource(
+			MappedConfiguration<Class, BeanModelCustomizer> configuration,
+			TapestryCrudModuleService tapestryCrudModuleService, ObjectLocator objectLocator) {
+
+		final Set<TapestryCrudModule> modules = tapestryCrudModuleService.getModules();
+		
+		for (TapestryCrudModule module : modules) {
+			
+			final Set<Class<?>> entityClasses = module.getEntityClasses();
+			
+			for (Class entityClass : entityClasses) {
+				
+				Class<BeanModelCustomizer> customizerClass = 
+					module.getBeanModelCustomizerClass(entityClass);
+				
+				if (customizerClass != null) {
+					
+					BeanModelCustomizer customizer = objectLocator.autobuild(customizerClass);
+					configuration.add(entityClass, customizer);
+					
+					if (LOGGER.isInfoEnabled()) {
+
+						final String entityName = entityClass.getSimpleName();
+						final String customizerClassName =
+							customizerClass.getName();
+						final String message =
+							String.format("Associating entity %s with bean model customizer %s",
+									entityName, customizerClassName);
+
+						LOGGER.info(message);
+
+					}
+					
+				}
+				
+			}
+			
+		}
+
+	}
 
 	/**
 	 * Builds the {@link ModuleService} service.
@@ -303,12 +457,12 @@ public class TapestryCrudIoCModule {
 		for (TapestryCrudModule module : modules) {
 
 			final String id = module.getId();
-			
+
 			if (id != null && id.trim().length() > 0) {
 
 				final String tapestryPackage = module.getTapestryPackage();
 				configuration.add(new LibraryMapping(id, tapestryPackage));
-				
+
 			}
 
 		}
