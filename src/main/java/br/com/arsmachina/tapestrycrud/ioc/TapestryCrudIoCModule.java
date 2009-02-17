@@ -74,6 +74,7 @@ import br.com.arsmachina.tapestrycrud.selectmodel.SelectModelFactory;
 import br.com.arsmachina.tapestrycrud.selectmodel.SingleTypeSelectModelFactory;
 import br.com.arsmachina.tapestrycrud.selectmodel.impl.SelectModelFactoryImpl;
 import br.com.arsmachina.tapestrycrud.services.ActivationContextEncoderSource;
+import br.com.arsmachina.tapestrycrud.services.AuthorizationErrorMessageService;
 import br.com.arsmachina.tapestrycrud.services.BeanModelCustomizerSource;
 import br.com.arsmachina.tapestrycrud.services.EncoderSource;
 import br.com.arsmachina.tapestrycrud.services.FormValidationSupport;
@@ -83,6 +84,7 @@ import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleFactory;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 import br.com.arsmachina.tapestrycrud.services.impl.ActivationContextEncoderSourceImpl;
+import br.com.arsmachina.tapestrycrud.services.impl.AuthorizationErrorMessageServiceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.BeanModelCustomizerSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.EncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.FormValidationSupportImpl;
@@ -133,6 +135,7 @@ public class TapestryCrudIoCModule {
 		binder.bind(PageUtil.class, PageUtilImpl.class);
 		binder.bind(FormValidationSupport.class,
 				FormValidationSupportImpl.class);
+		binder.bind(AuthorizationErrorMessageService.class, AuthorizationErrorMessageServiceImpl.class);
 
 	}
 

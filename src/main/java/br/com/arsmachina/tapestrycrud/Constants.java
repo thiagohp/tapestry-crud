@@ -111,6 +111,11 @@ final public class Constants {
 			+ "/BeanModelBlocks";
 
 	/**
+	 * Message shown when a generic error ocurrs.
+	 */
+	final public static String GENERIC_ERROR_MESSAGE = "message.error";
+
+	/**
 	 * Single constructor of this class.
 	 */
 	private Constants() {
