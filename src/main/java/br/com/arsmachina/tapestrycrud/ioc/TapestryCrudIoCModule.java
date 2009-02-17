@@ -227,11 +227,8 @@ public class TapestryCrudIoCModule {
 	}
 
 	/**
-	 * Contributes all ({@link Class}, {@link Encoder} pairs registered in
-	 * {@link EncoderSource} to {@link ValueEncoderSource}. If no
-	 * {@link Encoder} is found for a given entity class, if a
-	 * {@link PrimaryKeyEncoder} is found, a {@link ValueEncoderFactory} is
-	 * automatically created using the {@link PrimaryKeyEncoder}.
+	 * Automatically contributes (class, {@link BeanModelCustomizer} pairs to the 
+	 * {@link BeanModelCustomizerSource} service.
 	 * 
 	 * @param configuration um {@link MappedConfiguration}.
 	 * @param tapestryCrudModuleService a {@link TapestryCrudModuleService}.

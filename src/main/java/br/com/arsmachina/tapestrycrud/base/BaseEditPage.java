@@ -361,7 +361,36 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 	 * @param value an {@link EventContext}.
 	 */
 	void onActivate(EventContext context) {
-		setObject(activationContextEncoder.toObject(context));
+		
+		checkUpdateTypeAccess();
+		final T activationContextObject = activationContextEncoder.toObject(context);
+		
+		if (activationContextObject != null) {
+			checkUpdateObjectAccess(activationContextObject);
+		}
+		
+		setObject(activationContextObject);
+		
+	}
+
+	/**
+	 * Checks if the current user has permission to update instances of the page entity class
+	 * and throws an exception if not.
+	 * This method calls <code>getAuthorizer().checkUpdate(getEntityClass())</code>.
+	 */
+	protected void checkUpdateTypeAccess() {
+		getAuthorizer().checkUpdate(getEntityClass());
+	}
+
+	/**
+	 * Checks if the current user has permission to update a given object.
+	 * and throws an exception if not.
+	 * This method calls <code>getAuthorizer().checkUpdate(activationContextObject)</code>.
+	 * 
+	 * @param activationContextObject a <code>T</code> instance. It cannot be null.
+	 */
+	protected void checkUpdateObjectAccess(T activationContextObject) {
+		getAuthorizer().checkUpdate(activationContextObject);
 	}
 
 	/**

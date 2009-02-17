@@ -67,17 +67,17 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 	private BeanModelSource beanModelSource;
 	
 	private T object;
+	
+	public void onActivate() {
+		getAuthorizer().checkSearch(getEntityClass());
+	}
 
 	/**
 	 * Single constructor of this class.
 	 */
 	@SuppressWarnings("unchecked")
 	public BaseListPage() {
-		
-		super();
-		
 		primaryKeyEncoder = (PrimaryKeyEncoder<K, T>) primaryKeyEncoderSource.get(getEntityClass());
-		
 	}
 
 	/**

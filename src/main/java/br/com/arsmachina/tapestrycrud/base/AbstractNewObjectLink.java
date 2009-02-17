@@ -59,7 +59,7 @@ public abstract class AbstractNewObjectLink {
 
 	@Inject
 	private ComponentResources resources;
-	
+
 	@Inject
 	private TapestryCrudModuleService tapestryCrudModuleService;
 
@@ -69,7 +69,7 @@ public abstract class AbstractNewObjectLink {
 	private Component page;
 
 	private Class<?> entityClass;
-	
+
 	private Boolean lowercaseClassName = null;
 
 	/**
@@ -108,7 +108,7 @@ public abstract class AbstractNewObjectLink {
 	abstract protected Link createLink();
 
 	String defaultLabel() {
-		
+
 		page = resources.getPage();
 
 		String returnedLabel = null;
@@ -124,9 +124,9 @@ public abstract class AbstractNewObjectLink {
 		}
 
 		if (returnedLabel == null && (page instanceof EditPage || page instanceof BaseListPage)) {
-			
+
 			setEntityClass();
-			
+
 			final String entityLabelMessage = entityClass.getSimpleName() + "-label";
 
 			if (messages.contains(entityLabelMessage)
@@ -156,16 +156,10 @@ public abstract class AbstractNewObjectLink {
 
 	@SuppressWarnings("unchecked")
 	private void setEntityClass() {
-		
-		if (page instanceof EditPage) {
-			EditPage editPage = (EditPage) page;
-			entityClass = editPage.getEntityClass();
-		}
-		else {
-			BaseListPage listPage = (BaseListPage) page;
-			entityClass = listPage.getEntityClass();
-		}
-		
+
+		BasePage basePage = (BasePage) page;
+		entityClass = basePage.getEntityClass();
+
 	}
 
 	boolean beginRender(MarkupWriter writer) {
@@ -181,7 +175,7 @@ public abstract class AbstractNewObjectLink {
 	}
 
 	void afterRender(MarkupWriter writer) {
-		
+
 		if (entityClass == null) {
 			setEntityClass();
 		}
@@ -193,7 +187,7 @@ public abstract class AbstractNewObjectLink {
 		if (bodyIsBlank || ignoreBody) {
 
 			final Messages messages = resources.getMessages();
-			
+
 			final String key = NEW_OBJECT_MESSAGE + "."
 					+ tapestryCrudModuleService.getEditPageURL(entityClass).replace('/', '.');
 

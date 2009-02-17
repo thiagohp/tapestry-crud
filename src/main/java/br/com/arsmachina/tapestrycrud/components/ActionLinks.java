@@ -22,6 +22,7 @@ import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.corelib.components.Grid;
 import org.apache.tapestry5.ioc.annotations.Inject;
 
+import br.com.arsmachina.authorization.Authorizer;
 import br.com.arsmachina.tapestrycrud.Constants;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 
@@ -46,6 +47,13 @@ public class ActionLinks {
 	private static final String DEFAULT_VIEW_ICON_ASSET = IMAGES_ASSET_ROOT + "view.png";
 
 	/**
+	 * The object that the links will refer to.
+	 */
+	@Parameter(required = true, allowNull = false, principal = true)
+	@Property
+	private Object object;
+
+	/**
 	 * Name of the page that is used to edits objects listed in this page.
 	 */
 	@Parameter(defaultPrefix = BindingConstants.LITERAL)
@@ -60,31 +68,20 @@ public class ActionLinks {
 	/**
 	 * Show the edit link?
 	 */
-	@Parameter(value = "true")
-	@Property
-	private boolean edit;
+	@Parameter
+	private Boolean edit;
 
 	/**
 	 * Show the remove link?
 	 */
-	@Parameter(value = "true")
-	@Property
-	@SuppressWarnings("unused")
-	private boolean remove;
+	@Parameter
+	private Boolean remove;
 
 	/**
 	 * Show the view link?
 	 */
-	@Parameter(value = "false")
-	@Property
-	private boolean view;
-
-	/**
-	 * The object that the links will refer to.
-	 */
-	@Parameter(required = true, allowNull = false)
-	@Property
-	private Object object;
+	@Parameter
+	private Boolean view;
 
 	@Parameter(defaultPrefix = BindingConstants.ASSET, value = DEFAULT_EDIT_ICON_ASSET)
 	@Property
@@ -103,6 +100,48 @@ public class ActionLinks {
 
 	@Inject
 	private TapestryCrudModuleService tapestryCrudModuleService;
+	
+	@Inject
+	private Authorizer authorizer;
+	
+	/**
+	 * Defines the value of the <code>edit</code> parameter if not bound.
+	 */
+	public boolean getEdit() {
+		
+		if (edit != null) {
+			return edit;
+		}
+		
+		return authorizer.canUpdate(object.getClass()) && authorizer.canUpdate(object);
+		
+	}
+
+	/**
+	 * Returns the value of the <code>view</code> parameter if not bound.
+	 */
+	public boolean getView() {
+		
+		if (view != null) {
+			return view;
+		}
+
+		return authorizer.canRead(object.getClass()) && authorizer.canRead(object);
+		
+	}
+
+	/**
+	 * Defines the value of the <code>remove</code> parameter if not bound.
+	 */
+	public boolean getRemove() {
+		
+		if (remove != null) {
+			return edit;
+		}
+		
+		return authorizer.canRemove(object.getClass()) && authorizer.canRemove(object);
+		
+	}
 
 	/**
 	 * Returns the value of the <code>editPage</code> property.
@@ -118,7 +157,7 @@ public class ActionLinks {
 			
 		}
 		
-		if (edit && (editPage == null || editPage.trim().length() == 0)) {
+		if (getEdit() && (editPage == null || editPage.trim().length() == 0)) {
 
 			throw new IllegalArgumentException(
 					"Could not find an edit page for " + object.getClass().getName());
@@ -136,11 +175,8 @@ public class ActionLinks {
 	 */
 	public String getViewPage() {
 
-		if (view && viewPage == null || viewPage.trim().length() == 0) {
-
-			throw new IllegalArgumentException(
-					"When parameter view is true, parameter viewPage must have a non-empty value");
-
+		if (viewPage == null) {
+			viewPage = tapestryCrudModuleService.getViewPageURL(object.getClass());
 		}
 
 		return viewPage;

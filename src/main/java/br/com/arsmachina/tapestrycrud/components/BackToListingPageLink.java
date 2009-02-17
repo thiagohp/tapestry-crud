@@ -30,6 +30,7 @@ import org.apache.tapestry5.runtime.Component;
 import br.com.arsmachina.tapestrycrud.EditPage;
 import br.com.arsmachina.tapestrycrud.base.BaseEditPage;
 import br.com.arsmachina.tapestrycrud.base.BaseListPage;
+import br.com.arsmachina.tapestrycrud.base.BasePage;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 
 /**
@@ -77,15 +78,15 @@ public class BackToListingPageLink {
 		
 		Component page = resources.getPage();
 
-		if (page instanceof EditPage == false) {
+		if (page instanceof BasePage == false) {
 
 			throw new RuntimeException("The BackToListingPage must be used inside a page "
-					+ "that implements BasePage or subclasses BaseEditPage");
+					+ "that extends BasePage");
 
 		}
 
-		EditPage editPage = (EditPage) page;
-		entityClass = editPage.getEntityClass();
+		BasePage basePage = (BasePage) page;
+		entityClass = basePage.getEntityClass();
 		listPageURL = tapestryCrudModuleService.getListPageURL(entityClass);
 
 		Link link = linkFactory.createPageRenderLink(listPageURL, true);

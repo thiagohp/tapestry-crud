@@ -30,7 +30,7 @@ import org.apache.tapestry5.ioc.Messages;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.services.ValueEncoderSource;
 
-import br.com.arsmachina.authorization.AuthorizationService;
+import br.com.arsmachina.authorization.Authorizer;
 import br.com.arsmachina.controller.Controller;
 import br.com.arsmachina.module.service.ControllerSource;
 import br.com.arsmachina.module.service.PrimaryKeyTypeService;
@@ -56,7 +56,7 @@ public abstract class BasePage<T, K extends Serializable> implements CrudPage<T,
 	private ActivationContextEncoderSource activationContextEncoderSource;
 
 	@Inject
-	private AuthorizationService authorizationService;
+	private Authorizer authorizer;
 
 	@Inject
 	private ControllerSource controllerSource;
@@ -271,12 +271,12 @@ public abstract class BasePage<T, K extends Serializable> implements CrudPage<T,
 	}
 
 	/**
-	 * Returns the value of the <code>authorizationService</code> property.
+	 * Returns the value of the <code>authorizer</code> property.
 	 * 
-	 * @return a {@link AuthorizationService}.
+	 * @return a {@link Authorizer}.
 	 */
-	final public AuthorizationService getAuthorizationService() {
-		return authorizationService;
+	final public Authorizer getAuthorizer() {
+		return authorizer;
 	}
 
 }

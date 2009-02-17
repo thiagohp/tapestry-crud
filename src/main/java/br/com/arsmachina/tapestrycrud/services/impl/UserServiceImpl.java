@@ -16,6 +16,7 @@ package br.com.arsmachina.tapestrycrud.services.impl;
 
 import org.apache.tapestry5.services.ApplicationStateManager;
 
+import br.com.arsmachina.authentication.controller.UserController;
 import br.com.arsmachina.authentication.entity.User;
 import br.com.arsmachina.authentication.service.UserService;
 
@@ -27,14 +28,29 @@ import br.com.arsmachina.authentication.service.UserService;
 public class UserServiceImpl implements UserService {
 
 	final private ApplicationStateManager applicationStateManager;
+	
+	final private UserController userController;
 
 	/**
 	 * Single constructor of this class.
 	 * 
+	 * @param userController an {@link UserController}. It cannot be null.
 	 * @param applicationStateManager an {@link ApplicationStateManager}. It cannot be null.
 	 */
-	public UserServiceImpl(ApplicationStateManager applicationStateManager) {
+	public UserServiceImpl(UserController userController, ApplicationStateManager applicationStateManager) {
+		
+		if (userController == null) {
+			throw new IllegalArgumentException("Parameter userController cannot be null");
+		}
+		
+		
+		if (applicationStateManager == null) {
+			throw new IllegalArgumentException("Parameter ApplicationStateManager cannot be null");
+		}
+		
+		this.userController = userController;
 		this.applicationStateManager = applicationStateManager;
+		
 	}
 
 	/**
@@ -43,7 +59,15 @@ public class UserServiceImpl implements UserService {
 	 * @return an {@link User} or null.
 	 */
 	public User getUser() {
-		return applicationStateManager.getIfExists(User.class);
+		
+		final User user = applicationStateManager.getIfExists(User.class);
+		
+		if (user != null) {
+			userController.reattach(user);
+		}
+		
+		return user;
+		
 	}
 
 }

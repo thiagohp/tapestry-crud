@@ -120,6 +120,14 @@ public interface TapestryCrudModule {
 	String getListPageClassName(Class<?> entityClass);
 	
 	/**
+	 * Returns the fully-qualified name of the viewing page for a given entity class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String}.
+	 */
+	String getViewPageClassName(Class<?> entityClass);
+	
+	/**
 	 * Returns the URL of the edition page for a given entity class.
 	 * 
 	 * @param clasz a {@link Class}. It cannot be null.
@@ -136,6 +144,14 @@ public interface TapestryCrudModule {
 	String getListPageURL(Class<?> entityClass);
 	
 	/**
+	 * Returns the URL of the viewing page for a given entity class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String}.
+	 */
+	String getViewPageURL(Class<?> entityClass);
+	
+	/**
 	 * Returns the {@link Class} of the edition page for a given entity class.
 	 * 
 	 * @param clasz a {@link Class}. It cannot be null.
@@ -150,6 +166,14 @@ public interface TapestryCrudModule {
 	 * @return a {@link String}.
 	 */
 	Class<?> getListPageClass(Class<?> entityClass);
+	
+	/**
+	 * Returns the {@link Class} of the viewing page for a given entity class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String}.
+	 */
+	Class<?> getViewPageClass(Class<?> entityClass);
 	
 	/**
 	 * Returns the module id. This can be null if this is the single module in the application.

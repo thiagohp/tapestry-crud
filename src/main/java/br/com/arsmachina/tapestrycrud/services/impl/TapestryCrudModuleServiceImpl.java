@@ -183,6 +183,23 @@ public class TapestryCrudModuleServiceImpl implements TapestryCrudModuleService 
 
 	}
 
+	public String getViewPageURL(Class<?> entityClass) {
+
+		String url = null;
+
+		for (TapestryCrudModule module : getModules()) {
+
+			if (module.contains(entityClass)) {
+				url = module.getViewPageURL(entityClass);
+				break;
+			}
+
+		}
+
+		return url;
+
+	}
+
 	public String getListPageClassName(Class<?> entityClass) {
 
 		String className = null;
@@ -191,6 +208,23 @@ public class TapestryCrudModuleServiceImpl implements TapestryCrudModuleService 
 
 			if (module.contains(entityClass)) {
 				className = module.getListPageClassName(entityClass);
+				break;
+			}
+
+		}
+
+		return className;
+
+	}
+
+	public String getViewPageClassName(Class<?> entityClass) {
+
+		String className = null;
+
+		for (TapestryCrudModule module : getModules()) {
+
+			if (module.contains(entityClass)) {
+				className = module.getViewPageClassName(entityClass);
 				break;
 			}
 
@@ -225,6 +259,23 @@ public class TapestryCrudModuleServiceImpl implements TapestryCrudModuleService 
 
 			if (module.contains(entityClass)) {
 				clasz = module.getListPageClass(entityClass);
+				break;
+			}
+
+		}
+
+		return clasz;
+
+	}
+
+	public Class<?> getViewPageClass(Class<?> entityClass) {
+
+		Class<?> clasz = null;
+
+		for (TapestryCrudModule module : getModules()) {
+
+			if (module.contains(entityClass)) {
+				clasz = module.getViewPageClass(entityClass);
 				break;
 			}
 

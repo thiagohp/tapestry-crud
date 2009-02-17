@@ -35,8 +35,7 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 
 	final private Module module;
 
-	final private Logger logger =
-		LoggerFactory.getLogger(DefaultTapestryCrudModule.class);
+	final private Logger logger = LoggerFactory.getLogger(DefaultTapestryCrudModule.class);
 
 	/**
 	 * Single constructor of this class.
@@ -46,8 +45,7 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 	public DefaultTapestryCrudModule(Module module) {
 
 		if (module == null) {
-			throw new IllegalArgumentException(
-					"Parameter module cannot be null");
+			throw new IllegalArgumentException("Parameter module cannot be null");
 		}
 
 		this.module = module;
@@ -60,31 +58,32 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 
 		if (contains(entityClass)) {
 			return getClass(getActivationContextEncoderClassName(entityClass));
-		} else {
+		}
+		else {
 			return null;
 		}
 
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> Class<? extends Encoder<T, ?>> getEncoderClass(
-			Class<T> entityClass) {
+	public <T> Class<? extends Encoder<T, ?>> getEncoderClass(Class<T> entityClass) {
 
 		if (contains(entityClass)) {
 			return getClass(getEncoderClassName(entityClass));
-		} else {
+		}
+		else {
 			return null;
 		}
 
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> Class<? extends LabelEncoder<T>> getLabelEncoderClass(
-			Class<T> entityClass) {
+	public <T> Class<? extends LabelEncoder<T>> getLabelEncoderClass(Class<T> entityClass) {
 
 		if (contains(entityClass)) {
 			return getClass(getLabelEncoderClassName(entityClass));
-		} else {
+		}
+		else {
 			return null;
 		}
 
@@ -96,23 +95,22 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 
 		if (contains(entityClass)) {
 			return getClass(getPrimaryKeyEncoderClassName(entityClass));
-		} else {
+		}
+		else {
 			return null;
 		}
 
 	}
 
 	/**
-	 * Returns the fully-qualified name of the activation context encoder for a
-	 * given entity class.
+	 * Returns the fully-qualified name of the activation context encoder for a given entity class.
 	 * 
 	 * @param clasz a {@link Class}. It cannot be null.
 	 * @return a {@link String} or null (if no corresponding one is found).
 	 */
 	protected String getActivationContextEncoderClassName(Class<?> entityClass) {
 
-		return String.format(
-				"%s.tapestry.encoder.activationcontext.%sActivationContextEncoder",
+		return String.format("%s.tapestry.encoder.activationcontext.%sActivationContextEncoder",
 				getRootPackage(), entityClass.getSimpleName());
 
 	}
@@ -131,55 +129,50 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 	}
 
 	/**
-	 * Returns the fully-qualified name of the label encoder for a given entity
-	 * class.
+	 * Returns the fully-qualified name of the label encoder for a given entity class.
 	 * 
 	 * @param clasz a {@link Class}. It cannot be null.
 	 * @return a {@link String} or null (if no corresponding one is found).
 	 */
 	protected String getLabelEncoderClassName(Class<?> entityClass) {
 
-		return String.format("%s.tapestry.encoder.label.%sLabelEncoder",
-				getRootPackage(), entityClass.getSimpleName());
+		return String.format("%s.tapestry.encoder.label.%sLabelEncoder", getRootPackage(),
+				entityClass.getSimpleName());
 
 	}
 
 	/**
-	 * Returns the fully-qualified name of the primary key encoder for a given
-	 * entity class.
+	 * Returns the fully-qualified name of the primary key encoder for a given entity class.
 	 * 
 	 * @param clasz a {@link Class}. It cannot be null.
 	 * @return a {@link String}.
 	 */
 	protected String getPrimaryKeyEncoderClassName(Class<?> entityClass) {
 
-		return String.format(
-				"%s.tapestry.encoder.primarykey.%sPrimaryKeyEncoder",
+		return String.format("%s.tapestry.encoder.primarykey.%sPrimaryKeyEncoder",
 				getRootPackage(), entityClass.getSimpleName());
 
 	}
-	
+
 	/**
-	 * Returns the fully-qualified name of the bean model customizer for a given
-	 * entity class.
+	 * Returns the fully-qualified name of the bean model customizer for a given entity class.
 	 * 
 	 * @param clasz a {@link Class}. It cannot be null.
 	 * @return a {@link String} or null.
 	 */
 	public String getBeanModelCustomizerClassName(Class<?> entityClass) {
-		
-		return String.format(
-				"%s.beanmodel.%sBeanModelCustomizer",
-				getTapestryPackage(), entityClass.getSimpleName());
-		
+
+		return String.format("%s.beanmodel.%sBeanModelCustomizer", getTapestryPackage(),
+				entityClass.getSimpleName());
+
 	}
 
 	public String getEditPageClassName(Class<?> entityClass) {
 
 		final String className = entityClass.getSimpleName();
 
-		return String.format("%s.pages.%s%s.Edit%s", getTapestryPackage(),
-				getModuleSubpackage(), className.toLowerCase(), className);
+		return String.format("%s.pages.%s.Edit%s", getTapestryPackage(),
+				className.toLowerCase(), className);
 
 	}
 
@@ -187,40 +180,34 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 
 		final String className = entityClass.getSimpleName();
 
-		return String.format("%s.pages.%s%s.List%s", getTapestryPackage(),
-				getModuleSubpackage(), className.toLowerCase(), className);
+		return String.format("%s.pages.%s.List%s", getTapestryPackage(),
+				className.toLowerCase(), className);
+
+	}
+
+	public String getViewPageClassName(Class<?> entityClass) {
+
+		final String className = entityClass.getSimpleName();
+
+		return String.format("%s.pages.%s.List%s", getTapestryPackage(), 
+				className.toLowerCase(), className);
 
 	}
 
 	@Override
 	public String toString() {
-		return String.format("TapestryCrudModule %s (%s)", getId(),
-				getRootPackage());
+		return String.format("TapestryCrudModule %s (%s)", getId(), getRootPackage());
 	}
 
 	/**
-	 * Returns the name of the package where the Tapestry-related packages are
-	 * located (i.e. under which the <code>pages</code> component is located).
-	 * This implementation returns <code>[rootPackage].tapestry</code>.
+	 * Returns the name of the package where the Tapestry-related packages are located (i.e. under
+	 * which the <code>pages</code> component is located). This implementation returns
+	 * <code>[rootPackage].tapestry</code>.
 	 * 
 	 * @return a {@link String}.
 	 */
 	public String getTapestryPackage() {
 		return getRootPackage() + ".tapestry";
-	}
-
-	private String getModuleSubpackage() {
-
-		String moduleSubpackage = getId();
-
-		if (moduleSubpackage != null) {
-			moduleSubpackage = "." + moduleSubpackage;
-		} else {
-			moduleSubpackage = "";
-		}
-
-		return moduleSubpackage;
-
 	}
 
 	private String getModulePath() {
@@ -229,7 +216,8 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 
 		if (path != null) {
 			path = path + "/";
-		} else {
+		}
+		else {
 			path = "";
 		}
 
@@ -268,9 +256,8 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 	 * Returns the {@link Class} instance given a class name.
 	 * 
 	 * @param name a {@link String}. It cannot be null.
-	 * @param lenient a <code>boolean</code>. If <code>false</code>, it will
-	 *            throw an exception if the class is not found. Otherwise, this
-	 *            method will return null.
+	 * @param lenient a <code>boolean</code>. If <code>false</code>, it will throw an exception if
+	 * the class is not found. Otherwise, this method will return null.
 	 * @return a {@link Class} or null.
 	 */
 	@SuppressWarnings("unchecked")
@@ -279,14 +266,14 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 		Class<?> clasz = null;
 
 		try {
-			clasz =
-				Thread.currentThread().getContextClassLoader().loadClass(name);
+			clasz = Thread.currentThread().getContextClassLoader().loadClass(name);
 		}
 		catch (ClassNotFoundException e) {
 
 			if (lenient == false) {
 				throw new RuntimeException(e);
-			} else {
+			}
+			else {
 
 				if (logger.isDebugEnabled()) {
 					logger.debug("Class not found: " + name);
@@ -306,6 +293,10 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 
 	public String getListPageURL(Class<?> entityClass) {
 		return getURL(entityClass, getListPagePrefix());
+	}
+
+	public String getViewPageURL(Class<?> entityClass) {
+		return getURL(entityClass, getViewPagePrefix());
 	}
 
 	/**
@@ -331,12 +322,16 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 		return getClass(getListPageClassName(entityClass));
 	}
 
+	public Class<?> getViewPageClass(Class<?> entityClass) {
+		return getClass(getViewPageClassName(entityClass));
+	}
+
 	@SuppressWarnings("unchecked")
 	public <T> Class<? extends BeanModelCustomizer<T>> getBeanModelCustomizerClass(
 			Class<T> entityClass) {
-		
+
 		return getClass(getBeanModelCustomizerClassName(entityClass));
-		
+
 	}
 
 	/**
