@@ -17,7 +17,6 @@ package br.com.arsmachina.tapestrycrud.base;
 import java.io.Serializable;
 
 import org.apache.tapestry5.EventContext;
-import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.ioc.annotations.Inject;
 
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
@@ -30,50 +29,61 @@ import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
  * @param <K> the type of the class' primary key property.
  */
 public class BaseViewPage<T, ID extends Serializable> extends BasePage<T, ID> {
-	
-	@Property(write = false)
+
 	private T object;
-	
+
 	@Inject
 	private TapestryCrudModuleService tapestryCrudModuleService;
-	
+
 	/**
 	 * Sets the object property from a given activation context value.
 	 * 
 	 * @param value an {@link EventContext}.
 	 */
 	Object onActivate(EventContext context) {
-		
+
 		checkReadTypeAccess();
-		
+
+		object = getActivationContextEncoder(getEntityClass()).toObject(context);
+
 		if (object != null) {
 			checkReadObjectAccess(object);
 		}
-		
-		return object != null ? null : getListPage();
-		
+
+		final Class<?> result = object != null ? null : getListPage();
+
+		return result;
+
 	}
 
 	private Class<?> getListPage() {
-		return tapestryCrudModuleService.getListPageClass(getEntityClass()); 
+		return tapestryCrudModuleService.getListPageClass(getEntityClass());
 	}
-	
+
 	/**
-	 * Checks if the current user has permission to read instances of the page entity class
-	 * and throws an exception if not.
-	 * This method calls <code>getAuthorizer().checkRead(getEntityClass())</code>.
+	 * Checks if the current user has permission to read instances of the page entity class and
+	 * throws an exception if not. This method calls
+	 * <code>getAuthorizer().checkRead(getEntityClass())</code>.
 	 */
 	protected void checkReadTypeAccess() {
 		getAuthorizer().checkRead(getEntityClass());
 	}
 
 	/**
-	 * Checks if the current user has permission to ra given object
-	 * and throws an exception if not.
+	 * Checks if the current user has permission to ra given object and throws an exception if not.
 	 * This method calls <code>getAuthorizer().checkRead(object)</code>.
 	 */
 	protected void checkReadObjectAccess(T object) {
 		getAuthorizer().checkRead(object);
+	}
+
+	/**
+	 * Returns the value of the <code>object</code> property.
+	 * 
+	 * @return a {@link T}.
+	 */
+	public T getObject() {
+		return object;
 	}
 
 }
