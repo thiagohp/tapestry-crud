@@ -293,6 +293,23 @@ public class TapestryCrudModuleServiceImpl implements TapestryCrudModuleService 
 		return getEntityClasses().contains(entityClass);
 	}
 
+	public TapestryCrudModule getModule(Class<?> entityClass) {
+		
+		TapestryCrudModule owner = null;
+		
+		for (TapestryCrudModule module : modules) {
+			
+			if (module.contains(entityClass)) {
+				owner = module;
+				break;
+			}
+			
+		}
+		
+		return owner;
+		
+	}
+
 	private void fillEntityClasses() {
 
 		for (TapestryCrudModule module : modules) {

@@ -191,4 +191,25 @@ public interface TapestryCrudModule {
 	 */
 	String getTapestryPackage();
 	
+	/**
+	 * Returns the prefix used to name edition pages.
+	 * 
+	 * @return a {@link String}. It cannot be null.
+	 */
+	String getEditPagePrefix();
+
+	/**
+	 * Returns the prefix used to name listing pages.
+	 * 
+	 * @return a {@link String}. It cannot be null.
+	 */
+	public String getListPagePrefix();
+
+	/**
+	 * Returns the prefix used to name viewing pages.
+	 * 
+	 * @return a {@link String}. It cannot be null.
+	 */
+	public String getViewPagePrefix();
+	
 }

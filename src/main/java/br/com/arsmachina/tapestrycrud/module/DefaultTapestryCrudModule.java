@@ -171,8 +171,8 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 
 		final String className = entityClass.getSimpleName();
 
-		return String.format("%s.pages.%s.Edit%s", getTapestryPackage(),
-				className.toLowerCase(), className);
+		return String.format("%s.pages.%s.%s%s", getTapestryPackage(),
+				className.toLowerCase(), getEditPagePrefix(), className);
 
 	}
 
@@ -180,8 +180,8 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 
 		final String className = entityClass.getSimpleName();
 
-		return String.format("%s.pages.%s.List%s", getTapestryPackage(),
-				className.toLowerCase(), className);
+		return String.format("%s.pages.%s.%s%s", getTapestryPackage(),
+				className.toLowerCase(), getListPagePrefix(), className);
 
 	}
 
@@ -189,8 +189,8 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 
 		final String className = entityClass.getSimpleName();
 
-		return String.format("%s.pages.%s.List%s", getTapestryPackage(), 
-				className.toLowerCase(), className);
+		return String.format("%s.pages.%s.%s%s", getTapestryPackage(), 
+				className.toLowerCase(), getViewPagePrefix(), className);
 
 	}
 
@@ -340,7 +340,7 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 	 * @return a {@link String}.
 	 */
 	public String getEditPagePrefix() {
-		return "edit";
+		return "Edit";
 	}
 
 	/**
@@ -349,7 +349,7 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 	 * @return a {@link String}.
 	 */
 	public String getListPagePrefix() {
-		return "list";
+		return "List";
 	}
 
 	/**
@@ -358,7 +358,7 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 	 * @return a {@link String}.
 	 */
 	public String getViewPagePrefix() {
-		return "view";
+		return "View";
 	}
 
 }

@@ -46,6 +46,13 @@ public interface TapestryCrudModuleService {
 	Set<Class<?>> getEntityClasses();
 	
 	/**
+	 * Return the {@link TapestryCrudModule} that owns a given entity class.
+	 * @param entityClass a {@link Class} instance. It cannot be null.
+	 * @return a {@link TapestryCrudModule} or null.
+	 */
+	TapestryCrudModule getModule(Class<?> entityClass);
+	
+	/**
 	 * Does one of the available Tapestry CRUD modules contain the given entity class?.
 	 * 
 	 * @param entityClass a {@link Class} instance.
