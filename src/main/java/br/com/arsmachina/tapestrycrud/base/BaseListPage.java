@@ -17,12 +17,9 @@ package br.com.arsmachina.tapestrycrud.base;
 import java.io.Serializable;
 
 import org.apache.tapestry5.ComponentResources;
-import org.apache.tapestry5.EventContext;
 import org.apache.tapestry5.PrimaryKeyEncoder;
 import org.apache.tapestry5.annotations.Cached;
-import org.apache.tapestry5.annotations.OnEvent;
 import org.apache.tapestry5.annotations.PageDetached;
-import org.apache.tapestry5.annotations.Retain;
 import org.apache.tapestry5.beaneditor.BeanModel;
 import org.apache.tapestry5.corelib.components.Grid;
 import org.apache.tapestry5.ioc.annotations.Inject;
@@ -60,9 +57,6 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 	@Inject
 	private PrimaryKeyEncoderSource primaryKeyEncoderSource;
 	
-	@Retain
-	private PrimaryKeyEncoder<K, T> primaryKeyEncoder;
-
 	@Inject
 	private BeanModelSource beanModelSource;
 	
@@ -70,14 +64,6 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 	
 	public void onActivate() {
 		getAuthorizer().checkSearch(getEntityClass());
-	}
-
-	/**
-	 * Single constructor of this class.
-	 */
-	@SuppressWarnings("unchecked")
-	public BaseListPage() {
-		primaryKeyEncoder = (PrimaryKeyEncoder<K, T>) primaryKeyEncoderSource.get(getEntityClass());
 	}
 
 	/**
@@ -126,32 +112,6 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 	}
 
 	/**
-	 * Removes or not a given object. This method only removes an object, using
-	 * <code>getController().delete(id)</code>, if {@link canRemove(K)} returns <code>true</code>.
-	 * 
-	 * @param object a {@link K}.
-	 */
-	protected final Object remove(T object) {
-		
-		if (object == null) {
-			setRemoveErrorNotFoundMessage();
-		}
-
-		else if (canRemove(object)) {
-
-			getController().delete(object);
-			setRemoveSuccessMessage();
-
-		}
-		else {
-			setRemoveErrorNotAllowedMessage();
-		}
-
-		return returnFromDoRemove();
-
-	}
-
-	/**
 	 * Defines what {@link #doRemove()} will return.
 	 * 
 	 * @return an {@link Object} or <code>null</code>.
@@ -179,21 +139,14 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 	 * Sets the remove success message in this page.
 	 */
 	protected void setRemoveSuccessMessage() {
-		setMessage(getMessages().get(Constants.MESSAGE_SUCCESS_REMOVE));
-	}
-
-	/**
-	 * Sets the remove not done because of lack of priviledge message in this page.
-	 */
-	protected void setRemoveErrorNotAllowedMessage() {
-		setMessage(getMessages().get(Constants.MESSAGE_ERROR_REMOVE_NOT_ALLOWED));
+		setMessage(getRemoveSuccessMessage());
 	}
 
 	/**
 	 * Sets the remove not done because object not found in this page.
 	 */
 	protected void setRemoveErrorNotFoundMessage() {
-		setMessage(getMessages().get(Constants.MESSAGE_ERROR_REMOVE_NOT_FOUND));
+		setMessage(getRemoveErrorNotFoundMessage());
 	}
 
 	/**
@@ -217,21 +170,6 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 		if (request.isXHR()) {
 			setMessage(null);
 		}
-
-	}
-
-	/**
-	 * This method listens to the {@link Constants#REMOVE_OBJECT_ACTION} event and removes the
-	 * corresponding object.
-	 * 
-	 * @param context an {@link EventContext}.
-	 */
-	@OnEvent(Constants.REMOVE_OBJECT_ACTION)
-	protected Object remove(EventContext context) {
-		
-		K id = context.get(getPrimaryKeyClass(), 0);
-		final T toBeRemoved = primaryKeyEncoder.toValue(id);
-		return remove(toBeRemoved);
 
 	}
 

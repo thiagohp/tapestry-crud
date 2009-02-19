@@ -16,22 +16,18 @@ package br.com.arsmachina.tapestrycrud.components;
 
 import org.apache.tapestry5.ComponentResources;
 import org.apache.tapestry5.Link;
-import org.apache.tapestry5.corelib.components.Label;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.runtime.Component;
 
 import br.com.arsmachina.tapestrycrud.base.AbstractNewObjectLink;
 import br.com.arsmachina.tapestrycrud.base.BaseEditPage;
-import br.com.arsmachina.tapestrycrud.base.BaseListPage;
+import br.com.arsmachina.tapestrycrud.base.BasePage;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 
 /**
  * <p>
  * Component that creates a link to the corresponding edition page (a {@link BaseEditPage} instance,
- * typically). It must be used inside pages that subclass {@link BaseListPage}.
- * </p>
- * <p>
- * The code of this class is largely adapted from Tapestry's {@link Label}.
+ * typically). It must be used inside pages that subclass {@link BasePage}.
  * </p>
  * 
  * @author Thiago H. de Paula Figueiredo
@@ -49,15 +45,16 @@ public class NewObjectPageLink extends AbstractNewObjectLink {
 		
 		Component page = resources.getPage();
 
-		if (page instanceof BaseListPage == false) {
+		if (page instanceof BasePage == false) {
 
 			throw new RuntimeException("The NewObjectPageLink must be used inside a page "
-					+ "that subclasses BaseListPage");
+					+ "that subclasses BasePage");
 
 		}
-
-		BaseListPage listPage = (BaseListPage) page;
-		Class entityClass = listPage.getEntityClass();
+		
+		BasePage basePage = (BasePage) page;
+		Class<?> entityClass = basePage.getEntityClass();
+		
 		String editPageURL = tapestryCrudModuleService.getEditPageURL(entityClass);
 
 		return getLinkFactory().createPageRenderLink(editPageURL, true);

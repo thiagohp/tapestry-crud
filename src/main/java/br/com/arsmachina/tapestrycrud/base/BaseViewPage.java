@@ -15,11 +15,12 @@
 package br.com.arsmachina.tapestrycrud.base;
 
 import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.tapestry5.EventContext;
 import org.apache.tapestry5.ioc.annotations.Inject;
-
-import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
+import org.apache.tapestry5.services.Request;
 
 /**
  * Base class for pages that edit entity objects.
@@ -30,11 +31,20 @@ import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
  */
 public class BaseViewPage<T, ID extends Serializable> extends BasePage<T, ID> {
 
-	private T object;
-
+	// copied from ComponentEventDispatcher
+	private final Pattern PATH_PATTERN = Pattern.compile(
+			"^/" +      // The leading slash is recognized but skipped
+			"(((\\w+)/)*(\\w+))" + // A series of folder names leading up to the page name, forming the logical page name
+			"(\\.(\\w+(\\.\\w+)*))?" + // The first dot separates the page name from the nested component id
+			"(\\:(\\w+))?" + // A colon, then the event type
+			"(/(.*))?", //  A slash, then the action context
+			Pattern.COMMENTS);
+	
 	@Inject
-	private TapestryCrudModuleService tapestryCrudModuleService;
-
+	private Request request;
+	
+	private T object;
+	
 	/**
 	 * Sets the object property from a given activation context value.
 	 * 
@@ -42,22 +52,39 @@ public class BaseViewPage<T, ID extends Serializable> extends BasePage<T, ID> {
 	 */
 	Object onActivate(EventContext context) {
 
+		boolean validRequest = false;
+		
 		checkReadTypeAccess();
+		
+		if (context.getCount() > 0) {
 
-		object = getActivationContextEncoder(getEntityClass()).toObject(context);
-
-		if (object != null) {
-			checkReadObjectAccess(object);
+			object = getActivationContextEncoder(getEntityClass()).toObject(context);
+	
+			if (object != null) {
+				checkReadObjectAccess(object);
+				validRequest = true;
+			}
+			
 		}
-
-		final Class<?> result = object != null ? null : getListPage();
+		// event requests
+		else {
+			
+	        Matcher matcher = PATH_PATTERN.matcher(request.getPath());
+	        // is this an event request?
+	        if (matcher.matches()) {
+	        	validRequest = true;
+	        }
+	        
+		}
+		
+		final Class<?> result = validRequest ? null : getListPage();
 
 		return result;
 
 	}
 
 	private Class<?> getListPage() {
-		return tapestryCrudModuleService.getListPageClass(getEntityClass());
+		return getTapestryCrudModuleService().getListPageClass(getEntityClass());
 	}
 
 	/**
@@ -76,7 +103,7 @@ public class BaseViewPage<T, ID extends Serializable> extends BasePage<T, ID> {
 	protected void checkReadObjectAccess(T object) {
 		getAuthorizer().checkRead(object);
 	}
-
+	
 	/**
 	 * Returns the value of the <code>object</code> property.
 	 * 
