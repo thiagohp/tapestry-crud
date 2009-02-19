@@ -1,4 +1,4 @@
-<div class="t-crud-edit-page-links" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd">
+<div class="t-crud-links t-crud-edit-page-links" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd">
 	<div class="t-edit-object">
 		<a href="#" t:type="crud/ViewObjectPageLink">View this record</a>
 	</div>

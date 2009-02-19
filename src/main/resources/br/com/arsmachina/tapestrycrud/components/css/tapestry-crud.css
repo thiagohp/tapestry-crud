@@ -79,13 +79,14 @@ dl {
 	display: block;
 }
 
-div.t-crud-view-page-links, div.t-edit-view-page-links  {
-	margin-top: 5em;
-	margin-bottom: 2em;
+div.t-crud-links {
+	margin-top: 1em;
+	margin-bottom: 1em;
 	display: block;
 	float: none;
 	clear: both;
 } 
+
 
 div.t-crud-view-page-links > div, div.t-crud-edit-page-links > div {
 	display: block;
