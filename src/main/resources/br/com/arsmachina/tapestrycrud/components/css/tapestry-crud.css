@@ -75,7 +75,21 @@ form div.t-submit {
 	text-align: right;
 }
 
-div.t-new-object, div.t-listing-link {
+dl {
+	display: block;
+}
+
+div.t-crud-view-page-links, div.t-edit-view-page-links  {
+	margin-top: 5em;
+	margin-bottom: 2em;
+	display: block;
+	float: none;
 	clear: both;
-	margin: 1em;
+} 
+
+div.t-crud-view-page-links > div, div.t-crud-edit-page-links > div {
+	display: block;
+	clear: both;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
 }

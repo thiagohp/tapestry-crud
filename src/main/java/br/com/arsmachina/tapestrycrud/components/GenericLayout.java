@@ -15,6 +15,7 @@
 package br.com.arsmachina.tapestrycrud.components;
 
 import org.apache.tapestry5.BindingConstants;
+import org.apache.tapestry5.ComponentResources;
 import org.apache.tapestry5.annotations.IncludeStylesheet;
 import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Property;
@@ -43,6 +44,9 @@ public class GenericLayout {
 	private PageUtil pageUtil;
 	
 	@Inject
+	private ComponentResources resources;
+	
+	@Inject
 	private Messages messages;
 	
 	/**
@@ -50,6 +54,15 @@ public class GenericLayout {
 	 */
 	String defaultTitle() {
 		return pageUtil.getRequestedPageTitle(messages);
+	}
+	
+	/**
+	 * Returns the CSS class that will be put at the <code>html</code> tag.
+	 * 
+	 * @return a {@link String}.
+	 */
+	protected String getCssClass() {
+		return resources.getPageName().toLowerCase().replace('/', '-');
 	}
 
 }
