@@ -362,7 +362,12 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 	 */
 	void onActivate(EventContext context) {
 		
-		checkUpdateTypeAccess();
+		if (context.getCount() == 0) {
+			checkStoreTypeAccess();
+		}
+		else {
+			checkUpdateTypeAccess();
+		}
 		final T activationContextObject = activationContextEncoder.toObject(context);
 		
 		if (activationContextObject != null) {
@@ -380,6 +385,15 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 	 */
 	protected void checkUpdateTypeAccess() {
 		getAuthorizer().checkUpdate(getEntityClass());
+	}
+
+	/**
+	 * Checks if the current user has permission to store instances of the page entity class
+	 * and throws an exception if not.
+	 * This method calls <code>getAuthorizer().checkStore(getEntityClass())</code>.
+	 */
+	protected void checkStoreTypeAccess() {
+		getAuthorizer().checkStore(getEntityClass());
 	}
 
 	/**

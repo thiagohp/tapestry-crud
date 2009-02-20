@@ -27,6 +27,7 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.internal.util.InternalUtils;
 import org.apache.tapestry5.runtime.Component;
 
+import br.com.arsmachina.authorization.Authorizer;
 import br.com.arsmachina.tapestrycrud.EditPage;
 import br.com.arsmachina.tapestrycrud.base.BaseEditPage;
 import br.com.arsmachina.tapestrycrud.base.BaseListPage;
@@ -58,6 +59,9 @@ public class BackToListingPageLink {
 
 	@Inject
 	private TapestryCrudModuleService tapestryCrudModuleService;
+	
+	@Inject
+	private Authorizer authorizer;
 
 	private Class<?> entityClass;
 	
@@ -87,6 +91,11 @@ public class BackToListingPageLink {
 
 		BasePage basePage = (BasePage) page;
 		entityClass = basePage.getEntityClass();
+		
+		if (authorizer.canSearch(entityClass) == false) {
+			return false;
+		}
+		
 		listPageURL = tapestryCrudModuleService.getListPageURL(entityClass);
 
 		Link link = linkFactory.createPageRenderLink(listPageURL, true);
@@ -101,29 +110,33 @@ public class BackToListingPageLink {
 
 	void afterRender(MarkupWriter writer) {
 
-		boolean bodyIsBlank = InternalUtils.isBlank(element.getChildMarkup());
-
-		String label;
-
-		if (bodyIsBlank || ignoreBody) {
-
-			final Messages messages = resources.getMessages();
-
-			final String key = BACK_TO_LISTING_MESSAGE + "."
-					+ tapestryCrudModuleService.getListPageURL(entityClass).replace('/', '.');
-
-			if (messages.contains(key)) {
-				label = messages.get(key);
+		if (element != null) {
+		
+			boolean bodyIsBlank = InternalUtils.isBlank(element.getChildMarkup());
+	
+			String label;
+	
+			if (bodyIsBlank || ignoreBody) {
+	
+				final Messages messages = resources.getMessages();
+	
+				final String key = BACK_TO_LISTING_MESSAGE + "."
+						+ tapestryCrudModuleService.getListPageURL(entityClass).replace('/', '.');
+	
+				if (messages.contains(key)) {
+					label = messages.get(key);
+				}
+				else {
+					label = messages.get(BACK_TO_LISTING_MESSAGE);
+				}
+	
+				writer.write(label);
+	
 			}
-			else {
-				label = messages.get(BACK_TO_LISTING_MESSAGE);
-			}
-
-			writer.write(label);
-
+	
+			writer.end(); // a
+			
 		}
-
-		writer.end(); // a
 
 	}
 

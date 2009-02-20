@@ -27,6 +27,7 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.internal.util.InternalUtils;
 import org.apache.tapestry5.runtime.Component;
 
+import br.com.arsmachina.authorization.Authorizer;
 import br.com.arsmachina.tapestrycrud.base.BaseEditPage;
 import br.com.arsmachina.tapestrycrud.base.BaseViewPage;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
@@ -60,6 +61,9 @@ public class EditObjectPageLink {
 	
 	@Inject
 	private ActivationContextEncoderSource activationContextEncoderSource;
+	
+	@Inject
+	private Authorizer authorizer;
 
 	private Class<?> entityClass;
 	
@@ -77,7 +81,7 @@ public class EditObjectPageLink {
 
 	@SuppressWarnings("unchecked")
 	boolean beginRender(MarkupWriter writer) {
-		
+
 		Component page = resources.getPage();
 
 		if (page instanceof BaseViewPage == false) {
@@ -89,6 +93,11 @@ public class EditObjectPageLink {
 
 		BaseViewPage viewPage = (BaseViewPage) page;
 		Object object = viewPage.getObject();
+		
+		if (authorizer.canUpdate(object.getClass()) == false || authorizer.canUpdate(object) == false) {
+			return false;
+		}
+		
 		entityClass = viewPage.getEntityClass();
 		editPageURL = tapestryCrudModuleService.getEditPageURL(entityClass);
 		ActivationContextEncoder encoder = activationContextEncoderSource.get(entityClass);
@@ -106,29 +115,33 @@ public class EditObjectPageLink {
 
 	void afterRender(MarkupWriter writer) {
 
-		boolean bodyIsBlank = InternalUtils.isBlank(element.getChildMarkup());
-
-		String label;
-
-		if (bodyIsBlank || ignoreBody) {
-
-			final Messages messages = resources.getMessages();
-
-			final String key = EDIT_OBJECT_MESSAGE + "."
-					+ tapestryCrudModuleService.getEditPageURL(entityClass).replace('/', '.');
-
-			if (messages.contains(key)) {
-				label = messages.get(key);
+		if (element != null) {
+		
+			boolean bodyIsBlank = InternalUtils.isBlank(element.getChildMarkup());
+	
+			String label;
+	
+			if (bodyIsBlank || ignoreBody) {
+	
+				final Messages messages = resources.getMessages();
+	
+				final String key = EDIT_OBJECT_MESSAGE + "."
+						+ tapestryCrudModuleService.getEditPageURL(entityClass).replace('/', '.');
+	
+				if (messages.contains(key)) {
+					label = messages.get(key);
+				}
+				else {
+					label = messages.get(EDIT_OBJECT_MESSAGE);
+				}
+	
+				writer.write(label);
+	
 			}
-			else {
-				label = messages.get(EDIT_OBJECT_MESSAGE);
-			}
-
-			writer.write(label);
-
+	
+			writer.end(); // a
+			
 		}
-
-		writer.end(); // a
 
 	}
 

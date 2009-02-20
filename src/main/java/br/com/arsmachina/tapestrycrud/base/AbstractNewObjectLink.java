@@ -27,6 +27,7 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.internal.util.InternalUtils;
 import org.apache.tapestry5.runtime.Component;
 
+import br.com.arsmachina.authorization.Authorizer;
 import br.com.arsmachina.tapestrycrud.EditPage;
 import br.com.arsmachina.tapestrycrud.components.NewObjectEventLink;
 import br.com.arsmachina.tapestrycrud.components.NewObjectPageLink;
@@ -79,6 +80,9 @@ public abstract class AbstractNewObjectLink {
 	 */
 	@Parameter(value = "true")
 	private boolean ignoreBody;
+
+	@Inject
+	private Authorizer authorizer;
 
 	private Element element;
 
@@ -163,6 +167,13 @@ public abstract class AbstractNewObjectLink {
 	}
 
 	boolean beginRender(MarkupWriter writer) {
+		
+		if (entityClass == null) {
+			setEntityClass();
+		}
+		if (authorizer.canStore(entityClass) == false) {
+			return false;
+		}
 
 		Link link = createLink();
 
@@ -175,34 +186,38 @@ public abstract class AbstractNewObjectLink {
 	}
 
 	void afterRender(MarkupWriter writer) {
+		
+		if (element != null) {
 
-		if (entityClass == null) {
-			setEntityClass();
-		}
-
-		boolean bodyIsBlank = InternalUtils.isBlank(element.getChildMarkup());
-
-		String label;
-
-		if (bodyIsBlank || ignoreBody) {
-
-			final Messages messages = resources.getMessages();
-
-			final String key = NEW_OBJECT_MESSAGE + "."
-					+ tapestryCrudModuleService.getEditPageURL(entityClass).replace('/', '.');
-
-			if (messages.contains(key)) {
-				label = messages.get(key);
+			if (entityClass == null) {
+				setEntityClass();
 			}
-			else {
-				label = messages.get(NEW_OBJECT_MESSAGE);
+	
+			boolean bodyIsBlank = InternalUtils.isBlank(element.getChildMarkup());
+	
+			String label;
+	
+			if (bodyIsBlank || ignoreBody) {
+	
+				final Messages messages = resources.getMessages();
+	
+				final String key = NEW_OBJECT_MESSAGE + "."
+						+ tapestryCrudModuleService.getEditPageURL(entityClass).replace('/', '.');
+	
+				if (messages.contains(key)) {
+					label = messages.get(key);
+				}
+				else {
+					label = messages.get(NEW_OBJECT_MESSAGE);
+				}
+	
+				writer.write(label);
+	
 			}
-
-			writer.write(label);
-
+	
+			writer.end(); // a
+			
 		}
-
-		writer.end(); // a
 
 	}
 

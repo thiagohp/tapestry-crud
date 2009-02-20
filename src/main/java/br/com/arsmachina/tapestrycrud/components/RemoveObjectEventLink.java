@@ -27,6 +27,7 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.internal.util.InternalUtils;
 import org.apache.tapestry5.runtime.Component;
 
+import br.com.arsmachina.authorization.Authorizer;
 import br.com.arsmachina.tapestrycrud.Constants;
 import br.com.arsmachina.tapestrycrud.base.BaseEditPage;
 import br.com.arsmachina.tapestrycrud.base.BaseViewPage;
@@ -63,6 +64,9 @@ public class RemoveObjectEventLink {
 	 */
 	@Parameter(value = "true")
 	private boolean ignoreBody;
+	
+	@Inject
+	private Authorizer authorizer;
 
 	private Element element;
 
@@ -87,6 +91,10 @@ public class RemoveObjectEventLink {
 					+ "that extends BaseViewPage or BaseEditPage");
 		}
 
+		if (authorizer.canRemove(entityClass) == false || authorizer.canRemove(object) == false) {
+			return false;
+		}
+
 		final PrimaryKeyEncoder encoder = primaryKeyEncoderSource.get(object.getClass());
 		final Object context = encoder.toKey(object);
 
@@ -101,29 +109,33 @@ public class RemoveObjectEventLink {
 	}
 
 	void afterRender(MarkupWriter writer) {
+		
+		if (element != null) {
 
-		boolean bodyIsBlank = InternalUtils.isBlank(element.getChildMarkup());
-
-		String label;
-
-		if (bodyIsBlank || ignoreBody) {
-
-			final Messages messages = resources.getMessages();
-
-			final String key = REMOVE_OBJECT_MESSAGE + "." + entityClass.getSimpleName();
-
-			if (messages.contains(key)) {
-				label = messages.get(key);
+			boolean bodyIsBlank = InternalUtils.isBlank(element.getChildMarkup());
+	
+			String label;
+	
+			if (bodyIsBlank || ignoreBody) {
+	
+				final Messages messages = resources.getMessages();
+	
+				final String key = REMOVE_OBJECT_MESSAGE + "." + entityClass.getSimpleName();
+	
+				if (messages.contains(key)) {
+					label = messages.get(key);
+				}
+				else {
+					label = messages.get(REMOVE_OBJECT_MESSAGE);
+				}
+	
+				writer.write(label);
+	
 			}
-			else {
-				label = messages.get(REMOVE_OBJECT_MESSAGE);
-			}
-
-			writer.write(label);
-
+	
+			writer.end(); // a
+			
 		}
-
-		writer.end(); // a
 
 	}
 

@@ -26,6 +26,7 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.internal.util.InternalUtils;
 import org.apache.tapestry5.runtime.Component;
 
+import br.com.arsmachina.authorization.Authorizer;
 import br.com.arsmachina.tapestrycrud.base.BaseEditPage;
 import br.com.arsmachina.tapestrycrud.base.BaseViewPage;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
@@ -56,6 +57,9 @@ public class ViewObjectPageLink {
 	
 	@Inject
 	private ActivationContextEncoderSource activationContextEncoderSource;
+	
+	@Inject
+	private Authorizer authorizer;
 
 	private Class<?> entityClass;
 	
@@ -83,6 +87,11 @@ public class ViewObjectPageLink {
 
 		BaseEditPage editPage = (BaseEditPage) page;
 		Object object = editPage.getObject();
+		
+		if (authorizer.canRead(object.getClass()) == false || authorizer.canRead(object) == false) {
+			return false;
+		}
+		
 		entityClass = editPage.getEntityClass();
 		Class<?> viewPageClass = tapestryCrudModuleService.getViewPageClass(entityClass);
 		ActivationContextEncoder encoder = activationContextEncoderSource.get(entityClass);
@@ -100,29 +109,33 @@ public class ViewObjectPageLink {
 
 	void afterRender(MarkupWriter writer) {
 
-		boolean bodyIsBlank = InternalUtils.isBlank(element.getChildMarkup());
-
-		String label;
-
-		if (bodyIsBlank || ignoreBody) {
-
-			final Messages messages = resources.getMessages();
-
-			final String key = VIEW_OBJECT_MESSAGE + "."
-					+ tapestryCrudModuleService.getEditPageURL(entityClass).replace('/', '.');
-
-			if (messages.contains(key)) {
-				label = messages.get(key);
+		if (element != null) {
+		
+			boolean bodyIsBlank = InternalUtils.isBlank(element.getChildMarkup());
+	
+			String label;
+	
+			if (bodyIsBlank || ignoreBody) {
+	
+				final Messages messages = resources.getMessages();
+	
+				final String key = VIEW_OBJECT_MESSAGE + "."
+						+ tapestryCrudModuleService.getEditPageURL(entityClass).replace('/', '.');
+	
+				if (messages.contains(key)) {
+					label = messages.get(key);
+				}
+				else {
+					label = messages.get(VIEW_OBJECT_MESSAGE);
+				}
+	
+				writer.write(label);
+	
 			}
-			else {
-				label = messages.get(VIEW_OBJECT_MESSAGE);
-			}
-
-			writer.write(label);
-
+	
+			writer.end(); // a
+			
 		}
-
-		writer.end(); // a
 
 	}
 
