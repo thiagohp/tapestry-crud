@@ -22,6 +22,7 @@ import br.com.arsmachina.tapestrycrud.beanmodel.BeanModelCustomizer;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.Encoder;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
+import br.com.arsmachina.tapestrycrud.tree.TreeNodeFactory;
 
 /**
  * Interface that defines information about a module, whatever its conventions are.
@@ -96,12 +97,30 @@ public interface TapestryCrudModule {
 			Class<T> entityClass);
 	
 	/**
+	 * Returns the tree node factory class corresponding to a given entity class.
+	 * 
+	 * @param <T> the entity type.
+	 * @param entityClass a {@link Class} instance. It cannot be null.
+	 * @return a {@link TreeNodeFactory} or null (if no corresponding one is found).
+	 */
+	<T> Class<? extends TreeNodeFactory<T>> getTreeNodeFactoryClass(
+			Class<T> entityClass);
+	
+	/**
 	 * Returns the fully-qualified name of the bean model customizer for a given entity class.
 	 * 
 	 * @param clasz a {@link Class}. It cannot be null.
 	 * @return a {@link String}.
 	 */
 	String getBeanModelCustomizerClassName(Class<?> entityClass);
+
+	/**
+	 * Returns the fully-qualified name of the tree node factory for a given entity class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String}.
+	 */
+	String getTreeNodeFactoryClassName(Class<?> entityClass);
 
 	/**
 	 * Returns the fully-qualified name of the edition page for a given entity class.
@@ -211,5 +230,5 @@ public interface TapestryCrudModule {
 	 * @return a {@link String}. It cannot be null.
 	 */
 	public String getViewPagePrefix();
-	
+
 }

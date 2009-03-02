@@ -25,6 +25,7 @@ import br.com.arsmachina.tapestrycrud.beanmodel.BeanModelCustomizer;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.Encoder;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
+import br.com.arsmachina.tapestrycrud.tree.TreeNodeFactory;
 
 /**
  * Default {@link TapestryCrudModule} implementation.
@@ -163,6 +164,19 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 	public String getBeanModelCustomizerClassName(Class<?> entityClass) {
 
 		return String.format("%s.beanmodel.%sBeanModelCustomizer", getTapestryPackage(),
+				entityClass.getSimpleName());
+
+	}
+
+	/**
+	 * Returns the fully-qualified name of the tree node factory for a given entity class.
+	 * 
+	 * @param clasz a {@link Class}. It cannot be null.
+	 * @return a {@link String} or null.
+	 */
+	public String getTreeNodeFactoryClassName(Class<?> entityClass) {
+
+		return String.format("%s.tree.%sTreeNodeFactory", getTapestryPackage(),
 				entityClass.getSimpleName());
 
 	}
@@ -331,6 +345,14 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 			Class<T> entityClass) {
 
 		return getClass(getBeanModelCustomizerClassName(entityClass));
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> Class<? extends TreeNodeFactory<T>> getTreeNodeFactoryClass(
+			Class<T> entityClass) {
+
+		return getClass(getTreeNodeFactoryClassName(entityClass));
 
 	}
 
