@@ -44,4 +44,11 @@ public interface TreeNode<T> {
 	 */
 	Class<T> getType();
 
+	/**
+	 * Returns the object that this node represents.
+	 * 
+	 * @return a <code>T</code>.
+	 */
+	T getObject();
+
 }

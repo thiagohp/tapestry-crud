@@ -29,4 +29,12 @@ public interface TreeNodeFactory<T> {
 	 */
 	TreeNode<T> build(T object);
 
+	/**
+	 * Tells if a given object is a root node.
+	 * 
+	 * @param object a <code>T</code>.
+	 * @return a<code>boolean</code>.
+	 */
+	boolean isRoot(T object);
+
 }

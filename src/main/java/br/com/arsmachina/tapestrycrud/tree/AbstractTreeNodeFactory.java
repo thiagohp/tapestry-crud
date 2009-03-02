@@ -58,7 +58,7 @@ public abstract class AbstractTreeNodeFactory<T> implements TreeNodeFactory<T> {
 	 */
 	protected TreeNode<T> build(T object, int level) {
 
-		SimpleTreeNode<T> treeNode = new SimpleTreeNode<T>(level, type);
+		SimpleTreeNode<T> treeNode = new SimpleTreeNode<T>(object, level, type);
 		List<T> children = getChildren(object);
 
 		if (children != null) {

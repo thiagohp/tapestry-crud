@@ -83,6 +83,7 @@ import br.com.arsmachina.tapestrycrud.services.PageUtil;
 import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleFactory;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
+import br.com.arsmachina.tapestrycrud.services.TreeNodeFactorySource;
 import br.com.arsmachina.tapestrycrud.services.impl.ActivationContextEncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.AuthorizationErrorMessageServiceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.BeanModelCustomizerSourceImpl;
@@ -94,7 +95,9 @@ import br.com.arsmachina.tapestrycrud.services.impl.PrimaryKeyEncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.PrimaryKeyEncoderValueEncoder;
 import br.com.arsmachina.tapestrycrud.services.impl.TapestryCrudModuleFactoryImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.TapestryCrudModuleServiceImpl;
+import br.com.arsmachina.tapestrycrud.services.impl.TreeNodeFactorySourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.UserServiceImpl;
+import br.com.arsmachina.tapestrycrud.tree.TreeNodeFactory;
 
 /**
  * Tapestry-IoC module for Tapestry CRUD.
@@ -230,6 +233,20 @@ public class TapestryCrudIoCModule {
 	}
 
 	/**
+	 * Builds the {@link TreeNodeFactorySource} service.
+	 * 
+	 * @param contributions a {@link Map}.
+	 * @return a {@link TreeNodeFactorySource}.
+	 */
+	@SuppressWarnings("unchecked")
+	public static TreeNodeFactorySource buildTreeNodeFactorySource(
+			Map<Class, TreeNodeFactory> contributions) {
+
+		return new TreeNodeFactorySourceImpl(contributions);
+
+	}
+
+	/**
 	 * Automatically contributes (class, {@link BeanModelCustomizer} pairs to the 
 	 * {@link BeanModelCustomizerSource} service.
 	 * 
@@ -266,6 +283,56 @@ public class TapestryCrudIoCModule {
 						final String message =
 							String.format("Associating entity %s with bean model customizer %s",
 									entityName, customizerClassName);
+
+						LOGGER.info(message);
+
+					}
+					
+				}
+				
+			}
+			
+		}
+
+	}
+
+	/**
+	 * Automatically contributes (class, {@link TreeNodeFactory} pairs to the 
+	 * {@link TreeNodeFactorySource} service.
+	 * 
+	 * @param configuration um {@link MappedConfiguration}.
+	 * @param tapestryCrudModuleService a {@link TapestryCrudModuleService}.
+	 * @param objectLocator an {@link ObjectLocator}.
+	 */
+	@SuppressWarnings("unchecked")
+	public static void contributeTreeNodeFactorySource(
+			MappedConfiguration<Class, TreeNodeFactory> configuration,
+			TapestryCrudModuleService tapestryCrudModuleService, ObjectLocator objectLocator) {
+
+		final Set<TapestryCrudModule> modules = tapestryCrudModuleService.getModules();
+		
+		for (TapestryCrudModule module : modules) {
+			
+			final Set<Class<?>> entityClasses = module.getEntityClasses();
+			
+			for (Class entityClass : entityClasses) {
+				
+				Class<TreeNodeFactory> factoryClass = 
+					module.getTreeNodeFactoryClass(entityClass);
+				
+				if (factoryClass != null) {
+					
+					TreeNodeFactory factory = objectLocator.autobuild(factoryClass);
+					configuration.add(entityClass, factory);
+					
+					if (LOGGER.isInfoEnabled()) {
+
+						final String entityName = entityClass.getSimpleName();
+						final String factoryClassName =
+							factoryClass.getName();
+						final String message =
+							String.format("Associating entity %s with tree node factory %s",
+									entityName, factoryClassName);
 
 						LOGGER.info(message);
 

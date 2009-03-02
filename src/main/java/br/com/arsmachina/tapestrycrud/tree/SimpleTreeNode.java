@@ -31,24 +31,34 @@ public class SimpleTreeNode<T> implements TreeNode<T> {
 
 	private Class<T> type;
 
+	private T object;
+
 	/**
 	 * Single constructor of this class.
 	 * 
+	 * @para object a <code>T</code>.
 	 * @param children a {@link List} of {@link TreeNode}s.
 	 * @param level an <code>int</code> greater or equal to 1.
 	 */
-	public SimpleTreeNode(int level, Class<T> type) {
-		
-		if (level <= 0) {
-			throw new IllegalArgumentException("Parameter level must be greater or equal to 1");
+	public SimpleTreeNode(T object, int level, Class<T> type) {
+
+		if (object == null) {
+			throw new IllegalArgumentException(
+					"Parameter object cannot be null");
 		}
-		
+
+		if (level <= 0) {
+			throw new IllegalArgumentException(
+					"Parameter level must be greater or equal to 1");
+		}
+
 		if (type == null) {
 			throw new IllegalArgumentException("Parameter type cannot be null");
 		}
-		
+
 		this.level = level;
-		
+		this.object = object;
+
 		children = new ArrayList<TreeNode<T>>();
 
 	}
@@ -64,9 +74,18 @@ public class SimpleTreeNode<T> implements TreeNode<T> {
 	public Class<T> getType() {
 		return type;
 	}
-	
+
 	public void add(TreeNode<T> treeNode) {
 		children.add(treeNode);
+	}
+
+	public T getObject() {
+		return object;
+	}
+
+	@Override
+	public String toString() {
+		return getObject().toString();
 	}
 
 }

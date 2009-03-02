@@ -94,3 +94,23 @@ div.t-crud-view-page-links > div, div.t-crud-edit-page-links > div {
 	margin-top: 0.5em;
 	margin-bottom: 0.5em;
 }
+
+table.t-data-grid td.level1 {
+	padding-left: 1em;
+}
+
+table.t-data-grid td.level2 {
+	padding-left: 2em;
+}
+
+table.t-data-grid td.level3 {
+	padding-left: 3em;
+}
+
+table.t-data-grid td.level4 {
+	padding-left: 4em;
+}
+
+table.t-data-grid td.level5 {
+	padding-left: 5em;
+}
