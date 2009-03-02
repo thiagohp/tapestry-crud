@@ -51,7 +51,7 @@ import org.apache.tapestry5.services.ValueEncoderSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import br.com.arsmachina.authentication.service.UserService;
+import br.com.arsmachina.authentication.controller.service.UserService;
 import br.com.arsmachina.controller.Controller;
 import br.com.arsmachina.module.DefaultModule;
 import br.com.arsmachina.module.Module;
