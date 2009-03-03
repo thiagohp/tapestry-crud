@@ -114,3 +114,34 @@ table.t-data-grid td.level4 {
 table.t-data-grid td.level5 {
 	padding-left: 5em;
 }
+
+ul.t-crud-tree-select {
+	margin: 0;
+	float: left;
+	clear: none;
+	list-style-position: inside;
+	padding-left: 0;
+}
+
+ul.t-crud-tree-select label, ul.t-crud-tree-select input {
+	width: auto;
+	display: inline;
+	clear: none;
+	float: none;
+}
+
+ul.t-crud-tree-select label:after {
+	content: "";
+}
+
+ul.t-crud-tree-select li.disabled {
+	color: grey;
+}
+
+ul.t-crud-tree-select li.checked ul input, ul.t-crud-tree-select li.checked ul label {
+	background-color: white;
+}
+
+:checked {
+	background-color: blue;
+}

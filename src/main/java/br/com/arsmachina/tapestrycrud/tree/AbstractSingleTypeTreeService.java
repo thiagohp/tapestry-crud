@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
+import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
+
 /**
  * A partial implementation of {@link SingleTypeTreeService}.
  * 
@@ -33,20 +36,30 @@ public abstract class AbstractSingleTypeTreeService<T> implements
 
 	final Class<T> type;
 
+	final LabelEncoder<T> labelEncoder;
+
 	/**
 	 * Single constructor of this class.
 	 */
 	@SuppressWarnings("unchecked")
-	protected AbstractSingleTypeTreeService() {
+	protected AbstractSingleTypeTreeService(
+			LabelEncoderSource labelEncoderSource) {
 
 		final Type genericSuperclass = getClass().getGenericSuperclass();
 		final ParameterizedType parameterizedType =
 			((ParameterizedType) genericSuperclass);
 		type = (Class<T>) parameterizedType.getActualTypeArguments()[0];
 
+		if (labelEncoderSource == null) {
+			throw new IllegalArgumentException(
+					"O parâmetro labelEncoderSource não pode ser nulo");
+		}
+
+		labelEncoder = labelEncoderSource.get(type);
+
 	}
 
-	public TreeNode<T> build(T object) {
+	public TreeNode<T> buildTreeNode(T object) {
 		return build(object, 1);
 	}
 
@@ -82,10 +95,6 @@ public abstract class AbstractSingleTypeTreeService<T> implements
 	 */
 	protected abstract List<T> getChildren(T object);
 
-	public boolean isRoot(T object) {
-		return false;
-	}
-
 	public void treeOrder(List<T> objects) {
 
 		List<T> list = new ArrayList<T>();
@@ -110,13 +119,68 @@ public abstract class AbstractSingleTypeTreeService<T> implements
 	 * @param list a {@link List} of <code>T</code>.
 	 */
 	void add(T object, List<T> list) {
-		
+
 		list.add(object);
-		
+
 		for (T child : getChildren(object)) {
 			add(child, list);
 		}
-		
+
+	}
+
+	public TreeSelectNode buildTreeSelectNode(TreeNode<T> node) {
+
+		final List<TreeSelectNode> childrenTSN =
+			new ArrayList<TreeSelectNode>();
+
+		final T object = node.getObject();
+		final String label = labelEncoder.toLabel(object);
+		final SimpleTreeSelectNode treeSelectNode =
+			new SimpleTreeSelectNode(object, childrenTSN, label);
+
+		final List<TreeNode<T>> children = node.getChildren();
+
+		for (TreeNode<T> childNode : children) {
+			childrenTSN.add(buildTreeSelectNode(childNode));
+		}
+
+		return treeSelectNode;
+
+	}
+
+	public List<TreeSelectNode> buildTreeSelectNodeListFromTreeNodes(
+			List<TreeNode<T>> nodes) {
+
+		final List<TreeSelectNode> childrenTSN =
+			new ArrayList<TreeSelectNode>(nodes.size());
+
+		for (TreeNode<T> node : nodes) {
+			
+			if (isRoot(node.getObject())) {
+				childrenTSN.add(buildTreeSelectNode(node));
+			}
+			
+		}
+
+		return childrenTSN;
+
+	}
+
+	public List<TreeNode<T>> buildTreeNodeList(List<T> objects) {
+
+		final List<TreeNode<T>> nodes =
+			new ArrayList<TreeNode<T>>(objects.size());
+
+		for (T object : objects) {
+			nodes.add(buildTreeNode(object));
+		}
+
+		return nodes;
+
+	}
+
+	public List<TreeSelectNode> buildTreeSelectNodeList(List<T> objects) {
+		return buildTreeSelectNodeListFromTreeNodes(buildTreeNodeList(objects));
 	}
 
 }

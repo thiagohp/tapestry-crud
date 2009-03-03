@@ -29,7 +29,7 @@ public interface SingleTypeTreeService<T> {
 	 * @param object a <code>T</code> instance. It cannot be null.
 	 * @return a {@link TreeNode}. It cannot be null.
 	 */
-	TreeNode<T> build(T object);
+	TreeNode<T> buildTreeNode(T object);
 
 	/**
 	 * Tells if a given object is a root node.
@@ -45,5 +45,40 @@ public interface SingleTypeTreeService<T> {
 	 * @param objects a {@link List} of <code>T</code>. It cannot be null.
 	 */
 	void treeOrder(List<T> objects);
+	
+	/**
+	 * Builds a {@link TreeSelectNode} for a given {@link TreeNode}.
+	 * 
+	 * @param node a {@link TreeNode}. It cannot be null.
+	 * @return {@link TreeSelectNode}.
+	 */
+	TreeSelectNode buildTreeSelectNode(TreeNode<T> node);
+	
+	/**
+	 * Convenience method to create a list of {@link TreeSelectNode}s out of a list of 
+	 * {@link TreeNode}s. 
+	 * 
+	 * @param node a {@link List} of  {@link TreeNode}s. It cannot be null.
+	 * @return a {@link List} of {@link TreeSelectNode}.
+	 */
+	List<TreeSelectNode> buildTreeSelectNodeListFromTreeNodes(List<TreeNode<T>> nodes);
+
+	/**
+	 * Convenience method to create a list of {@link TreeNode}s out of a list of 
+	 * <code>T</code> instances. 
+	 * 
+	 * @param node a {@link TreeNode}. It cannot be null.
+	 * @return a {@link List} of <code>T</code>.
+	 */
+	List<TreeNode<T>> buildTreeNodeList(List<T> objects);
+
+	/**
+	 * Convenience method to create a list of {@link TreeSelectNode}s out of a list of 
+	 * <code>T</code> instances. 
+	 * 
+	 * @param node a {@link List} of <code>T</code>. It cannot be null.
+	 * @return a {@link List} of {@link TreeSelectNode}.
+	 */
+	List<TreeSelectNode> buildTreeSelectNodeList(List<T> objects);
 
 }

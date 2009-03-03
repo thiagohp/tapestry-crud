@@ -107,7 +107,7 @@ public class TreeGrid {
 		for (Object object : objects) {
 
 			if (treeNodeFactory.isRoot(object)) {
-				nodes.add(treeNodeFactory.build(object));
+				nodes.add(treeNodeFactory.buildTreeNode(object));
 			}
 
 		}
