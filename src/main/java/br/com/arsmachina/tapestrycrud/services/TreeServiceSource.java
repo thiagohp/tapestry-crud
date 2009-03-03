@@ -14,22 +14,22 @@
 
 package br.com.arsmachina.tapestrycrud.services;
 
-import br.com.arsmachina.tapestrycrud.tree.TreeNodeFactory;
+import br.com.arsmachina.tapestrycrud.tree.SingleTypeTreeService;
 
 /**
- * Service that provides {@link TreeNodeFactory}s.
+ * Service that provides {@link SingleTypeTreeService}s.
  * 
  * @author Thiago H. de Paula Figueiredo
  */
-public interface TreeNodeFactorySource {
+public interface TreeServiceSource {
 
 	/**
-	 * Returns the {@link TreeNodeFactory} of a given type.
+	 * Returns the {@link SingleTypeTreeService} of a given type.
 	 * 
 	 * @param <T> a type.
 	 * @param clasz a {@link Class}.
-	 * @return an {@link TreeNodeFactory}.
+	 * @return an {@link SingleTypeTreeService}.
 	 */
-	<T> TreeNodeFactory<T> get(Class<T> clasz);
+	<T> SingleTypeTreeService<T> get(Class<T> clasz);
 	
 }

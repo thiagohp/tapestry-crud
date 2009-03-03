@@ -13,16 +13,18 @@
 // limitations under the License.
 package br.com.arsmachina.tapestrycrud.tree;
 
+import java.util.List;
+
 /**
- * A factory of nodes of a given type.
+ * A tree service for a given type.
  * 
  * @param <T> the class related to this factory.
  * @author Thiago H. de Paula Figueiredo
  */
-public interface TreeNodeFactory<T> {
+public interface SingleTypeTreeService<T> {
 
 	/**
-	 * Builds a tree node for a given object
+	 * Builds a tree node for a given object.
 	 * 
 	 * @param object a <code>T</code> instance. It cannot be null.
 	 * @return a {@link TreeNode}. It cannot be null.
@@ -33,8 +35,15 @@ public interface TreeNodeFactory<T> {
 	 * Tells if a given object is a root node.
 	 * 
 	 * @param object a <code>T</code>.
-	 * @return a<code>boolean</code>.
+	 * @return a<code>boolean</code>. It cannot be null.
 	 */
 	boolean isRoot(T object);
+	
+	/**
+	 * Sorts a list in tree order.
+	 * 
+	 * @param objects a {@link List} of <code>T</code>. It cannot be null.
+	 */
+	void treeOrder(List<T> objects);
 
 }

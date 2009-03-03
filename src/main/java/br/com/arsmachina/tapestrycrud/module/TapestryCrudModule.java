@@ -22,7 +22,7 @@ import br.com.arsmachina.tapestrycrud.beanmodel.BeanModelCustomizer;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.Encoder;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
-import br.com.arsmachina.tapestrycrud.tree.TreeNodeFactory;
+import br.com.arsmachina.tapestrycrud.tree.SingleTypeTreeService;
 
 /**
  * Interface that defines information about a module, whatever its conventions are.
@@ -97,13 +97,13 @@ public interface TapestryCrudModule {
 			Class<T> entityClass);
 	
 	/**
-	 * Returns the tree node factory class corresponding to a given entity class.
+	 * Returns the tree service class corresponding to a given entity class.
 	 * 
 	 * @param <T> the entity type.
 	 * @param entityClass a {@link Class} instance. It cannot be null.
-	 * @return a {@link TreeNodeFactory} or null (if no corresponding one is found).
+	 * @return a {@link SingleTypeTreeService} or null (if no corresponding one is found).
 	 */
-	<T> Class<? extends TreeNodeFactory<T>> getTreeNodeFactoryClass(
+	<T> Class<? extends SingleTypeTreeService<T>> getTreeServiceClass(
 			Class<T> entityClass);
 	
 	/**
@@ -115,12 +115,12 @@ public interface TapestryCrudModule {
 	String getBeanModelCustomizerClassName(Class<?> entityClass);
 
 	/**
-	 * Returns the fully-qualified name of the tree node factory for a given entity class.
+	 * Returns the fully-qualified name of the tree service for a given entity class.
 	 * 
 	 * @param clasz a {@link Class}. It cannot be null.
 	 * @return a {@link String}.
 	 */
-	String getTreeNodeFactoryClassName(Class<?> entityClass);
+	String getTreeServiceClassName(Class<?> entityClass);
 
 	/**
 	 * Returns the fully-qualified name of the edition page for a given entity class.

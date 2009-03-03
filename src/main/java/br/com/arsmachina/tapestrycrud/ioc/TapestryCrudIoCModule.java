@@ -51,7 +51,7 @@ import org.apache.tapestry5.services.ValueEncoderSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import br.com.arsmachina.authentication.controller.service.UserService;
+import br.com.arsmachina.authentication.service.UserService;
 import br.com.arsmachina.controller.Controller;
 import br.com.arsmachina.module.DefaultModule;
 import br.com.arsmachina.module.Module;
@@ -83,7 +83,7 @@ import br.com.arsmachina.tapestrycrud.services.PageUtil;
 import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleFactory;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
-import br.com.arsmachina.tapestrycrud.services.TreeNodeFactorySource;
+import br.com.arsmachina.tapestrycrud.services.TreeServiceSource;
 import br.com.arsmachina.tapestrycrud.services.impl.ActivationContextEncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.AuthorizationErrorMessageServiceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.BeanModelCustomizerSourceImpl;
@@ -95,9 +95,9 @@ import br.com.arsmachina.tapestrycrud.services.impl.PrimaryKeyEncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.PrimaryKeyEncoderValueEncoder;
 import br.com.arsmachina.tapestrycrud.services.impl.TapestryCrudModuleFactoryImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.TapestryCrudModuleServiceImpl;
-import br.com.arsmachina.tapestrycrud.services.impl.TreeNodeFactorySourceImpl;
+import br.com.arsmachina.tapestrycrud.services.impl.TreeServiceSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.UserServiceImpl;
-import br.com.arsmachina.tapestrycrud.tree.TreeNodeFactory;
+import br.com.arsmachina.tapestrycrud.tree.SingleTypeTreeService;
 
 /**
  * Tapestry-IoC module for Tapestry CRUD.
@@ -233,16 +233,16 @@ public class TapestryCrudIoCModule {
 	}
 
 	/**
-	 * Builds the {@link TreeNodeFactorySource} service.
+	 * Builds the {@link TreeServiceSource} service.
 	 * 
 	 * @param contributions a {@link Map}.
-	 * @return a {@link TreeNodeFactorySource}.
+	 * @return a {@link TreeServiceSource}.
 	 */
 	@SuppressWarnings("unchecked")
-	public static TreeNodeFactorySource buildTreeNodeFactorySource(
-			Map<Class, TreeNodeFactory> contributions) {
+	public static TreeServiceSource buildTreeServiceSource(
+			Map<Class, SingleTypeTreeService> contributions) {
 
-		return new TreeNodeFactorySourceImpl(contributions);
+		return new TreeServiceSourceImpl(contributions);
 
 	}
 
@@ -297,16 +297,16 @@ public class TapestryCrudIoCModule {
 	}
 
 	/**
-	 * Automatically contributes (class, {@link TreeNodeFactory} pairs to the 
-	 * {@link TreeNodeFactorySource} service.
+	 * Automatically contributes (class, {@link SingleTypeTreeService} pairs to the 
+	 * {@link TreeServiceSource} service.
 	 * 
 	 * @param configuration um {@link MappedConfiguration}.
 	 * @param tapestryCrudModuleService a {@link TapestryCrudModuleService}.
 	 * @param objectLocator an {@link ObjectLocator}.
 	 */
 	@SuppressWarnings("unchecked")
-	public static void contributeTreeNodeFactorySource(
-			MappedConfiguration<Class, TreeNodeFactory> configuration,
+	public static void contributeTreeServiceSource(
+			MappedConfiguration<Class, SingleTypeTreeService> configuration,
 			TapestryCrudModuleService tapestryCrudModuleService, ObjectLocator objectLocator) {
 
 		final Set<TapestryCrudModule> modules = tapestryCrudModuleService.getModules();
@@ -317,12 +317,12 @@ public class TapestryCrudIoCModule {
 			
 			for (Class entityClass : entityClasses) {
 				
-				Class<TreeNodeFactory> factoryClass = 
-					module.getTreeNodeFactoryClass(entityClass);
+				Class<SingleTypeTreeService> factoryClass = 
+					module.getTreeServiceClass(entityClass);
 				
 				if (factoryClass != null) {
 					
-					TreeNodeFactory factory = objectLocator.autobuild(factoryClass);
+					SingleTypeTreeService factory = objectLocator.autobuild(factoryClass);
 					configuration.add(entityClass, factory);
 					
 					if (LOGGER.isInfoEnabled()) {
@@ -331,7 +331,7 @@ public class TapestryCrudIoCModule {
 						final String factoryClassName =
 							factoryClass.getName();
 						final String message =
-							String.format("Associating entity %s with tree node factory %s",
+							String.format("Associating entity %s with tree service %s",
 									entityName, factoryClassName);
 
 						LOGGER.info(message);

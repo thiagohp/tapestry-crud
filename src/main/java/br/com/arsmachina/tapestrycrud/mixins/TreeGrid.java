@@ -30,9 +30,9 @@ import org.apache.tapestry5.dom.Element;
 import org.apache.tapestry5.ioc.annotations.Inject;
 
 import br.com.arsmachina.tapestrycrud.Constants;
-import br.com.arsmachina.tapestrycrud.services.TreeNodeFactorySource;
+import br.com.arsmachina.tapestrycrud.services.TreeServiceSource;
 import br.com.arsmachina.tapestrycrud.tree.TreeNode;
-import br.com.arsmachina.tapestrycrud.tree.TreeNodeFactory;
+import br.com.arsmachina.tapestrycrud.tree.SingleTypeTreeService;
 
 /**
  * Mixin that provides a tree table-like functionality to {@link Grid}s.
@@ -45,19 +45,19 @@ import br.com.arsmachina.tapestrycrud.tree.TreeNodeFactory;
 public class TreeGrid {
 
 	/**
-	 * {@link TreeNodeFactory} corresponding to the type of the objects in the
+	 * {@link SingleTypeTreeService} corresponding to the type of the objects in the
 	 * grid. If not provided, it attempts to get one from the
-	 * {@link TreeNodeFactorySource} service.
+	 * {@link TreeServiceSource} service.
 	 */
 	@Parameter(allowNull = false)
 	@SuppressWarnings("unchecked")
-	private TreeNodeFactory treeNodeFactory;
+	private SingleTypeTreeService treeNodeFactory;
 
 	@InjectContainer
 	private Grid grid;
 
 	@Inject
-	private TreeNodeFactorySource treeNodeFactorySource;
+	private TreeServiceSource treeNodeFactorySource;
 
 	@Inject
 	private RenderSupport renderSupport;
@@ -65,10 +65,10 @@ public class TreeGrid {
 	/**
 	 * Default value for the <code>treeNodeFactory</code> paramenter.
 	 * 
-	 * @return a {@link TreeNodeFactory}.
+	 * @return a {@link SingleTypeTreeService}.
 	 */
 	@SuppressWarnings("unchecked")
-	TreeNodeFactory<?> defaultTreeNodeFactory() {
+	SingleTypeTreeService<?> defaultTreeNodeFactory() {
 
 		final Class beanType = grid.getDataModel().getBeanType();
 		return treeNodeFactorySource.get(beanType);

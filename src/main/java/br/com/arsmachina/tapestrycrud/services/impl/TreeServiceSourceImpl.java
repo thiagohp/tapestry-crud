@@ -18,18 +18,18 @@ import java.util.Map;
 
 import org.apache.tapestry5.ioc.util.StrategyRegistry;
 
-import br.com.arsmachina.tapestrycrud.services.TreeNodeFactorySource;
-import br.com.arsmachina.tapestrycrud.tree.TreeNodeFactory;
+import br.com.arsmachina.tapestrycrud.services.TreeServiceSource;
+import br.com.arsmachina.tapestrycrud.tree.SingleTypeTreeService;
 
 /**
- * {@link TreeNodeFactorySource} implementation.
+ * {@link TreeServiceSource} implementation.
  * 
  * @author Thiago H. de Paula Figueiredo
  */
-public class TreeNodeFactorySourceImpl implements TreeNodeFactorySource {
+public class TreeServiceSourceImpl implements TreeServiceSource {
 	
 	@SuppressWarnings("unchecked")
-	final private StrategyRegistry<TreeNodeFactory> registry;
+	final private StrategyRegistry<SingleTypeTreeService> registry;
 
 	/**
 	 * Single constructor.
@@ -37,21 +37,21 @@ public class TreeNodeFactorySourceImpl implements TreeNodeFactorySource {
 	 * @param registrations
 	 */
 	@SuppressWarnings("unchecked")
-	public TreeNodeFactorySourceImpl(Map<Class, TreeNodeFactory> registrations) {
+	public TreeServiceSourceImpl(Map<Class, SingleTypeTreeService> registrations) {
 
 		if (registrations == null) {
 			throw new IllegalArgumentException("Parameter registrations cannot be null");
 		}
 
-		registry = StrategyRegistry.newInstance(TreeNodeFactory.class, registrations);
+		registry = StrategyRegistry.newInstance(SingleTypeTreeService.class, registrations);
 
 	}
 
 	/**
-	 * @see br.com.arsmachina.tapestrycrud.services.TreeNodeFactorySource#get(java.lang.Class)
+	 * @see br.com.arsmachina.tapestrycrud.services.TreeServiceSource#get(java.lang.Class)
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> TreeNodeFactory<T> get(Class<T> clasz) {
+	public <T> SingleTypeTreeService<T> get(Class<T> clasz) {
 		return registry.get(clasz);
 	}
 

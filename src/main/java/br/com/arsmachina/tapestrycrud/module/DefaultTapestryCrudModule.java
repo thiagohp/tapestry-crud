@@ -25,7 +25,7 @@ import br.com.arsmachina.tapestrycrud.beanmodel.BeanModelCustomizer;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.Encoder;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
-import br.com.arsmachina.tapestrycrud.tree.TreeNodeFactory;
+import br.com.arsmachina.tapestrycrud.tree.SingleTypeTreeService;
 
 /**
  * Default {@link TapestryCrudModule} implementation.
@@ -174,7 +174,7 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 	 * @param clasz a {@link Class}. It cannot be null.
 	 * @return a {@link String} or null.
 	 */
-	public String getTreeNodeFactoryClassName(Class<?> entityClass) {
+	public String getTreeServiceClassName(Class<?> entityClass) {
 
 		return String.format("%s.tree.%sTreeNodeFactory", getTapestryPackage(),
 				entityClass.getSimpleName());
@@ -349,10 +349,10 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> Class<? extends TreeNodeFactory<T>> getTreeNodeFactoryClass(
+	public <T> Class<? extends SingleTypeTreeService<T>> getTreeServiceClass(
 			Class<T> entityClass) {
 
-		return getClass(getTreeNodeFactoryClassName(entityClass));
+		return getClass(getTreeServiceClassName(entityClass));
 
 	}
 

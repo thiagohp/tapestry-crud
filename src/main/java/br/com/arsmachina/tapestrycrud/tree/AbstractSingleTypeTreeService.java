@@ -20,12 +20,13 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A partial implementation of {@link TreeNodeFactory}.
+ * A partial implementation of {@link SingleTypeTreeService}.
  * 
  * @param <T> the class related to this factory.
  * @author Thiago H. de Paula Figueiredo
  */
-public abstract class AbstractTreeNodeFactory<T> implements TreeNodeFactory<T> {
+public abstract class AbstractSingleTypeTreeService<T> implements
+		SingleTypeTreeService<T> {
 
 	final protected List<TreeNode<T>> EMPTY_LIST =
 		Collections.unmodifiableList(new ArrayList<TreeNode<T>>());
@@ -36,7 +37,7 @@ public abstract class AbstractTreeNodeFactory<T> implements TreeNodeFactory<T> {
 	 * Single constructor of this class.
 	 */
 	@SuppressWarnings("unchecked")
-	protected AbstractTreeNodeFactory() {
+	protected AbstractSingleTypeTreeService() {
 
 		final Type genericSuperclass = getClass().getGenericSuperclass();
 		final ParameterizedType parameterizedType =
@@ -80,5 +81,42 @@ public abstract class AbstractTreeNodeFactory<T> implements TreeNodeFactory<T> {
 	 * @return a {@link List} of <code>T</code>.
 	 */
 	protected abstract List<T> getChildren(T object);
+
+	public boolean isRoot(T object) {
+		return false;
+	}
+
+	public void treeOrder(List<T> objects) {
+
+		List<T> list = new ArrayList<T>();
+
+		for (T object : objects) {
+
+			if (isRoot(object)) {
+				add(object, list);
+			}
+
+		}
+
+		objects.clear();
+		objects.addAll(list);
+
+	}
+
+	/**
+	 * Adds an object and its children to a list.
+	 * 
+	 * @param object a <code>T</code>.
+	 * @param list a {@link List} of <code>T</code>.
+	 */
+	void add(T object, List<T> list) {
+		
+		list.add(object);
+		
+		for (T child : getChildren(object)) {
+			add(child, list);
+		}
+		
+	}
 
 }

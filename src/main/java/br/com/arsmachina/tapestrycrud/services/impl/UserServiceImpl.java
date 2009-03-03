@@ -17,15 +17,15 @@ package br.com.arsmachina.tapestrycrud.services.impl;
 import org.apache.tapestry5.services.ApplicationStateManager;
 
 import br.com.arsmachina.authentication.controller.UserController;
-import br.com.arsmachina.authentication.controller.service.UserService;
 import br.com.arsmachina.authentication.entity.User;
+import br.com.arsmachina.authentication.service.UserService;
 
 /**
  * {@link UserService} implementation using Tapestry CRUD.
  * 
  * @author Thiago H. de Paula Figueiredo
  */
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements br.com.arsmachina.authentication.service.UserService {
 
 	final private ApplicationStateManager applicationStateManager;
 
