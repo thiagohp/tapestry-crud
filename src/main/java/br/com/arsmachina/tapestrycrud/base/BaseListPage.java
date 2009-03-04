@@ -178,8 +178,8 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 
 	}
 	
-	@OnEvent("resetSort")
-	Object resetSort() {
+	@OnEvent("resetGridSorting")
+	Object resetGridSorting() {
 		
 		grid.getSortModel().clear();
 		final Object result = request.isXHR() ? componentResources.getEmbeddedComponent("zone") : null;

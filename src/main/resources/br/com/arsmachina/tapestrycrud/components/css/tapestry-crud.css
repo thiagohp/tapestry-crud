@@ -87,6 +87,9 @@ div.t-crud-links {
 	clear: both;
 } 
 
+div.t-crud-links div {
+	display: block;
+}
 
 div.t-crud-view-page-links > div, div.t-crud-edit-page-links > div {
 	display: block;

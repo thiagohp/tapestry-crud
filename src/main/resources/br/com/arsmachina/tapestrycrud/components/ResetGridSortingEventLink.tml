@@ -1,0 +1,5 @@
+<div xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd" class="t-crud-reset-grid-sorting">
+	<a href="#" t:type="EventLink" t:event="resetGridSorting">
+		${message:link.reset.sorting}
+	</a>
+</div>
