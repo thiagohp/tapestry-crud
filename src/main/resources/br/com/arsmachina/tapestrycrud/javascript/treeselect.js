@@ -5,8 +5,6 @@ var TreeSelect = {
 		// o id é sempre de um <input>, então temos que pegar o pai dele, um <li>
 		var parent = $(id).parentNode;
 		
-		window.alert("ok!");
-		
 		parent.select("li").each(
 				
 			function(li) {
