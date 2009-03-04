@@ -19,6 +19,8 @@ import java.io.Serializable;
 import org.apache.tapestry5.ComponentResources;
 import org.apache.tapestry5.PrimaryKeyEncoder;
 import org.apache.tapestry5.annotations.Cached;
+import org.apache.tapestry5.annotations.InjectComponent;
+import org.apache.tapestry5.annotations.OnEvent;
 import org.apache.tapestry5.annotations.PageDetached;
 import org.apache.tapestry5.beaneditor.BeanModel;
 import org.apache.tapestry5.corelib.components.Grid;
@@ -59,6 +61,9 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 	
 	@Inject
 	private BeanModelSource beanModelSource;
+	
+	@InjectComponent
+	private Grid grid;
 	
 	private T object;
 	
@@ -171,6 +176,15 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 			setMessage(null);
 		}
 
+	}
+	
+	@OnEvent("resetSort")
+	Object resetSort() {
+		
+		grid.getSortModel().clear();
+		final Object result = request.isXHR() ? componentResources.getEmbeddedComponent("zone") : null;
+		return result;
+		
 	}
 
 	/**
