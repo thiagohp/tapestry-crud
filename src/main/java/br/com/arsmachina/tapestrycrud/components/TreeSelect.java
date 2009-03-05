@@ -121,7 +121,7 @@ public class TreeSelect extends AbstractField {
 		String submittedValue = request.getParameter(elementName);
 
 		// When the null option is selected, the "on" value is submitted.
-		if (submittedValue.equals("on")) {
+		if (submittedValue != null && submittedValue.equals("on")) {
 			submittedValue = null;
 		}
 		
