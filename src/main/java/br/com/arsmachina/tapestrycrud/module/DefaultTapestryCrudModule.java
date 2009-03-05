@@ -176,7 +176,7 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 	 */
 	public String getTreeServiceClassName(Class<?> entityClass) {
 
-		return String.format("%s.tree.%sTreeNodeFactory", getTapestryPackage(),
+		return String.format("%s.tree.%sTreeService", getTapestryPackage(),
 				entityClass.getSimpleName());
 
 	}
