@@ -21,7 +21,6 @@ import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.SupportsInformalParameters;
 import org.apache.tapestry5.corelib.components.Label;
 import org.apache.tapestry5.dom.Element;
-import org.apache.tapestry5.internal.services.LinkFactory;
 import org.apache.tapestry5.ioc.Messages;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.internal.util.InternalUtils;
@@ -53,9 +52,6 @@ public class EditObjectPageLink {
 	@Inject
 	private ComponentResources resources;
 	
-	@Inject
-	private LinkFactory linkFactory;
-
 	@Inject
 	private TapestryCrudModuleService tapestryCrudModuleService;
 	
@@ -103,7 +99,7 @@ public class EditObjectPageLink {
 		ActivationContextEncoder encoder = activationContextEncoderSource.get(entityClass);
 		final Object activationContext = encoder.toActivationContext(object);
 		
-		Link link = linkFactory.createPageRenderLink(editPageURL, true, activationContext);
+		Link link = resources.createPageLink(editPageURL, true, activationContext);
 
 		element = writer.element("a", "href", link.toURI(), "class", "t-crud-edit-object");
 
