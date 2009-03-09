@@ -21,7 +21,6 @@ import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.SupportsInformalParameters;
 import org.apache.tapestry5.corelib.components.Label;
 import org.apache.tapestry5.dom.Element;
-import org.apache.tapestry5.internal.services.LinkFactory;
 import org.apache.tapestry5.ioc.Messages;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.internal.util.InternalUtils;
@@ -55,9 +54,6 @@ public class BackToListingPageLink {
 	private ComponentResources resources;
 
 	@Inject
-	private LinkFactory linkFactory;
-
-	@Inject
 	private TapestryCrudModuleService tapestryCrudModuleService;
 	
 	@Inject
@@ -74,8 +70,6 @@ public class BackToListingPageLink {
 	private boolean ignoreBody;
 
 	private Element element;
-
-	private String listPageURL;
 
 	@SuppressWarnings("unchecked")
 	boolean beginRender(MarkupWriter writer) {
@@ -96,9 +90,8 @@ public class BackToListingPageLink {
 			return false;
 		}
 		
-		listPageURL = tapestryCrudModuleService.getListPageURL(entityClass);
-
-		Link link = linkFactory.createPageRenderLink(listPageURL, true);
+		Class listPageClass = tapestryCrudModuleService.getListPageClass(entityClass);
+		Link link = resources.createPageLink(listPageClass, true);
 
 		element = writer.element("a", "href", link.toURI(), "class", "t-back-to-listing-page");
 

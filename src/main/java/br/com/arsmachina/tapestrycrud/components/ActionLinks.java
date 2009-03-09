@@ -151,7 +151,7 @@ public class ActionLinks {
 	public String getEditPage() {
 
 		if (editPage == null) {
-		
+
 			final Class<? extends Object> clasz = object.getClass();
 			editPage = tapestryCrudModuleService.getEditPageURL(clasz);
 			
@@ -176,9 +176,19 @@ public class ActionLinks {
 	public String getViewPage() {
 
 		if (viewPage == null) {
-			viewPage = tapestryCrudModuleService.getViewPageURL(object.getClass());
+			
+			final Class<? extends Object> clasz = object.getClass();
+			viewPage = tapestryCrudModuleService.getViewPageURL(clasz);
+			
 		}
 
+		if (getView() && (viewPage == null || viewPage.trim().length() == 0)) {
+
+			throw new IllegalArgumentException(
+					"Could not find a view page for " + object.getClass().getName());
+
+		}
+		
 		return viewPage;
 
 	}

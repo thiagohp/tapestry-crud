@@ -55,9 +55,8 @@ public class NewObjectPageLink extends AbstractNewObjectLink {
 		BasePage basePage = (BasePage) page;
 		Class<?> entityClass = basePage.getEntityClass();
 		
-		String editPageURL = tapestryCrudModuleService.getEditPageURL(entityClass);
-
-		return getLinkFactory().createPageRenderLink(editPageURL, true);
+		Class editPageClass = tapestryCrudModuleService.getEditPageClass(entityClass);
+		return resources.createPageLink(editPageClass, true);
 
 	}
 

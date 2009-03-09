@@ -28,7 +28,6 @@ import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Retain;
 import org.apache.tapestry5.beaneditor.BeanModel;
 import org.apache.tapestry5.corelib.components.Form;
-import org.apache.tapestry5.internal.services.PersistentFieldManagerImpl;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.services.BeanModelSource;
 import org.apache.tapestry5.services.Request;
@@ -52,7 +51,7 @@ import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
  * 
  * @author Thiago H. de Paula Figueiredo
  */
-@Meta(PersistentFieldManagerImpl.META_KEY + "=" + PersistenceConstants.FLASH)
+@Meta("tapestry.persistence-strategy=" + PersistenceConstants.FLASH)
 public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T, K> implements
 		EditPage<T, K> {
 

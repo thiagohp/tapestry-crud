@@ -21,7 +21,6 @@ import org.apache.tapestry5.MarkupWriter;
 import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.dom.Element;
-import org.apache.tapestry5.internal.services.LinkFactory;
 import org.apache.tapestry5.ioc.Messages;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.internal.util.InternalUtils;
@@ -63,9 +62,6 @@ public abstract class AbstractNewObjectLink {
 
 	@Inject
 	private TapestryCrudModuleService tapestryCrudModuleService;
-
-	@Inject
-	private LinkFactory linkFactory;
 
 	private Component page;
 
@@ -219,15 +215,6 @@ public abstract class AbstractNewObjectLink {
 			
 		}
 
-	}
-
-	/**
-	 * Returns the value of the <code>linkFactory</code> property.
-	 * 
-	 * @return a {@link LinkFactory}.
-	 */
-	final protected LinkFactory getLinkFactory() {
-		return linkFactory;
 	}
 
 }
