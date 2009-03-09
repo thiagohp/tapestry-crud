@@ -105,7 +105,7 @@ public class EditObjectPageLink {
 		
 		Link link = linkFactory.createPageRenderLink(editPageURL, true, activationContext);
 
-		element = writer.element("a", "href", link.toURI(), "class", "t-edit-object");
+		element = writer.element("a", "href", link.toURI(), "class", "t-crud-edit-object");
 
 		resources.renderInformalParameters(writer);
 

@@ -93,7 +93,7 @@ public class BackToListingPageLink {
 		Class listPageClass = tapestryCrudModuleService.getListPageClass(entityClass);
 		Link link = resources.createPageLink(listPageClass, true);
 
-		element = writer.element("a", "href", link.toURI(), "class", "t-back-to-listing-page");
+		element = writer.element("a", "href", link.toURI(), "class", "t-crud-back-to-listing-page");
 
 		resources.renderInformalParameters(writer);
 

@@ -43,7 +43,7 @@ public class EmptyGridMessage {
 	/**
 	 * Generated <code>&lt;p&gt;</code> CSS class.
 	 */
-	public static final String CSS_CLASS = "t-crud-emptygrid";
+	public static final String CSS_CLASS = "t-crud-empty-grid";
 
 	/**
 	 * Message to be shown.

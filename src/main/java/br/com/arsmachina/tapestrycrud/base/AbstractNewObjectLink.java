@@ -173,7 +173,7 @@ public abstract class AbstractNewObjectLink {
 
 		Link link = createLink();
 
-		element = writer.element("a", "href", link.toURI(), "class", "t-new-object");
+		element = writer.element("a", "href", link.toURI(), "class", "t-crud-new-object");
 
 		resources.renderInformalParameters(writer);
 

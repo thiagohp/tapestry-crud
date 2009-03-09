@@ -26,14 +26,14 @@ form input[type="submit"] {
 	width: auto;	
 }
 
-div.t-crud-emptygrid, div.t-crud-message {
+div.t-crud-empty-grid, div.t-crud-message {
 	margin-top: 1em;
 	margin-bottom: 1em;
 	border-width: 2px;
 	border-style: solid;
 }
 
-div.t-crud-emptygrid {
+div.t-crud-empty-grid {
 	border-color: red;
 }
 
