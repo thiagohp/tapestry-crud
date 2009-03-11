@@ -42,9 +42,9 @@ public abstract class AbstractNewObjectLink {
 
 	private static final String LOWERCASE_CLASSNAME_MESSAGE = "lowercase.classname";
 
-	private static final String NEW_OBJECT_MESSAGE = "link.newobject";
+	private static final String NEW_OBJECT_MESSAGE = "link.new.object";
 
-	private static final String NEW_OBJECT_TEMPLATE_MESSAGE = "link.newobject.template";
+	private static final String NEW_OBJECT_TEMPLATE_MESSAGE = "link.new.object.template";
 
 	@Inject
 	private Messages messages;

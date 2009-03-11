@@ -47,7 +47,7 @@ import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 @SupportsInformalParameters
 public class EditObjectPageLink {
 
-	private static final String EDIT_OBJECT_MESSAGE = "link.editobject";
+	private static final String EDIT_OBJECT_MESSAGE = "link.edit.object";
 	
 	@Inject
 	private ComponentResources resources;

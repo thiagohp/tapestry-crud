@@ -4,19 +4,19 @@
 	<t:if test="view">
 		<a href="#" t:type="crud/ActivationContextPageLink" t:page="prop:viewPage"
 			t:object="object" class="t-crud-view-link">
-			<img src="${viewIcon}" alt="${message:link.action.view.object}"/>
+			<img src="${viewIcon}" alt="${message:link.view.object}"/>
 		</a>
 	</t:if>
 	<t:if test="edit">
 		<a href="#" t:type="crud/ActivationContextPageLink" t:page="prop:editPage"
 			t:object="object" class="t-crud-edit-link">
-			<img src="${editIcon}" alt="${message:link.action.edit.object}"/>
+			<img src="${editIcon}" alt="${message:link.edit.object}"/>
 		</a>
 	</t:if>
 	<t:if test="remove">
 		<a href="#" t:type="crud/PrimaryKeyEventLink" t:object="object"
 			t:event="removeObject" t:id="remove" t:zone="zone" class="t-crud-delete-link">
-			<img src="${deleteIcon}" alt="${message:link.action.remove.object}"/>
+			<img src="${deleteIcon}" alt="${message:link.remove.object}"/>
 		</a>
 	</t:if>
 </div>

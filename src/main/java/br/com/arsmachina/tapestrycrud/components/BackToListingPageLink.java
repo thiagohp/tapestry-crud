@@ -48,7 +48,7 @@ import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 @SupportsInformalParameters
 public class BackToListingPageLink {
 
-	private static final String BACK_TO_LISTING_MESSAGE = "link.backtolisting";
+	private static final String BACK_TO_LISTING_MESSAGE = "link.list.class";
 
 	@Inject
 	private ComponentResources resources;
