@@ -14,8 +14,6 @@
 
 package br.com.arsmachina.tapestrycrud.ioc;
 
-import static br.com.arsmachina.module.ioc.ApplicationModuleModule.getServiceIfExists;
-
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
@@ -880,6 +878,26 @@ public class TapestryCrudIoCModule {
 
 		configuration.add(new BeanBlockContribution(Constants.ENTITY_DATA_TYPE,
 				Constants.BEAN_MODEL_BLOCKS_PAGE, "viewEntity", false));
+
+	}
+	
+	/**
+	 * Returns a service if it exists. Otherwise, this method returns null.
+	 * 
+	 * @param <T> type of service.
+	 * @param serviceInterface a {@link Class}.
+	 * @param objectLocator an {@link ObjectLocator}.
+	 * @return aa <code>T</code> or null.
+	 */
+	final private static <T> T getServiceIfExists(final Class<T> serviceInterface,
+			ObjectLocator objectLocator) {
+
+		try {
+			return objectLocator.getService(serviceInterface);
+		}
+		catch (RuntimeException e) {
+			return null;
+		}
 
 	}
 
