@@ -324,7 +324,7 @@ public class DefaultTapestryCrudModule implements TapestryCrudModule {
 
 		final String moduleSubpackage = getModulePath();
 		final String className = entityClass.getSimpleName().toLowerCase();
-		return String.format("%s%s/%s", moduleSubpackage, className, prefix);
+		return String.format("%s%s/%s%s", moduleSubpackage, className, prefix, className);
 
 	}
 
