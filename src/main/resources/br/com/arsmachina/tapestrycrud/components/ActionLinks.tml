@@ -1,4 +1,4 @@
-<div xmlns="http://www.w3.org/1999/xhtml"
+<div 
 	xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd"
 	class="t-crud-actionlinks">
 	<t:if test="view">
