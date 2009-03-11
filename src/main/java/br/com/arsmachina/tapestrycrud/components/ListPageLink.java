@@ -46,7 +46,7 @@ import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
  * @author Thiago H. de Paula Figueiredo
  */
 @SupportsInformalParameters
-public class BackToListingPageLink {
+public class ListPageLink {
 
 	private static final String BACK_TO_LISTING_MESSAGE = "link.list.class";
 
@@ -78,7 +78,7 @@ public class BackToListingPageLink {
 
 		if (page instanceof BasePage == false) {
 
-			throw new RuntimeException("The BackToListingPage must be used inside a page "
+			throw new RuntimeException("The crud/ListPageLink must be used inside a page "
 					+ "that extends BasePage");
 
 		}
@@ -90,10 +90,10 @@ public class BackToListingPageLink {
 			return false;
 		}
 		
-		Class listPageClass = tapestryCrudModuleService.getListPageClass(entityClass);
-		Link link = resources.createPageLink(listPageClass, true);
+		String listPageURL = tapestryCrudModuleService.getListPageURL(entityClass);
+		Link link = resources.createPageLink(listPageURL, true);
 
-		element = writer.element("a", "href", link.toURI(), "class", "t-crud-back-to-listing-page");
+		element = writer.element("a", "href", link.toURI(), "class", "t-crud-listing-link");
 
 		resources.renderInformalParameters(writer);
 

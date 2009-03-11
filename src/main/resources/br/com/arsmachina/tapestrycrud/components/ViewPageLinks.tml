@@ -9,7 +9,7 @@
 		<a href="#" t:type="crud/NewObjectPageLink">Create a new object</a>
 	</div>
 	<div class="t-crud-listing-link">
-		<a href="#" t:type="crud/BackToListingPageLink">
+		<a href="#" t:type="crud/ListPageLink">
 			Back to listing . . . 
 		</a>
 	</div>
