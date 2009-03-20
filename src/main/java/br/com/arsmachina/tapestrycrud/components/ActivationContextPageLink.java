@@ -14,8 +14,10 @@
 
 package br.com.arsmachina.tapestrycrud.components;
 
-
 import org.apache.tapestry5.BindingConstants;
+import org.apache.tapestry5.ComponentResources;
+import org.apache.tapestry5.Link;
+import org.apache.tapestry5.MarkupWriter;
 import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.annotations.SupportsInformalParameters;
@@ -27,9 +29,10 @@ import br.com.arsmachina.tapestrycrud.encoder.Encoder;
 import br.com.arsmachina.tapestrycrud.services.ActivationContextEncoderSource;
 
 /**
- * A replacement to {@link org.apache.tapestry5.corelib.components.PageLink} that, given an object
- * passed as parameter, uses the corresponding {@link Encoder} to get the context
- * {@link Encoder#toKey(Object) } activation value.
+ * A replacement to {@link org.apache.tapestry5.corelib.components.PageLink}
+ * that, given an object passed as parameter, uses the corresponding
+ * {@link Encoder} to get the context {@link Encoder#toKey(Object) } activation
+ * value.
  * 
  * @author Thiago H. de Paula Figueiredo
  */
@@ -39,19 +42,21 @@ public class ActivationContextPageLink extends AbstractLink {
 	/**
 	 * The logical name of the page to link to.
 	 */
-	@SuppressWarnings("unused")
 	@Parameter(required = true, defaultPrefix = BindingConstants.LITERAL)
 	@Property
 	private String page;
-	
+
 	/**
 	 * The object from which the activation context value will be extracted.
 	 */
-	@Parameter(required = true)
+	@Parameter(required = true, allowNull = false)
 	private Object object;
 
 	@Inject
 	private ActivationContextEncoderSource activationContextEncoderSource;
+	
+	@Inject
+	private ComponentResources resources;
 
 	@SuppressWarnings("unchecked")
 	public Object getContext() {
@@ -59,7 +64,26 @@ public class ActivationContextPageLink extends AbstractLink {
 		ActivationContextEncoder encoder;
 		encoder = activationContextEncoderSource.get(object.getClass());
 		return encoder.toActivationContext(object);
+
+	}
+
+	void beginRender(MarkupWriter writer) {
 		
+		if (isDisabled())
+			return;
+
+		Link link =
+			resources.createPageLink(page, true, getContext());
+
+		writeLink(writer, link);
+		
+	}
+
+	void afterRender(MarkupWriter writer) {
+		if (isDisabled())
+			return;
+
+		writer.end(); // <a>
 	}
 
 }
