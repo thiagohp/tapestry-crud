@@ -58,7 +58,7 @@ public class BaseViewPage<T, ID extends Serializable> extends BasePage<T, ID> {
 		
 		if (context.getCount() > 0) {
 
-			object = getActivationContextEncoder(getEntityClass()).toObject(context);
+			object = loadOject(context);
 	
 			if (object != null) {
 				checkReadObjectAccess(object);
@@ -81,6 +81,19 @@ public class BaseViewPage<T, ID extends Serializable> extends BasePage<T, ID> {
 
 		return result;
 
+	}
+
+	/**
+	 * Loads an object from an {@link EventContext}. This method is never invoked
+	 * without at least one activation context parameter.
+	 * This implementation returns
+	 * <code>getActivationContextEncoder(getEntityClass()).toObject(context)</code>.
+	 * 
+	 * @param context an {@link EventContext}.
+	 * @return a <code>T</code> or <code>null</code>.
+	 */
+	protected T loadOject(EventContext context) {
+		return getActivationContextEncoder(getEntityClass()).toObject(context);
 	}
 
 	private Class<?> getListPage() {

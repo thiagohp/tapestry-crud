@@ -133,7 +133,7 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 		final boolean hasErrors = getForm().getHasErrors();
 
 		if (hasErrors && request.isXHR()) {
-			returnValue = getFormZone();
+			returnValue = getFormZone().getBody();
 		}
 
 		return returnValue;
@@ -225,7 +225,7 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 		if (request.isXHR()) {
 
 			if (returnZoneOnXHR()) {
-				returnValue = getFormZone();
+				returnValue = getFormZone().getBody();
 			}
 			else {
 				returnValue = componentResources.getBlock(getFormBlockId());
