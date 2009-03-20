@@ -2,7 +2,7 @@ var TreeSelect = {
 
 	disableDescendentInputs: function(id) {
 	
-		// o id é sempre de um <input>, então temos que pegar o pai dele, um <li>
+		// id is always an <input>, so we need its parent, a <li>
 		var parent = $(id).parentNode;
 		
 		parent.select("li").each(
@@ -22,7 +22,9 @@ var TreeSelect = {
 		parent.select("input").each(
 			
 			function(input) {
-				input.disabled = true;
+				if (!input.checked) {
+					input.disabled = true;
+				}
 			}
 			
 		);
