@@ -14,12 +14,15 @@
 
 package br.com.arsmachina.tapestrycrud.pages;
 
+import org.apache.tapestry5.Asset;
+import org.apache.tapestry5.BindingConstants;
 import org.apache.tapestry5.EventConstants;
 import org.apache.tapestry5.SelectModel;
 import org.apache.tapestry5.ValueEncoder;
 import org.apache.tapestry5.annotations.Component;
 import org.apache.tapestry5.annotations.Environmental;
 import org.apache.tapestry5.annotations.OnEvent;
+import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.corelib.components.BeanEditForm;
 import org.apache.tapestry5.corelib.components.BeanEditor;
@@ -30,42 +33,60 @@ import org.apache.tapestry5.services.PropertyEditContext;
 import org.apache.tapestry5.services.PropertyOutputContext;
 import org.apache.tapestry5.services.ValueEncoderSource;
 
+import br.com.arsmachina.authorization.Authorizer;
+import br.com.arsmachina.tapestrycrud.components.ActionLinks;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
 import br.com.arsmachina.tapestrycrud.selectmodel.SelectModelFactory;
 import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
+import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 
 /**
  * <p>
- * A page that holds the editing and viewing blocks provided by Tapestry CRUD for
- * {@link BeanEditor}, {@link BeanEditForm}, and {@link Grid}.
+ * A page that holds the editing and viewing blocks provided by Tapestry CRUD
+ * for {@link BeanEditor}, {@link BeanEditForm}, and {@link Grid}.
  * </p>
  * <p>
- * The <code>entity</code> view and edit blocks were written in a 
- * <a href="http://www.silexsistemas.com.br/">Sílex Sistemas Ltda.</a> project
- * and kindly donated to the Ars Machina Project. 
- * </p> 
+ * The <code>entity</code> view and edit blocks were written in a <a
+ * href="http://www.silexsistemas.com.br/">Sílex Sistemas Ltda.</a> project and
+ * kindly donated to the Ars Machina Project.
+ * </p>
  * 
  * @author Thiago H. de Paula Figueiredo
  */
 public class BeanModelBlocks {
-	
+
 	@Inject
 	private LabelEncoderSource labelEncoderSource;
-	
+
 	@Inject
 	private SelectModelFactory selectModelFactory;
 
 	@Environmental
 	@Property
 	private PropertyOutputContext outputContext;
-	
+
 	@Inject
 	private ValueEncoderSource valueEncoderSource;
 
 	@Environmental
 	@Property
 	private PropertyEditContext editContext;
-	
+
+	@Inject
+	private Authorizer authorizer;
+
+	@Inject
+	private TapestryCrudModuleService tapestryCrudModuleService;
+
+	@Parameter(defaultPrefix = BindingConstants.ASSET, value = ActionLinks.DEFAULT_EDIT_ICON_ASSET)
+	@Property
+	@SuppressWarnings("unused")
+	private Asset editIcon;
+
+	private Boolean canView;
+
+	private Boolean canEdit;
+
 	/**
 	 * Redirects to the root page if some user requests this pseudo-page.
 	 * 
@@ -76,36 +97,42 @@ public class BeanModelBlocks {
 		return "";
 	}
 
-	@Component(parameters = { 
-			"value=editContext.propertyValue",
-			"label=prop:editContext.label",
-			"model=prop:entityModel",
+	@Component(parameters = { "value=editContext.propertyValue",
+			"label=prop:editContext.label", "model=prop:entityModel",
 			"clientId=prop:editContext.propertyId",
-			"encoder=prop:entityEncoder"
-	})
+			"encoder=prop:entityEncoder" })
 	@SuppressWarnings("unused")
 	private Select entityField;
-	
+
 	/**
 	 * Returns the entity converted in a user-presentable string.
 	 * 
 	 * @return a {@link String}.
 	 */
 	@SuppressWarnings("unchecked")
-	public String getEntity() {
-		
-		Object propertyValue = outputContext.getPropertyValue();
-		
+	public String getEntityAsString() {
+
+		Object propertyValue = getEntity();
+
 		if (propertyValue == null) {
 			return "";
 		}
-		
-		LabelEncoder labelEncoder = labelEncoderSource.get(propertyValue.getClass());
-		
+
+		LabelEncoder labelEncoder =
+			labelEncoderSource.get(propertyValue.getClass());
+
 		return labelEncoder.toLabel(propertyValue);
-		
+
 	}
-	
+
+	public boolean isEntityEditable() {
+
+		final Object entity = getEntity();
+		return authorizer.canUpdate(entity.getClass())
+				&& authorizer.canUpdate(entity);
+
+	}
+
 	/**
 	 * Returns the {@link SelectModel} used to select an entity.
 	 * 
@@ -113,24 +140,106 @@ public class BeanModelBlocks {
 	 */
 	@SuppressWarnings("unchecked")
 	public SelectModel getEntityModel() {
-		
+
 		Class propertyType = editContext.getPropertyType();
 		return selectModelFactory.create(propertyType);
-		
+
 	}
-	
+
 	/**
 	 * Returns the {@link ValueEncoder} used to select an entity.
+	 * 
 	 * @param <T> the entity type.
 	 * @return a {@link ValueEncoder}.
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> ValueEncoder<T> getEntityEncoder() {
-		
+
 		Class<T> type = editContext.getPropertyType();
-		final ValueEncoder<T> valueEncoder = valueEncoderSource.getValueEncoder(type);
+		final ValueEncoder<T> valueEncoder =
+			valueEncoderSource.getValueEncoder(type);
 		return valueEncoder;
-		
+
+	}
+
+	/**
+	 * Returns the value of the <code>canView</code> property.
+	 * 
+	 * @return a <code>boolean</code>.
+	 */
+	public boolean isCanView() {
+
+		if (canView == null) {
+			Object object = getEntity();
+			canView =
+				object != null && authorizer.canRead(object.getClass())
+						&& authorizer.canRead(object);
+		}
+
+		return canView;
+
+	}
+
+	/**
+	 * Returns the value of the <code>canUpdate</code> property.
+	 * 
+	 * @return a <code>boolean</code>.
+	 */
+	public boolean isCanEdit() {
+
+		if (canEdit == null) {
+			Object object = getEntity();
+			canEdit =
+				object != null && authorizer.canUpdate(object.getClass())
+						&& authorizer.canUpdate(object);
+		}
+
+		return canEdit;
+
+	}
+
+	/**
+	 * Returns the value of the <code>canViewAndEdit</code> property.
+	 * 
+	 * @return a <code>boolean</code>.
+	 */
+	public boolean isCanViewAndEdit() {
+		return isCanView() && isCanEdit();
+	}
+
+	/**
+	 * Returns the value of the <code>canViewAndEdit</code> property.
+	 * 
+	 * @return a <code>boolean</code>.
+	 */
+	public boolean isCanOnlyEdit() {
+		return isCanView() == false && isCanEdit();
+	}
+
+	/**
+	 * Returns the value of the <code>cannnotViewNorEdit</code> property.
+	 * 
+	 * @return a <code>boolean</code>.
+	 */
+	public boolean isCannotViewNorEdit() {
+		return isCanView() == false && isCanEdit() == false;
+	}
+
+	/**
+	 * Returns the edited entity class being edited.
+	 * 
+	 * @return an {@link Object}.
+	 */
+	public Object getEntity() {
+		return outputContext.getPropertyValue();
+	}
+
+	public String getViewPage() {
+		return tapestryCrudModuleService.getViewPageURL(getEntity().getClass());
+	}
+
+	public String getEditPage() {
+		return tapestryCrudModuleService.getEditPageURL(getEntity().getClass());
 	}
 
 }

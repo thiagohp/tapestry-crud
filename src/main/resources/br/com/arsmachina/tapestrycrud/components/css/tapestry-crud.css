@@ -148,3 +148,7 @@ ul.t-crud-tree-select li.checked ul input, ul.t-crud-tree-select li.checked ul l
 :checked {
 	background-color: blue;
 }
+
+a.t-after-text-link {
+	margin-left: 0.75em;
+}
