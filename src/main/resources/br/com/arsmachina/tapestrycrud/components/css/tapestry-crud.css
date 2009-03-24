@@ -149,6 +149,26 @@ ul.t-crud-tree-select li.checked ul input, ul.t-crud-tree-select li.checked ul l
 	background-color: blue;
 }
 
-a.t-after-text-link {
-	margin-left: 0.75em;
+a.t-crud-after-text-link {
+	margin-left: 0.5em;
+}
+
+ul.t-crud-tree-select li.level1 {
+	margin-left: 0.5em;
+}
+
+ul.t-crud-tree-select li.level2 {
+	margin-left: 1em;
+}
+
+ul.t-crud-tree-select li.level3 {
+	margin-left: 1.5em;
+}
+
+ul.t-crud-tree-select li.level4 {
+	margin-left: 2em;
+}
+
+ul.t-crud-tree-select li.level5 {
+	margin-left: 2.5em;
 }

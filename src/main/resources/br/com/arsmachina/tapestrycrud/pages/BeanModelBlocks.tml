@@ -1,14 +1,13 @@
 <t:container xml:space="default" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd">
 
     <t:block id="viewEntity">
-
    		<t:if test="canView">
 			<a href="#" t:type="crud/ActivationContextPageLink" t:page="prop:viewPage"
 				t:object="prop:outputContext.propertyValue" class="t-crud-view-link">${entityAsString}</a>
 		</t:if>
 		<t:if test="canViewAndEdit">
 			<a href="#" t:type="crud/ActivationContextPageLink" t:page="prop:editPage"
-				t:object="prop:outputContext.propertyValue" t:class="t-crud-edit-link t-after-text-link">
+				t:object="prop:outputContext.propertyValue" t:class="t-crud-edit-link t-crud-after-text-link">
 				<img src="${editIcon}" alt="${message:link.edit.object}"/>
 			</a>
 		</t:if>

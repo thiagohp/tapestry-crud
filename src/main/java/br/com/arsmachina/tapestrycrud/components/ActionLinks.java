@@ -41,13 +41,11 @@ import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 @IncludeStylesheet(Constants.TAPESTRY_CRUD_CSS_ASSET)
 public class ActionLinks {
 
-	private static final String IMAGES_ASSET_ROOT = "asset:classpath:/br/com/arsmachina/tapestrycrud/components/images/";
+	public static final String DEFAULT_EDIT_ICON_ASSET = Constants.IMAGES_ASSET_ROOT + "edit.png";
 
-	public static final String DEFAULT_EDIT_ICON_ASSET = IMAGES_ASSET_ROOT + "edit.png";
+	private static final String DEFAULT_DELETE_ICON_ASSET = Constants.IMAGES_ASSET_ROOT + "delete.png";
 
-	private static final String DEFAULT_DELETE_ICON_ASSET = IMAGES_ASSET_ROOT + "delete.png";
-
-	private static final String DEFAULT_VIEW_ICON_ASSET = IMAGES_ASSET_ROOT + "view.png";
+	private static final String DEFAULT_VIEW_ICON_ASSET = Constants.IMAGES_ASSET_ROOT + "view.png";
 
 	/**
 	 * The object that the links will refer to.

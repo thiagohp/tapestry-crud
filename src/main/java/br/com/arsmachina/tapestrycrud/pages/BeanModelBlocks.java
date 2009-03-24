@@ -169,12 +169,10 @@ public class BeanModelBlocks {
 	 */
 	public boolean isCanView() {
 
-		if (canView == null) {
-			Object object = getEntity();
-			canView =
-				object != null && authorizer.canRead(object.getClass())
-						&& authorizer.canRead(object);
-		}
+		Object object = getEntity();
+		canView =
+			object != null && authorizer.canRead(object.getClass())
+					&& authorizer.canRead(object);
 
 		return canView;
 
@@ -187,13 +185,11 @@ public class BeanModelBlocks {
 	 */
 	public boolean isCanEdit() {
 
-		if (canEdit == null) {
-			Object object = getEntity();
-			canEdit =
-				object != null && authorizer.canUpdate(object.getClass())
-						&& authorizer.canUpdate(object);
-		}
-
+		Object object = getEntity();
+		canEdit =
+			object != null && authorizer.canUpdate(object.getClass())
+					&& authorizer.canUpdate(object);
+		
 		return canEdit;
 
 	}

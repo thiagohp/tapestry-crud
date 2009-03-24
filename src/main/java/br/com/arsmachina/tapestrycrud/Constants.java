@@ -116,6 +116,21 @@ final public class Constants {
 	final public static String GENERIC_ERROR_MESSAGE = "message.error";
 
 	/**
+	 * Path where the images used by Tapestry CRUD are located.
+	 */
+	public static final String IMAGES_ASSET_ROOT = "asset:classpath:/br/com/arsmachina/tapestrycrud/components/images/";
+
+	/**
+	 * Asset used when a tree node has children.
+	 */
+	public static final String HAS_CHILDREN_NODE_IMAGE = IMAGES_ASSET_ROOT + "folder.png";
+
+	/**
+	 * Asset used when a tree node hasn't children.
+	 */
+	public static final String NO_CHILDREN_NODE_IMAGE = IMAGES_ASSET_ROOT + "arrow_right.png";
+
+	/**
 	 * Single constructor of this class.
 	 */
 	private Constants() {

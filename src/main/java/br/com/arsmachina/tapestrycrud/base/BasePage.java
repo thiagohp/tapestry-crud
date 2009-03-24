@@ -24,6 +24,7 @@ import org.apache.tapestry5.EventContext;
 import org.apache.tapestry5.PersistenceConstants;
 import org.apache.tapestry5.PrimaryKeyEncoder;
 import org.apache.tapestry5.ValueEncoder;
+import org.apache.tapestry5.annotations.IncludeJavaScriptLibrary;
 import org.apache.tapestry5.annotations.OnEvent;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Retain;
@@ -54,6 +55,7 @@ import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
  * @param <T> the entity class related to this encoder.
  * @param <K> the type of the class' primary key property.
  */
+@IncludeJavaScriptLibrary(Constants.TAPESTRY_CRUD_CSS_ASSET)
 public abstract class BasePage<T, K extends Serializable> implements CrudPage<T, K> {
 
 	@Retain

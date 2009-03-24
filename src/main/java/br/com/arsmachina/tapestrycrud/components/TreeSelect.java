@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tapestry5.Asset;
 import org.apache.tapestry5.Binding;
 import org.apache.tapestry5.BindingConstants;
 import org.apache.tapestry5.ComponentResources;
@@ -22,9 +23,11 @@ import org.apache.tapestry5.annotations.IncludeJavaScriptLibrary;
 import org.apache.tapestry5.annotations.IncludeStylesheet;
 import org.apache.tapestry5.annotations.Mixin;
 import org.apache.tapestry5.annotations.Parameter;
+import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.corelib.base.AbstractField;
 import org.apache.tapestry5.corelib.components.Select;
 import org.apache.tapestry5.corelib.mixins.RenderDisabled;
+import org.apache.tapestry5.dom.Element;
 import org.apache.tapestry5.internal.TapestryInternalUtils;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.internal.util.InternalUtils;
@@ -61,9 +64,15 @@ public class TreeSelect extends AbstractField {
 	@Parameter
 	private ValueEncoder encoder;
 
+	@Parameter(defaultPrefix = BindingConstants.ASSET, value = Constants.NO_CHILDREN_NODE_IMAGE)
+	private Asset noChildrenIcon;
+
+	@Parameter(defaultPrefix = BindingConstants.ASSET, value = Constants.HAS_CHILDREN_NODE_IMAGE)
+	private Asset hasChildrenIcon;
+	
 	@Inject
 	private ComponentDefaultProvider defaultProvider;
-
+	
 	/**
 	 * The list of root nodes to be used as options.
 	 */
@@ -149,7 +158,7 @@ public class TreeSelect extends AbstractField {
 		renderNoParentOption(writer);
 
 		for (TreeSelectNode node : rootNodes) {
-			render(node, writer);
+			render(node, writer, 1);
 		}
 
 		writer.end(); // outer ul tag
@@ -157,8 +166,8 @@ public class TreeSelect extends AbstractField {
 		final String clientId = getClientId();
 		final String client = encoder.toClient(value);
 		
-		renderSupport.addScript("TreeSelect.disableDescendentInputs('%s-%s')",
-				clientId, client);
+//		renderSupport.addScript("TreeSelect.disableDescendentInputs('%s-%s')",
+//				clientId, client);
 
 	}
 
@@ -171,12 +180,12 @@ public class TreeSelect extends AbstractField {
 			new SimpleTreeSelectNode(null, EMPTY_LIST, noParentOptionLabel,
 					false, attributes);
 
-		render(node, writer);
+		render(node, writer, 1);
 
 	}
 
 	@SuppressWarnings("unchecked")
-	private void render(TreeSelectNode node, MarkupWriter writer) {
+	private void render(TreeSelectNode node, MarkupWriter writer, int level) {
 
 		String selectedClientValue = encoder.toClient(value);
 
@@ -191,7 +200,8 @@ public class TreeSelect extends AbstractField {
 		String clientId = getClientId();
 		String radioId = clientId + "-" + thisClientValue;
 
-		writer.element("li");
+		writer.element("li", "class", "level" + level);
+		
 		writeAttributes(node.getAttributes(), writer);
 
 		if (checked) {
@@ -210,7 +220,7 @@ public class TreeSelect extends AbstractField {
 			writer.element("ul");
 
 			for (TreeSelectNode child : children) {
-				render(child, writer);
+				render(child, writer, level + 1);
 			}
 
 			writer.end(); // ul
@@ -249,12 +259,15 @@ public class TreeSelect extends AbstractField {
 	 */
 	private void renderRadioButton(MarkupWriter writer, String thisClientValue,
 			boolean checked, String radioId) {
+		
+		
 		writer.element("input", "type", "radio", "name", getControlName(),
 				"id", radioId, "value", thisClientValue);
 
 		if (checked) {
 			writer.attributes("checked", "checked");
 		}
+		
 	}
 
 	/**
@@ -264,9 +277,19 @@ public class TreeSelect extends AbstractField {
 	 */
 	private void renderLabel(TreeSelectNode node, MarkupWriter writer,
 			String radioId) {
+		
+		final boolean noChildren = node.getChildren().isEmpty();
+		
 		writer.element("label", "for", radioId);
+		
+		Asset asset = noChildren ? noChildrenIcon : hasChildrenIcon;
+		writer.element("img", "src", asset);
+		writer.end();
+		
 		writer.write(node.getLabel());
+		
 		writer.end(); // label
+		
 	}
 
 	@SuppressWarnings("unchecked")
