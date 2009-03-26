@@ -32,6 +32,24 @@ public interface SingleTypeTreeService<T> {
 	TreeNode<T> buildTreeNode(T object);
 
 	/**
+	 * Searches the tree node of a given object in a tree (node).  
+	 * 
+	 * @param object a <code>T</code> instance. It cannot be null.
+	 * @param treeNode a {@link TreeNode} of <code>T</code>. It cannot be null.
+	 * @return a {@link TreeNode} or null.
+	 */
+	TreeNode<T> find(T object, TreeNode<T> treeNode);
+
+	/**
+	 * Convenience method to searches the tree node of a given object in a list of tree nodes. 
+	 * 
+	 * @param object a <code>T</code> instance. It cannot be null.
+	 * @param treeNode a {@link List} of {@link TreeNode} of <code>T</code>. It cannot be null.
+	 * @return a {@link TreeNode} or null.
+	 */
+	TreeNode<T> find(T object, List<TreeNode<T>> treeNodes);
+
+	/**
 	 * Tells if a given object is a root node.
 	 * 
 	 * @param object a <code>T</code>.

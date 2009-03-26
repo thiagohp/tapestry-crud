@@ -155,11 +155,11 @@ public abstract class AbstractSingleTypeTreeService<T> implements
 			new ArrayList<TreeSelectNode>(nodes.size());
 
 		for (TreeNode<T> node : nodes) {
-			
+
 			if (isRoot(node.getObject())) {
 				childrenTSN.add(buildTreeSelectNode(node));
 			}
-			
+
 		}
 
 		return childrenTSN;
@@ -181,6 +181,49 @@ public abstract class AbstractSingleTypeTreeService<T> implements
 
 	public List<TreeSelectNode> buildTreeSelectNodeList(List<T> objects) {
 		return buildTreeSelectNodeListFromTreeNodes(buildTreeNodeList(objects));
+	}
+
+	public TreeNode<T> find(T object, List<TreeNode<T>> treeNodes) {
+
+		TreeNode<T> result = null;
+		
+		for (TreeNode<T> node : treeNodes) {
+			
+			result = find(object, node);
+			if (result != null) {
+				break;
+			}
+			
+		}
+		
+		return result;
+		
+	}
+
+	public TreeNode<T> find(T object, TreeNode<T> treeNode) {
+		
+		TreeNode<T> result = null;
+		
+		if (treeNode.getObject().equals(object)) {
+			result = treeNode; 
+		}
+		else {
+			
+			final List<TreeNode<T>> children = treeNode.getChildren();
+			for (TreeNode<T> node : children) {
+				
+				result = find(object, node);
+				
+				if (result != null) {
+					break;
+				}
+				
+			}
+			
+		}
+		
+		return result;
+		
 	}
 
 }
