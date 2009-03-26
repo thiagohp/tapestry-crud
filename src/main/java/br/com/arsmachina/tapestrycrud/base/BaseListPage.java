@@ -48,6 +48,7 @@ import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
  * 
  * @author Thiago H. de Paula Figueiredo
  */
+@SuppressWarnings("deprecation")
 public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T, K> {
 
 	@Inject
@@ -134,6 +135,13 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 				returnValue = componentResources.getBlock(getFormBlockId());
 			}
 
+		}
+		
+		if (isRemovedObjectNotFound()) {
+			setMessage(getRemoveErrorNotFoundMessage());
+		}
+		else {
+			setMessage(getRemoveSuccessMessage());
 		}
 
 		return returnValue;

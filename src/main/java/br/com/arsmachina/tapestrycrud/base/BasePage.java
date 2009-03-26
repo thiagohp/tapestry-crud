@@ -49,14 +49,17 @@ import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 
 /**
- * Class that implements some common infrastructure for listing and editing pages. This class is not
+ * Class that implements some common infrastructure for listing and editing
+ * pages. This class is not
  * 
  * @author Thiago H. de Paula Figueiredo
  * @param <T> the entity class related to this encoder.
  * @param <K> the type of the class' primary key property.
  */
 @IncludeJavaScriptLibrary(Constants.TAPESTRY_CRUD_CSS_ASSET)
-public abstract class BasePage<T, K extends Serializable> implements CrudPage<T, K> {
+@SuppressWarnings("deprecation")
+public abstract class BasePage<T, K extends Serializable> implements
+		CrudPage<T, K> {
 
 	@Retain
 	private PrimaryKeyEncoder<K, T> primaryKeyEncoder;
@@ -66,7 +69,7 @@ public abstract class BasePage<T, K extends Serializable> implements CrudPage<T,
 
 	@Inject
 	private Authorizer authorizer;
-	
+
 	@Inject
 	private ControllerSource controllerSource;
 
@@ -84,7 +87,7 @@ public abstract class BasePage<T, K extends Serializable> implements CrudPage<T,
 
 	@Inject
 	private PrimaryKeyTypeService primaryKeyTypeService;
-	
+
 	@Inject
 	private TapestryCrudModuleService tapestryCrudModuleService;
 
@@ -102,13 +105,13 @@ public abstract class BasePage<T, K extends Serializable> implements CrudPage<T,
 
 	@Inject
 	private Messages messages;
-	
+
 	@Inject
 	private ComponentSource componentSource;
 
 	@Retain
 	private Class<K> primaryKeyClass;
-	
+
 	private boolean removedObjectNotFound;
 
 	/**
@@ -118,13 +121,15 @@ public abstract class BasePage<T, K extends Serializable> implements CrudPage<T,
 	public BasePage() {
 
 		final Type genericSuperclass = getClass().getGenericSuperclass();
-		final ParameterizedType parameterizedType = ((ParameterizedType) genericSuperclass);
+		final ParameterizedType parameterizedType =
+			((ParameterizedType) genericSuperclass);
 		entityClass = (Class<T>) parameterizedType.getActualTypeArguments()[0];
 		primaryKeyClass = primaryKeyTypeService.getPrimaryKeyType(entityClass);
 
 		controller = controllerSource.get(entityClass);
 
-		primaryKeyEncoder = (PrimaryKeyEncoder<K, T>) primaryKeyEncoderSource.get(entityClass);
+		primaryKeyEncoder =
+			(PrimaryKeyEncoder<K, T>) primaryKeyEncoderSource.get(entityClass);
 
 		assert entityClass != null;
 		assert primaryKeyClass != null;
@@ -230,8 +235,9 @@ public abstract class BasePage<T, K extends Serializable> implements CrudPage<T,
 	}
 
 	/**
-	 * ID of the {@link Block} that will be returned when a form is submitted via AJAX. This
-	 * implementation returns {@link #DEFAULT_FORM_BLOCK_ID} (<code>block</code>).
+	 * ID of the {@link Block} that will be returned when a form is submitted
+	 * via AJAX. This implementation returns {@link #DEFAULT_FORM_BLOCK_ID} (
+	 * <code>block</code>).
 	 * 
 	 * @return a {@link String}.
 	 */
@@ -240,8 +246,9 @@ public abstract class BasePage<T, K extends Serializable> implements CrudPage<T,
 	}
 
 	/**
-	 * ID of the {@link Zone} that will be returned when a form is submitted via AJAX. This
-	 * implementation returns {@link #DEFAULT_FORM_ZONE_ID} (<code>zone</code>).
+	 * ID of the {@link Zone} that will be returned when a form is submitted via
+	 * AJAX. This implementation returns {@link #DEFAULT_FORM_ZONE_ID} (
+	 * <code>zone</code>).
 	 * 
 	 * @return a {@link String}.
 	 */
@@ -250,8 +257,9 @@ public abstract class BasePage<T, K extends Serializable> implements CrudPage<T,
 	}
 
 	/**
-	 * Used by {@link #returnFromRemove()} to know whether it must return a {@link Zone} or a
-	 * {@link Block}. This implementation returns <code>true</code>.
+	 * Used by {@link #returnFromRemove()} to know whether it must return a
+	 * {@link Zone} or a {@link Block}. This implementation returns
+	 * <code>true</code>.
 	 * 
 	 * @return a <code>boolean</code>.
 	 */
@@ -278,8 +286,8 @@ public abstract class BasePage<T, K extends Serializable> implements CrudPage<T,
 	}
 
 	/**
-	 * This method listens to the {@link Constants#REMOVE_OBJECT_ACTION} event and removes the
-	 * corresponding object.
+	 * This method listens to the {@link Constants#REMOVE_OBJECT_ACTION} event
+	 * and removes the corresponding object.
 	 * 
 	 * @param context an {@link EventContext}.
 	 */
@@ -287,18 +295,17 @@ public abstract class BasePage<T, K extends Serializable> implements CrudPage<T,
 	protected Object remove(EventContext context) {
 
 		getAuthorizer().checkRemove(getEntityClass());
-		
+
 		K id = context.get(getPrimaryKeyClass(), 0);
 		final T toBeRemoved = primaryKeyEncoder.toValue(id);
-		
+
 		if (toBeRemoved != null) {
 			getAuthorizer().checkRemove(toBeRemoved);
 		}
-		
+
 		return remove(toBeRemoved);
 
 	}
-	
 
 	/**
 	 * Removes or not a given object.
@@ -306,18 +313,17 @@ public abstract class BasePage<T, K extends Serializable> implements CrudPage<T,
 	 * @param object a {@link K}.
 	 */
 	protected Object remove(T object) {
-		
+
 		if (object != null) {
 			getController().delete(object);
-		}
-		else {
+		} else {
 			removedObjectNotFound = true;
 		}
-		
+
 		return returnFromDoRemove();
 
 	}
-	
+
 	/**
 	 * Defines what {@link #doRemove()} will return.
 	 * 
@@ -326,20 +332,21 @@ public abstract class BasePage<T, K extends Serializable> implements CrudPage<T,
 	@SuppressWarnings("unchecked")
 	protected Object returnFromDoRemove() {
 
-		Class<?> listPageClass = tapestryCrudModuleService.getListPageClass(getEntityClass());
-		BaseListPage<T, K> listPage = (BaseListPage<T, K>) componentSource.getPage(listPageClass);
-		
+		Class<?> listPageClass =
+			tapestryCrudModuleService.getListPageClass(getEntityClass());
+		BaseListPage<T, K> listPage =
+			(BaseListPage<T, K>) componentSource.getPage(listPageClass);
+
 		if (removedObjectNotFound) {
 			listPage.setMessage(getRemoveErrorNotFoundMessage());
-		}
-		else {
+		} else {
 			listPage.setMessage(getRemoveSuccessMessage());
 		}
-		
+
 		return listPage;
 
 	}
-	
+
 	/**
 	 * Returns the remove success message.
 	 * 
@@ -358,14 +365,22 @@ public abstract class BasePage<T, K extends Serializable> implements CrudPage<T,
 		return getMessages().get(Constants.MESSAGE_ERROR_REMOVE_NOT_FOUND);
 	}
 
-	
 	/**
 	 * Returns the value of the <code>tapestryCrudModuleService</code> property.
-	 *
+	 * 
 	 * @return a {@link TapestryCrudModuleService}.
 	 */
 	final protected TapestryCrudModuleService getTapestryCrudModuleService() {
 		return tapestryCrudModuleService;
+	}
+
+	/**
+	 * Returns the value of the <code>removedObjectNotFound</code> property.
+	 * 
+	 * @return a <code>boolean</code>.
+	 */
+	public boolean isRemovedObjectNotFound() {
+		return removedObjectNotFound;
 	}
 
 }
