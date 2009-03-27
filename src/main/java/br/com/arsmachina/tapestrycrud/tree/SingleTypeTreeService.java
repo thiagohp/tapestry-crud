@@ -58,6 +58,14 @@ public interface SingleTypeTreeService<T> {
 	boolean isRoot(T object);
 	
 	/**
+	 * Returns the parent of a given object.
+	 * 
+	 * @param object a <code>T</code>. It cannot be null.
+	 * @return a <code>T</code> or null.
+	 */
+	T getParent(T object);
+	
+	/**
 	 * Sorts a list in tree order.
 	 * 
 	 * @param objects a {@link List} of <code>T</code>. It cannot be null.

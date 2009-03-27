@@ -172,3 +172,13 @@ ul.t-crud-tree-select li.level4 {
 ul.t-crud-tree-select li.level5 {
 	margin-left: 2.5em;
 }
+
+div.t-crud-tree-select {
+	display: inline;
+	float: none;
+	clear: none;
+}
+
+div.t-crud-tree-select a {
+
+}

@@ -2,6 +2,7 @@
 package br.com.arsmachina.tapestrycrud.components;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +24,9 @@ import org.apache.tapestry5.annotations.IncludeJavaScriptLibrary;
 import org.apache.tapestry5.annotations.IncludeStylesheet;
 import org.apache.tapestry5.annotations.Mixin;
 import org.apache.tapestry5.annotations.Parameter;
-import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.corelib.base.AbstractField;
 import org.apache.tapestry5.corelib.components.Select;
 import org.apache.tapestry5.corelib.mixins.RenderDisabled;
-import org.apache.tapestry5.dom.Element;
 import org.apache.tapestry5.internal.TapestryInternalUtils;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.internal.util.InternalUtils;
@@ -38,7 +37,11 @@ import org.apache.tapestry5.services.ValueEncoderSource;
 import org.apache.tapestry5.util.EnumSelectModel;
 
 import br.com.arsmachina.tapestrycrud.Constants;
+import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
+import br.com.arsmachina.tapestrycrud.services.LabelEncoderSource;
+import br.com.arsmachina.tapestrycrud.services.TreeServiceSource;
 import br.com.arsmachina.tapestrycrud.tree.SimpleTreeSelectNode;
+import br.com.arsmachina.tapestrycrud.tree.SingleTypeTreeService;
 import br.com.arsmachina.tapestrycrud.tree.TreeSelectNode;
 
 /**
@@ -69,10 +72,13 @@ public class TreeSelect extends AbstractField {
 
 	@Parameter(defaultPrefix = BindingConstants.ASSET, value = Constants.HAS_CHILDREN_NODE_IMAGE)
 	private Asset hasChildrenIcon;
-	
+
 	@Inject
 	private ComponentDefaultProvider defaultProvider;
-	
+
+	@Parameter(value = "false")
+	private boolean showTreeAtFirst;
+
 	/**
 	 * The list of root nodes to be used as options.
 	 */
@@ -88,6 +94,9 @@ public class TreeSelect extends AbstractField {
 	@Environmental
 	private ValidationTracker tracker;
 
+	@Inject
+	private TreeServiceSource treeServiceSource;
+
 	/**
 	 * Performs input validation on the value supplied by the user in the form
 	 * submission.
@@ -102,10 +111,16 @@ public class TreeSelect extends AbstractField {
 	private Object value;
 
 	/**
-	 * "No parent object" option label;
+	 * "No parent object" option label.
 	 */
 	@Parameter(value = "message:treeselect.noparent.option", defaultPrefix = BindingConstants.MESSAGE)
 	private String noParentOptionLabel;
+
+	/**
+	 * Message used in the link that shows the tree select.
+	 */
+	@Parameter(value = "message:treeselect.show", defaultPrefix = BindingConstants.MESSAGE)
+	private String showTreeMessage;
 
 	@Inject
 	private FieldValidationSupport fieldValidationSupport;
@@ -113,11 +128,16 @@ public class TreeSelect extends AbstractField {
 	@SuppressWarnings("unused")
 	@Mixin
 	private RenderDisabled renderDisabled;
-	
+
 	@Inject
 	private RenderSupport renderSupport;
 
+	@Inject
+	private LabelEncoderSource labelEncoderSource;
+
 	private String selectedClientValue;
+
+	private String clientId;
 
 	@SuppressWarnings("unused")
 	private boolean isSelected(String clientValue) {
@@ -126,14 +146,14 @@ public class TreeSelect extends AbstractField {
 
 	@Override
 	protected void processSubmission(String elementName) {
-		
+
 		String submittedValue = request.getParameter(elementName);
 
 		// When the null option is selected, the "on" value is submitted.
 		if (submittedValue != null && submittedValue.equals("on")) {
 			submittedValue = null;
 		}
-		
+
 		tracker.recordInput(this, submittedValue);
 
 		Object selectedValue =
@@ -153,7 +173,71 @@ public class TreeSelect extends AbstractField {
 	@SuppressWarnings("unchecked")
 	void beginRender(MarkupWriter writer) {
 
-		writer.element("ul", "class", "t-crud-tree-select");
+		writer.element("div", "class", "t-crud-tree-select");
+
+		clientId = renderSupport.allocateClientId(resources);
+
+		if (showTreeAtFirst == false) {
+
+			final String textId = clientId + "-text";
+			writer.element("p", "id", textId);
+
+			if (value == null) {
+				writer.write(noParentOptionLabel);
+			} else {
+
+				final Class boundType = resources.getBoundType("value");
+
+				final SingleTypeTreeService<Object> treeService =
+					treeServiceSource.get(boundType);
+
+				List<Object> stack = new ArrayList<Object>();
+				Object current = value;
+
+				while (current != null) {
+					stack.add(current);
+					current = treeService.getParent(current);
+				}
+
+				Collections.reverse(stack);
+
+				final LabelEncoder labelEncoder =
+					labelEncoderSource.get(boundType);
+
+				final int size = stack.size();
+				for (int i = 0; i < size; i++) {
+
+					Object object = stack.get(i);
+					writer.write(labelEncoder.toLabel(object));
+
+					if (i < size - 1) {
+						writer.write("/");
+					}
+
+				}
+
+			}
+			
+			writer.write(" ");
+
+			final String linkId = clientId + "-link";
+			writer.element("a", "id", linkId, "href", "#");
+			writer.write(showTreeMessage);
+			writer.end();
+
+			writer.end(); // p
+
+			renderSupport.addScript(
+					"Event.observe('%s', 'click', function() {  $('%s').hide(); $('%s').show(); });",
+					linkId, textId, clientId);
+
+		}
+
+		writer.element("ul", "class", "t-crud-tree-select", "id", clientId);
+		
+		if (showTreeAtFirst == false) {
+			writer.attributes("style", "display: none;");
+		}
 
 		renderNoParentOption(writer);
 
@@ -162,12 +246,8 @@ public class TreeSelect extends AbstractField {
 		}
 
 		writer.end(); // outer ul tag
-		
-		final String clientId = getClientId();
-		final String client = encoder.toClient(value);
-		
-//		renderSupport.addScript("TreeSelect.disableDescendentInputs('%s-%s')",
-//				clientId, client);
+
+		writer.end(); // div
 
 	}
 
@@ -201,7 +281,7 @@ public class TreeSelect extends AbstractField {
 		String radioId = clientId + "-" + thisClientValue;
 
 		writer.element("li", "class", "level" + level);
-		
+
 		writeAttributes(node.getAttributes(), writer);
 
 		if (checked) {
@@ -259,15 +339,14 @@ public class TreeSelect extends AbstractField {
 	 */
 	private void renderRadioButton(MarkupWriter writer, String thisClientValue,
 			boolean checked, String radioId) {
-		
-		
+
 		writer.element("input", "type", "radio", "name", getControlName(),
 				"id", radioId, "value", thisClientValue);
 
 		if (checked) {
 			writer.attributes("checked", "checked");
 		}
-		
+
 	}
 
 	/**
@@ -277,19 +356,19 @@ public class TreeSelect extends AbstractField {
 	 */
 	private void renderLabel(TreeSelectNode node, MarkupWriter writer,
 			String radioId) {
-		
+
 		final boolean noChildren = node.getChildren().isEmpty();
-		
+
 		writer.element("label", "for", radioId);
-		
+
 		Asset asset = noChildren ? noChildrenIcon : hasChildrenIcon;
 		writer.element("img", "src", asset);
 		writer.end();
-		
+
 		writer.write(node.getLabel());
-		
+
 		writer.end(); // label
-		
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -329,8 +408,10 @@ public class TreeSelect extends AbstractField {
 		if (attributes == null)
 			return;
 
-		for (Map.Entry<String, String> e : attributes.entrySet())
+		for (Map.Entry<String, String> e : attributes.entrySet()) {
 			writer.attributes(e.getKey(), e.getValue());
+		}
+
 	}
 
 }
