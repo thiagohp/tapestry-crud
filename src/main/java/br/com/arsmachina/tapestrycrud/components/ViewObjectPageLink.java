@@ -92,7 +92,7 @@ public class ViewObjectPageLink {
 			return false;
 		}
 		
-		entityClass = editPage.getEntityClass();
+		entityClass = object.getClass();
 		Class<?> viewPageClass = tapestryCrudModuleService.getViewPageClass(entityClass);
 		ActivationContextEncoder encoder = activationContextEncoderSource.get(entityClass);
 		final Object activationContext = encoder.toActivationContext(object);

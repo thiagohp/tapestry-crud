@@ -16,8 +16,6 @@ package br.com.arsmachina.tapestrycrud.components;
 
 import org.apache.tapestry5.Asset;
 import org.apache.tapestry5.BindingConstants;
-import org.apache.tapestry5.ComponentResources;
-import org.apache.tapestry5.annotations.BeforeRenderTemplate;
 import org.apache.tapestry5.annotations.IncludeStylesheet;
 import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Property;
@@ -26,7 +24,6 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 
 import br.com.arsmachina.authorization.Authorizer;
 import br.com.arsmachina.tapestrycrud.Constants;
-import br.com.arsmachina.tapestrycrud.base.BasePage;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 
 /**
@@ -105,8 +102,6 @@ public class ActionLinks {
 	@Inject
 	private Authorizer authorizer;
 	
-	private Class<?> entityClass;
-	
 	/**
 	 * Defines the value of the <code>edit</code> parameter if not bound.
 	 */
@@ -139,7 +134,7 @@ public class ActionLinks {
 	public boolean getRemove() {
 		
 		if (remove != null) {
-			return edit;
+			return remove;
 		}
 		
 		return authorizer.canRemove(object.getClass()) && authorizer.canRemove(object);
@@ -154,7 +149,7 @@ public class ActionLinks {
 	public String getEditPage() {
 
 		if (editPage == null) {
-			editPage = tapestryCrudModuleService.getEditPageURL(entityClass);
+			editPage = tapestryCrudModuleService.getEditPageURL(object.getClass());
 		}
 		
 		if (getEdit() && (editPage == null || editPage.trim().length() == 0)) {
@@ -176,7 +171,7 @@ public class ActionLinks {
 	public String getViewPage() {
 
 		if (viewPage == null) {
-			viewPage = tapestryCrudModuleService.getViewPageURL(entityClass);
+			viewPage = tapestryCrudModuleService.getViewPageURL(object.getClass());
 		}
 
 		if (getView() && (viewPage == null || viewPage.trim().length() == 0)) {
@@ -190,17 +185,4 @@ public class ActionLinks {
 
 	}
 	
-	@Inject 
-	private ComponentResources resources; 
-	
-	@BeforeRenderTemplate
-	@SuppressWarnings("unchecked")
-	void setEntityClass() {
-
-		Object page = resources.getPage();
-		BasePage basePage = (BasePage) page;
-		entityClass = basePage.getEntityClass();
-
-	}
-
 }

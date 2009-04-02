@@ -94,7 +94,7 @@ public class EditObjectPageLink {
 			return false;
 		}
 		
-		entityClass = viewPage.getEntityClass();
+		entityClass = object.getClass();
 		editPageURL = tapestryCrudModuleService.getEditPageURL(entityClass);
 		ActivationContextEncoder encoder = activationContextEncoderSource.get(entityClass);
 		final Object activationContext = encoder.toActivationContext(object);
