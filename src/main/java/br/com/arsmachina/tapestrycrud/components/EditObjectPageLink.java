@@ -61,6 +61,9 @@ public class EditObjectPageLink {
 	@Inject
 	private Authorizer authorizer;
 	
+	/**
+	 * Object to be edited. Only needed if used outside a {@link BaseViewPage}.
+	 */
 	@Parameter
 	private Object object;
 
@@ -87,8 +90,8 @@ public class EditObjectPageLink {
 			
 			if (page instanceof BaseViewPage == false) {
 
-				throw new RuntimeException("The EditObjectPageLink, without the object parameter," +
-				"must be used inside a page that extends BaseViewPage");
+				throw new RuntimeException("EditObjectPageLink, without the object parameter," +
+					"must be used inside a page that extends BaseViewPage");
 				
 			}
 			else {
