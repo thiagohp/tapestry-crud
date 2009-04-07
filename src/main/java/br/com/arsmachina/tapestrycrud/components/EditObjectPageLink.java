@@ -60,6 +60,9 @@ public class EditObjectPageLink {
 	
 	@Inject
 	private Authorizer authorizer;
+	
+	@Parameter
+	private Object object;
 
 	private Class<?> entityClass;
 	
@@ -74,21 +77,28 @@ public class EditObjectPageLink {
 	private Element element;
 
 	private String editPageURL;
-
+	
 	@SuppressWarnings("unchecked")
 	boolean beginRender(MarkupWriter writer) {
 
 		Component page = resources.getPage();
 
-		if (page instanceof BaseViewPage == false) {
+		if (object == null) {
+			
+			if (page instanceof BaseViewPage == false) {
 
-			throw new RuntimeException("The EditObjectPageLink must be used inside a page "
-					+ "that extends BasePage");
+				throw new RuntimeException("The EditObjectPageLink, without the object parameter," +
+				"must be used inside a page that extends BaseViewPage");
+				
+			}
+			else {
+				
+				BaseViewPage viewPage = (BaseViewPage) page;
+				object = viewPage.getObject();
+				
+			}
 
 		}
-
-		BaseViewPage viewPage = (BaseViewPage) page;
-		Object object = viewPage.getObject();
 		
 		if (authorizer.canUpdate(object.getClass()) == false || authorizer.canUpdate(object) == false) {
 			return false;
