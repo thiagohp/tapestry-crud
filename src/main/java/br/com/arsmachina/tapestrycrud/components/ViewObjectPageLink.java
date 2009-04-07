@@ -60,6 +60,12 @@ public class ViewObjectPageLink {
 	
 	@Inject
 	private Authorizer authorizer;
+	
+	/**
+	 * Object to be edited. Only needed if used outside a {@link BaseEditPage}.
+	 */
+	@Parameter
+	private Object object;
 
 	private Class<?> entityClass;
 	
@@ -78,16 +84,23 @@ public class ViewObjectPageLink {
 		
 		Component page = resources.getPage();
 
-		if (page instanceof BaseEditPage == false) {
+		if (object == null) {
+			
+			if (page instanceof BaseEditPage == false) {
 
-			throw new RuntimeException("The EditObjectPageLink must be used inside a page "
-					+ "that extends BasePage");
+				throw new RuntimeException("ViewObjectPageLink, without the object parameter," +
+					"must be used inside a page that extends BaseEditPage");
+				
+			}
+			else {
+				
+				BaseEditPage viewPage = (BaseEditPage) page;
+				object = viewPage.getObject();
+				
+			}
 
 		}
 
-		BaseEditPage editPage = (BaseEditPage) page;
-		Object object = editPage.getObject();
-		
 		if (authorizer.canRead(object.getClass()) == false || authorizer.canRead(object) == false) {
 			return false;
 		}
