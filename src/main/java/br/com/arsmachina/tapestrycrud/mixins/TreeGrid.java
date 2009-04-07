@@ -116,32 +116,38 @@ public class TreeGrid {
 			final Element outerDiv = writer.getElement();
 			final Element div = childElements(outerDiv).get(0);
 			final Element table = childElements(div).get(0);
-			final Element tbody = childElements(table).get(1);
-			final List<Element> rows = childElements(tbody);
-
-			final GridDataSource dataSource = grid.getDataSource();
-			int rowNumber = dataSource.getAvailableRows();
-			List<Object> objects = new ArrayList<Object>();
+			final List<Element> tableChildren = childElements(table);
 			
-			for (int i = 0; i < rowNumber; i++) {
-				objects.add(dataSource.getRowValue(i));
-			}
+			if (tableChildren.size() > 0) {
 			
-			List<TreeNode<?>> treeNodes = treeService.buildTreeNodeList(objects);
-			
-			for (int i = 0; i < rowNumber; i++) {
+				final Element tbody = tableChildren.get(1);
+				final List<Element> rows = childElements(tbody);
+	
+				final GridDataSource dataSource = grid.getDataSource();
+				int rowNumber = dataSource.getAvailableRows();
+				List<Object> objects = new ArrayList<Object>();
 				
-				Object object = dataSource.getRowValue(i);
-				Element tr = rows.get(i);
-				Element firstTd = childElements(tr).get(0);
+				for (int i = 0; i < rowNumber; i++) {
+					objects.add(dataSource.getRowValue(i));
+				}
 				
-				final TreeNode node = treeService.find(object, treeNodes);
-				String level = "level" + node.getLevel();
+				List<TreeNode<?>> treeNodes = treeService.buildTreeNodeList(objects);
 				
-				firstTd.addClassName(level);
-				
-				Asset asset = node.getChildren().size() == 0 ? noChildrenIcon : hasChildrenIcon;
-				firstTd.elementAt(0, "img", "src", asset.toClientURL());
+				for (int i = 0; i < rowNumber; i++) {
+					
+					Object object = dataSource.getRowValue(i);
+					Element tr = rows.get(i);
+					Element firstTd = childElements(tr).get(0);
+					
+					final TreeNode node = treeService.find(object, treeNodes);
+					String level = "level" + node.getLevel();
+					
+					firstTd.addClassName(level);
+					
+					Asset asset = node.getChildren().size() == 0 ? noChildrenIcon : hasChildrenIcon;
+					firstTd.elementAt(0, "img", "src", asset.toClientURL());
+					
+				}
 				
 			}
 			
