@@ -19,6 +19,7 @@ import org.apache.tapestry5.BindingConstants;
 import org.apache.tapestry5.annotations.BeforeRenderBody;
 import org.apache.tapestry5.annotations.IncludeStylesheet;
 import org.apache.tapestry5.annotations.Parameter;
+import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.corelib.components.Grid;
 
 import br.com.arsmachina.tapestrycrud.Constants;
@@ -49,26 +50,10 @@ public class EmptyGridMessage {
 	 * Message to be shown.
 	 */
 	@Parameter(defaultPrefix = BindingConstants.MESSAGE, value = MESSAGE_GRID_EMPTY)
+	@Property
+	@SuppressWarnings("unused")
 	private String message;
 
-	/**
-	 * Returns the value of the <code>message</code> property.
-	 * 
-	 * @return a {@link String}.
-	 */
-	public String getMessage() {
-		return message;
-	}
-
-	/**
-	 * Changes the value of the <code>message</code> property.
-	 * 
-	 * @param message a {@link String}.
-	 */
-	public void setMessage(String message) {
-		this.message = message;
-	}
-	
 	/**
 	 * Discards the tag body.
 	 * @return <code>false</code>.
@@ -77,5 +62,5 @@ public class EmptyGridMessage {
 	public boolean discardBody() {
 		return false;
 	}
-
+	
 }
