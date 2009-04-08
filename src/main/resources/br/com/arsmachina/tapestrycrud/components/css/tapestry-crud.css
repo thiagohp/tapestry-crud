@@ -29,6 +29,7 @@ form input[type="submit"] {
 div.t-crud-empty-grid, div.t-crud-message {
 	margin-top: 1em;
 	margin-bottom: 1em;
+	padding: 0.5em;
 	border-width: 2px;
 	border-style: solid;
 }
@@ -179,6 +180,10 @@ div.t-crud-tree-select {
 	clear: none;
 }
 
-div.t-crud-tree-select a {
+ul.t-crud-tree-select li.checked label {
+	font-weight: bold;
+}
 
+ul.t-crud-tree-select li.checked li label {
+	font-weight: normal;
 }

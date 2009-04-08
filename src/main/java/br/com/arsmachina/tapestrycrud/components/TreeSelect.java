@@ -76,8 +76,18 @@ public class TreeSelect extends AbstractField {
 	@Inject
 	private ComponentDefaultProvider defaultProvider;
 
+	/**
+	 * Defines whether the tree will be shown up front or just shown when needed.
+	 */
 	@Parameter(value = "false")
 	private boolean showTreeAtFirst;
+
+//	/**
+//	 * Defines whether descendent options will be disabled or not. This is useful when
+//	 * dealing with parent/child self relationships.
+//	 */
+//	@Parameter(value = "false")
+//	private boolean disableDescendentOptions;
 
 	/**
 	 * The list of root nodes to be used as options.
@@ -121,6 +131,12 @@ public class TreeSelect extends AbstractField {
 	 */
 	@Parameter(value = "message:treeselect.show", defaultPrefix = BindingConstants.MESSAGE)
 	private String showTreeMessage;
+
+	/**
+	 * Message used in the link that hides the tree select.
+	 */
+	@Parameter(value = "message:treeselect.hide", defaultPrefix = BindingConstants.MESSAGE)
+	private String hideTreeMessage;
 
 	@Inject
 	private FieldValidationSupport fieldValidationSupport;
@@ -176,10 +192,12 @@ public class TreeSelect extends AbstractField {
 		writer.element("div", "class", "t-crud-tree-select");
 
 		clientId = renderSupport.allocateClientId(resources);
+		final String hideId = clientId + "-hide";
+		final String textId = clientId + "-text";
+		final String showId = clientId + "-show";
 
 		if (showTreeAtFirst == false) {
 
-			final String textId = clientId + "-text";
 			writer.element("p", "id", textId);
 
 			if (value == null) {
@@ -217,24 +235,24 @@ public class TreeSelect extends AbstractField {
 				}
 
 			}
-			
+
 			writer.write(" ");
 
-			final String linkId = clientId + "-link";
-			writer.element("a", "id", linkId, "href", "#");
+			writer.element("a", "id", showId, "href", "#");
 			writer.write(showTreeMessage);
 			writer.end();
 
 			writer.end(); // p
 
 			renderSupport.addScript(
-					"Event.observe('%s', 'click', function() {  $('%s').hide(); $('%s').show(); });",
-					linkId, textId, clientId);
+					"Event.observe('%s', 'click', function() { "
+							+ "$('%s').hide(); $('%s').hide(); $('%s').show(); $('%s').show(); });",
+					showId, showId, textId, clientId, hideId);
 
 		}
 
 		writer.element("ul", "class", "t-crud-tree-select", "id", clientId);
-		
+
 		if (showTreeAtFirst == false) {
 			writer.attributes("style", "display: none;");
 		}
@@ -247,6 +265,20 @@ public class TreeSelect extends AbstractField {
 
 		writer.end(); // outer ul tag
 
+		if (showTreeAtFirst == false) {
+
+			writer.element("p", "id", hideId, "style", "display: none");
+			writer.element("a", "href", "#");
+			writer.write(hideTreeMessage);
+			writer.end(); // a
+			writer.end(); // p
+
+			renderSupport.addScript(
+					"Event.observe('%s', 'click', function() { $('%s').hide(); $('%s').hide(); $('%s').show(); $('%s').show(); });",
+					hideId, hideId, clientId, textId, showId);
+
+		}
+		
 		writer.end(); // div
 
 	}
@@ -285,7 +317,13 @@ public class TreeSelect extends AbstractField {
 		writeAttributes(node.getAttributes(), writer);
 
 		if (checked) {
+			
 			writer.getElement().addClassName("checked");
+			
+//			if (disableDescendentOptions) {
+//				renderSupport.addScript("TreeSelect.disableDescendentInputs('%s')", radioId);
+//			}
+
 		}
 
 		renderLabel(node, writer, radioId);
@@ -346,6 +384,10 @@ public class TreeSelect extends AbstractField {
 		if (checked) {
 			writer.attributes("checked", "checked");
 		}
+
+		renderSupport.addScript(
+				"Event.observe('%s', 'click', function() { TreeSelect.handleChange('%s', '%s'); } );",  
+				radioId, radioId, clientId);
 
 	}
 

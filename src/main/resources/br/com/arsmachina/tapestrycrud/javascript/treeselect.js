@@ -9,7 +9,7 @@ var TreeSelect = {
 				
 			function(li) {
 				
-				// a opção de não ter mãe sempre é disponível
+				// the no parent option is always enabled
 				if (li.hasClassName("noParentOption") == false) {
 					li.addClassName("disabled");
 				}
@@ -18,7 +18,7 @@ var TreeSelect = {
 			
 		);
 
-		// desligandos os <input>s de opções desabilitadas
+		// turning off disabled option <input>s de opções
 		parent.select("input").each(
 			
 			function(input) {
@@ -29,6 +29,18 @@ var TreeSelect = {
 			
 		);
 	
+	},
+
+	handleChange: function(radioId, clientId) {
+		
+		$(clientId).select("li.checked").each(
+			function(label) {
+				label.removeClassName("checked");
+			}
+		);
+		
+		$(radioId).parentNode.addClassName("checked");
+		
 	}
 
 };
