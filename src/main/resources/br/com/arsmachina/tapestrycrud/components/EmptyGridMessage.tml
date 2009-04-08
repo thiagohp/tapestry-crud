@@ -1,5 +1,5 @@
 <div class="t-crud-empty-grid" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd">
 	<p>
-		${message:message.grid.empty}
+		${message}
 	</p>
 </div>
