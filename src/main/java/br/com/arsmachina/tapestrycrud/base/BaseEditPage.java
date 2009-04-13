@@ -108,9 +108,21 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 			setObject(createNewObject());
 		}
 		else {
-			getController().reattach(object);
+			if (isObjectPersistent()) {
+				getController().reattach(object);
+			}
 		}
+		
+		prepareObject();
 
+	}
+
+	/**
+	 * Invoked by {@link #prepare()} after it has done its object preparation.
+	 * This implementation does nothing and should be overriden by subclasses that need
+	 * further object preparation.
+	 */
+	protected void prepareObject() {
 	}
 
 	/**
@@ -341,7 +353,13 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 	final public Object onPassivate() {
 
 		final T o = getObject();
-		return o != null ? getActivationContextEncoder(getEntityClass()).toActivationContext(o) : null;
+		Object value = null;
+		
+		if (o != null && isObjectPersistent() == false) {
+			value = getActivationContextEncoder(getEntityClass()).toActivationContext(o);
+		}
+		
+		return value;
 
 	}
 
@@ -367,13 +385,17 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 		else {
 			checkUpdateTypeAccess();
 		}
-		final T activationContextObject = activationContextEncoder.toObject(context);
 		
-		if (activationContextObject != null) {
-			checkUpdateObjectAccess(activationContextObject);
+		if (object == null) {
+		
+			final T activationContextObject = activationContextEncoder.toObject(context);
+			setObject(activationContextObject);
+			
 		}
 		
-		setObject(activationContextObject);
+		if (getObject() != null) {
+			checkUpdateObjectAccess(getObject());
+		}
 		
 	}
 
