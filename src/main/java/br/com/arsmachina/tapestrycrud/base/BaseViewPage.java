@@ -125,5 +125,17 @@ public class BaseViewPage<T, ID extends Serializable> extends BasePage<T, ID> {
 	public T getObject() {
 		return object;
 	}
+	
+	/**
+	 * Returns the current activation context of this page.
+	 * 
+	 * @return an {@link #A}.
+	 */
+	final public Object onPassivate() {
+
+		final T o = getObject();
+		return o != null ? getActivationContextEncoder(getEntityClass()).toActivationContext(o) : null;
+
+	}
 
 }
