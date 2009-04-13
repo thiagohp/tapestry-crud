@@ -5,7 +5,7 @@ form label, form input {
 	margin-bottom: 0.5em;
 }
 
-form input {
+form input, form textarea {
 	width: 10em;
 }
 
@@ -60,6 +60,8 @@ td.action {
 div.t-crud-actionlinks {
 	padding-left: 0.25em;
 	padding-right: 0.25em;
+	float: left;
+	clear: none;
 }
 
 div.t-crud-actionlinks a {
