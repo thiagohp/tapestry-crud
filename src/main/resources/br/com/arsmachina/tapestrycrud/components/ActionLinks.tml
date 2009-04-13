@@ -1,6 +1,7 @@
 <div 
 	xmlns:t="http://tapestry.apache.org/schema/tapestry_5_0_0.xsd"
 	class="t-crud-actionlinks">
+	<t:delegate to="before"/>
 	<t:if test="view">
 		<a href="#" t:type="crud/ActivationContextPageLink" t:page="prop:viewPage"
 			t:object="object" class="t-crud-view-link">
@@ -19,4 +20,5 @@
 			<img src="${deleteIcon}" alt="${message:link.remove.object}"/>
 		</a>
 	</t:if>
+	<t:delegate to="after"/>
 </div>

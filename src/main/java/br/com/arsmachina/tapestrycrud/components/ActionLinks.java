@@ -16,6 +16,7 @@ package br.com.arsmachina.tapestrycrud.components;
 
 import org.apache.tapestry5.Asset;
 import org.apache.tapestry5.BindingConstants;
+import org.apache.tapestry5.Block;
 import org.apache.tapestry5.annotations.IncludeStylesheet;
 import org.apache.tapestry5.annotations.Parameter;
 import org.apache.tapestry5.annotations.Property;
@@ -50,6 +51,22 @@ public class ActionLinks {
 	@Parameter(required = true, allowNull = false, principal = true)
 	@Property
 	private Object object;
+	
+	/**
+	 * Block placed before the regular links.
+	 */
+	@Parameter(defaultPrefix = BindingConstants.BLOCK)
+	@Property
+	@SuppressWarnings("unused")
+	private Block before;
+	
+	/**
+	 * Block placed after the regular links.
+	 */
+	@Parameter(defaultPrefix = BindingConstants.BLOCK)
+	@Property
+	@SuppressWarnings("unused")
+	private Block after;
 
 	/**
 	 * Name of the page that is used to edits objects listed in this page.
