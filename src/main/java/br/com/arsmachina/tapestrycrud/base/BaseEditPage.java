@@ -116,6 +116,18 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 		prepareObject();
 
 	}
+	
+	/**
+	 * Tells if {@link #onActivate(EventContext)} will ignore the activation or not.
+	 * This implementation returns <code>false</code>. If overriden to return <code>false</code>,
+	 * the edited object is always the one returned by {@link #getObject()}, so it must be overriden
+	 * too. 
+	 * 
+	 * @return a <code>boolean</code>.
+	 */
+	protected boolean ignoreActivationContext() {
+		return false;
+	}
 
 	/**
 	 * Invoked by {@link #prepare()} after it has done its object preparation.
@@ -352,11 +364,16 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 	 */
 	final public Object onPassivate() {
 
-		final T o = getObject();
 		Object value = null;
+
+		if (ignoreActivationContext() == false) {
 		
-		if (o != null && isObjectPersistent() == false) {
-			value = getActivationContextEncoder(getEntityClass()).toActivationContext(o);
+			final T o = getObject();
+			
+			if (o != null && isObjectPersistent() == false) {
+				value = getActivationContextEncoder(getEntityClass()).toActivationContext(o);
+			}
+			
 		}
 		
 		return value;
@@ -379,17 +396,21 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 	 */
 	void onActivate(EventContext context) {
 		
-		if (context.getCount() == 0) {
-			checkStoreTypeAccess();
-		}
-		else {
-			checkUpdateTypeAccess();
-		}
+		if (ignoreActivationContext() == false) {
 		
-		if (object == null) {
-		
-			final T activationContextObject = activationContextEncoder.toObject(context);
-			setObject(activationContextObject);
+			if (context.getCount() == 0) {
+				checkStoreTypeAccess();
+			}
+			else {
+				checkUpdateTypeAccess();
+			}
+			
+			if (object == null) {
+			
+				final T activationContextObject = activationContextEncoder.toObject(context);
+				setObject(activationContextObject);
+				
+			}
 			
 		}
 		
