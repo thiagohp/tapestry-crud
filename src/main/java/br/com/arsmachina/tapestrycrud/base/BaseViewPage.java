@@ -15,12 +15,8 @@
 package br.com.arsmachina.tapestrycrud.base;
 
 import java.io.Serializable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.tapestry5.EventContext;
-import org.apache.tapestry5.ioc.annotations.Inject;
-import org.apache.tapestry5.services.Request;
 
 /**
  * Base class for pages that edit entity objects.
@@ -31,18 +27,6 @@ import org.apache.tapestry5.services.Request;
  */
 public class BaseViewPage<T, ID extends Serializable> extends BasePage<T, ID> {
 
-	// copied from ComponentEventDispatcher
-	private final Pattern PATH_PATTERN = Pattern.compile(
-			"^/" +      // The leading slash is recognized but skipped
-			"(((\\w+)/)*(\\w+))" + // A series of folder names leading up to the page name, forming the logical page name
-			"(\\.(\\w+(\\.\\w+)*))?" + // The first dot separates the page name from the nested component id
-			"(\\:(\\w+))?" + // A colon, then the event type
-			"(/(.*))?", //  A slash, then the action context
-			Pattern.COMMENTS);
-	
-	@Inject
-	private Request request;
-	
 	private T object;
 	
 	/**
@@ -69,9 +53,7 @@ public class BaseViewPage<T, ID extends Serializable> extends BasePage<T, ID> {
 		// event requests
 		else {
 			
-	        Matcher matcher = PATH_PATTERN.matcher(request.getPath());
-	        // is this an event request?
-	        if (matcher.matches()) {
+	        if (isEventRequest()) {
 	        	validRequest = true;
 	        }
 	        

@@ -68,8 +68,16 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 	
 	private T object;
 	
+	/**
+	 * Checks whether the current user can search this entity class, but only if the current
+	 * request is a render one. 
+	 */
 	public void onActivate() {
-		getAuthorizer().checkSearch(getEntityClass());
+		
+		if (isEventRequest() == false) {
+			getAuthorizer().checkSearch(getEntityClass());
+		}
+		
 	}
 
 	/**
