@@ -53,7 +53,7 @@ public abstract class AbstractNewObjectLink {
 	private PageUtil requestUtil;
 
 	@Parameter(allowNull = false, defaultPrefix = BindingConstants.MESSAGE)
-	@Property(write = false)
+	@Property
 	@SuppressWarnings("unused")
 	private String label;
 
@@ -191,24 +191,8 @@ public abstract class AbstractNewObjectLink {
 	
 			boolean bodyIsBlank = InternalUtils.isBlank(element.getChildMarkup());
 	
-			String label;
-	
 			if (bodyIsBlank || ignoreBody) {
-	
-				final Messages messages = resources.getMessages();
-	
-				final String key = NEW_OBJECT_MESSAGE + "."
-						+ tapestryCrudModuleService.getEditPageURL(entityClass).replace('/', '.');
-	
-				if (messages.contains(key)) {
-					label = messages.get(key);
-				}
-				else {
-					label = messages.get(NEW_OBJECT_MESSAGE);
-				}
-	
 				writer.write(label);
-	
 			}
 	
 			writer.end(); // a
