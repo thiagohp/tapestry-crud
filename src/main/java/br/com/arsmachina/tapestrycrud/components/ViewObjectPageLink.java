@@ -27,6 +27,8 @@ import org.apache.tapestry5.ioc.internal.util.InternalUtils;
 import org.apache.tapestry5.runtime.Component;
 
 import br.com.arsmachina.authorization.Authorizer;
+import br.com.arsmachina.controller.Controller;
+import br.com.arsmachina.module.service.ControllerSource;
 import br.com.arsmachina.tapestrycrud.base.BaseEditPage;
 import br.com.arsmachina.tapestrycrud.base.BaseViewPage;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
@@ -69,6 +71,9 @@ public class ViewObjectPageLink {
 
 	private Class<?> entityClass;
 	
+	@Inject
+	private ControllerSource controllerSource;
+	
 	/**
 	 * If false (default value), the body of the tag will be ignored and the intertionalized name of
 	 * thelisting page is used. If true, then the body of the label element (in the template) is not
@@ -101,6 +106,12 @@ public class ViewObjectPageLink {
 
 		}
 
+		Controller controller = controllerSource.get(object.getClass());
+		
+		if (controller != null && controller.isPersistent(object) == false) {
+			return false;
+		}
+		
 		if (authorizer.canRead(object.getClass()) == false || authorizer.canRead(object) == false) {
 			return false;
 		}
