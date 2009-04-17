@@ -1,5 +1,8 @@
-form label, form input {
+form label {
 	display: block;
+}
+
+form label, form input {
 	padding: 0;
 	margin: 0;
 	margin-bottom: 0.5em;
@@ -188,4 +191,8 @@ ul.t-crud-tree-select li.checked label {
 
 ul.t-crud-tree-select li.checked li label {
 	font-weight: normal;
+}
+
+div.submit {
+	clear: both;
 }
