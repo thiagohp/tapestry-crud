@@ -156,7 +156,7 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 
 		final boolean hasErrors = getForm().getHasErrors();
 
-		if (hasErrors && request.isXHR()) {
+		if (hasErrors && request.isXHR() && useAjaxForFormSubmits()) {
 			returnValue = getFormZone().getBody();
 		}
 
@@ -246,7 +246,7 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 
 		Object returnValue = null;
 
-		if (request.isXHR()) {
+		if (request.isXHR() && useAjaxForFormSubmits()) {
 
 			if (returnZoneOnXHR()) {
 				returnValue = getFormZone().getBody();
@@ -370,7 +370,7 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 		
 			final T o = getObject();
 			
-			if (o != null && isObjectPersistent() == false) {
+			if (o != null && isObjectPersistent()) {
 				value = getActivationContextEncoder(getEntityClass()).toActivationContext(o);
 			}
 			
@@ -414,7 +414,7 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 			
 		}
 		
-		if (getObject() != null) {
+		if (getObject() != null && isObjectPersistent()) {
 			checkUpdateObjectAccess(getObject());
 		}
 		
@@ -454,18 +454,20 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 	 * 
 	 * @return a <code>boolean</code>.
 	 */
-	final private boolean isObjectPersistent() {
+	final protected boolean isObjectPersistent() {
 		return object != null && getController().isPersistent(object);
 	}
 
 	/**
 	 * Returns <code>null</code> if we are inserting a new object and
 	 * {@link #DEFAULT_FORM_ZONE_ID} (<code>zone</code>) otherwise.
+	 * This method also returns <code>null</code> if {@link #useAjaxForFormSubmits()}
+	 * return <code>false</code>.
 	 * 
 	 * @return a {@link String}.
 	 */
 	public String getZone() {
-		return isObjectPersistent() ? Constants.DEFAULT_FORM_ZONE_ID : null;
+		return isObjectPersistent() && useAjaxForFormSubmits() ? Constants.DEFAULT_FORM_ZONE_ID : null;
 	}
 
 	/**
@@ -474,6 +476,17 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 	@OnEvent(Constants.NEW_OBJECT_EVENT)
 	public final void clearObject() {
 		setObject(null);
+	}
+	
+	/**
+	 * Defines if form submissions will be done through AJAX or not.
+	 * This implementation returns <code>true</code>.
+	 * 
+	 * @return a <code>boolean</code>.
+	 * @return
+	 */
+	protected boolean useAjaxForFormSubmits() {
+		return true;
 	}
 	
 }
