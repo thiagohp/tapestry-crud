@@ -381,12 +381,13 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 	}
 
 	/**
-	 * Clears the form errors and message after page rendering.
+	 * Clears the object, form errors and message after page rendering.
 	 */
 	@AfterRenderTemplate
-	final void clearErrors() {
+	final void clearPageState() {
 		form.getDefaultTracker().clear();
 		setMessage(null);
+		setObject(null);
 	}
 
 	/**
