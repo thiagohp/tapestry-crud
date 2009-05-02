@@ -307,7 +307,8 @@ public abstract class BasePage<T, K extends Serializable> implements
 	 * @param context an {@link EventContext}.
 	 */
 	@OnEvent(Constants.REMOVE_OBJECT_ACTION)
-	protected Object remove(EventContext context) {
+	@SuppressWarnings("unused")
+	final private Object remove(EventContext context) {
 
 		getAuthorizer().checkRemove(getEntityClass());
 
@@ -318,7 +319,7 @@ public abstract class BasePage<T, K extends Serializable> implements
 			getAuthorizer().checkRemove(toBeRemoved);
 		}
 
-		return remove(toBeRemoved);
+		return doRemove(toBeRemoved);
 
 	}
 
@@ -327,16 +328,25 @@ public abstract class BasePage<T, K extends Serializable> implements
 	 * 
 	 * @param object a {@link K}.
 	 */
-	protected Object remove(T object) {
+	final private Object doRemove(T object) {
 
 		if (object != null) {
-			getController().delete(object);
+			remove(object);
 		} else {
 			removedObjectNotFound = true;
 		}
 
 		return returnFromDoRemove();
 
+	}
+
+	/**
+	 * Removes a given object. This implementation invokes <code>getController().delete(object)</code>.
+	 * 
+	 * @param object a <code>T</code>.
+	 */
+	protected void remove(T object) {
+		getController().delete(object);
 	}
 
 	/**
