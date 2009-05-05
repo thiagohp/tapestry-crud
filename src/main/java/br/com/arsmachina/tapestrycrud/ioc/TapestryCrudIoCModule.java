@@ -113,7 +113,7 @@ public class TapestryCrudIoCModule {
 	/**
 	 * Tapestry CRUD version.
 	 */
-	final public static String TAPESTRY_CRUD_VERSION = "1.0";
+	final public static String TAPESTRY_CRUD_VERSION = "1.1";
 
 	/**
 	 * Path under with the Tapestry CRUDs assets will be accessed.
