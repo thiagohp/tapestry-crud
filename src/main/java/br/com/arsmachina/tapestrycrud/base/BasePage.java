@@ -64,14 +64,17 @@ import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 public abstract class BasePage<T, K extends Serializable> implements
 		CrudPage<T, K> {
 	
-	// copied from ComponentEventDispatcher
-	private final Pattern PATH_PATTERN = Pattern.compile(
-			"^/" +      // The leading slash is recognized but skipped
-			"(((\\w+)/)*(\\w+))" + // A series of folder names leading up to the page name, forming the logical page name
-			"(\\.(\\w+(\\.\\w+)*))?" + // The first dot separates the page name from the nested component id
-			"(\\:(\\w+))?" + // A colon, then the event type
-			"(/(.*))?", //  A slash, then the action context
-			Pattern.COMMENTS);
+	// copied from ComponentEventLinkEncoder
+    private static final int NESTED_ID = 6;
+	
+	// copied from ComponentEventLinkEncoder
+    private final Pattern PATH_PATTERN = Pattern.compile(
+            "^/" +      // The leading slash is recognized but skipped
+                    "(((\\w+)/)*(\\w+))" + // A series of folder names leading up to the page name, forming the logical page name
+                    "(\\.(\\w+(\\.\\w+)*))?" + // The first dot separates the page name from the nested component id
+                    "(\\:(\\w+))?" + // A colon, then the event type
+                    "(/(.*))?", //  A slash, then the action context
+            Pattern.COMMENTS);
 
 	@Retain
 	private PrimaryKeyEncoder<K, T> primaryKeyEncoder;
@@ -414,8 +417,22 @@ public abstract class BasePage<T, K extends Serializable> implements
 	 * @return a <code>boolean</code>.
 	 */
 	protected boolean isEventRequest() {
+
+		boolean result;
         Matcher matcher = PATH_PATTERN.matcher(request.getPath());
-        return matcher.matches();
+
+        if (!matcher.matches()) {
+        	result = false;
+        }
+        else {
+
+	        String nestedComponentId = matcher.group(NESTED_ID);
+			result = nestedComponentId != null;
+			
+        }
+        
+        return result;
+		
 	}
 
 }
