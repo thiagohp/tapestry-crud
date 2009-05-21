@@ -25,7 +25,8 @@ import br.com.arsmachina.authentication.service.UserService;
  * 
  * @author Thiago H. de Paula Figueiredo
  */
-public class UserServiceImpl implements br.com.arsmachina.authentication.service.UserService {
+public class UserServiceImpl implements
+		br.com.arsmachina.authentication.service.UserService {
 
 	final private ApplicationStateManager applicationStateManager;
 
@@ -61,6 +62,15 @@ public class UserServiceImpl implements br.com.arsmachina.authentication.service
 	 */
 	public boolean isLoggedIn() {
 		return getUser() != null;
+	}
+
+	/**
+	 * Returns <code>isLoggedIn() && getUser().hasPermission(permissionName)</code>.
+	 * 
+	 * @return a <code>boolean</code>.
+	 */
+	public boolean hasPermission(String permissionName) {
+		return isLoggedIn() && getUser().hasPermission(permissionName);
 	}
 
 }
