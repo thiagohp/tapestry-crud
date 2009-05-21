@@ -100,10 +100,10 @@ public class PrimaryKeyEncoderSourceImpl implements PrimaryKeyEncoderSource {
 			
 		}
 
-		if (encoder == null) {
-			throw new IllegalArgumentException(
-					"There is no PrimaryKeyEncoder configured for class " + clasz.getName());
-		}
+//		if (encoder == null) {
+//			throw new IllegalArgumentException(
+//					"There is no PrimaryKeyEncoder configured for class " + clasz.getName());
+//		}
 
 		return encoder;
 
