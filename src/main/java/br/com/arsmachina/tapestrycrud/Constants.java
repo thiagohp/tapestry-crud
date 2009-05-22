@@ -121,6 +121,11 @@ final public class Constants {
 	public static final String IMAGES_ASSET_ROOT = "asset:classpath:/br/com/arsmachina/tapestrycrud/components/images/";
 
 	/**
+	 * Path where the images used by Tapestry CRUD are located.
+	 */
+	public static final String JAVASCRIPT_ASSET_ROOT = "classpath:/br/com/arsmachina/tapestrycrud/javascript/";
+	
+	/**
 	 * Asset used when a tree node has children.
 	 */
 	public static final String HAS_CHILDREN_NODE_IMAGE = IMAGES_ASSET_ROOT + "folder.png";

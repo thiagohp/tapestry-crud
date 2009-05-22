@@ -32,7 +32,7 @@ public class Message {
 	/**
 	 * Generated <code>&lt;div&gt;</code> CSS class. 
 	 */
-	private static final String CSS_CLASS = "t-crud-message";
+	public static final String CSS_CLASS = "t-crud-message";
 	
 	/**
 	 * Message to be shown.
