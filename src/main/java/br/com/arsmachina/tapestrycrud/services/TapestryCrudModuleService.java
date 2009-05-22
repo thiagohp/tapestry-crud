@@ -19,6 +19,7 @@ import java.util.Set;
 import org.apache.tapestry5.PrimaryKeyEncoder;
 
 import br.com.arsmachina.module.Module;
+import br.com.arsmachina.tapestrycrud.beanmodel.BeanModelCustomizer;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
 import br.com.arsmachina.tapestrycrud.module.TapestryCrudModule;
@@ -29,6 +30,7 @@ import br.com.arsmachina.tapestrycrud.module.TapestryCrudModule;
  * @see Module
  * @author Thiago H. de Paula Figueiredo
  */
+@SuppressWarnings("deprecation")
 public interface TapestryCrudModuleService {
 
 	/**
@@ -105,6 +107,15 @@ public interface TapestryCrudModuleService {
 	 * @return a {@link String}.
 	 */
 	String getEditPageClassName(Class<?> entityClass);
+
+	/**
+	 * Returns the bean model customizer class corresponding to a given entity class.
+	 * 
+	 * @param <T> the entity type.
+	 * @param entityClass a {@link Class} instance. It cannot be null.
+	 * @return a {@link Class} or null (if no corresponding one is found).
+	 */
+	<T> Class<? extends BeanModelCustomizer<T>> getBeanModelCustomizerClass(Class<T> entityClass);
 
 	/**
 	 * Returns the fully-qualified name of the listing page for a given entity class.

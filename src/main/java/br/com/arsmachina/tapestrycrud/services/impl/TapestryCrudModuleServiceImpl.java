@@ -21,6 +21,7 @@ import java.util.Set;
 import org.apache.tapestry5.PrimaryKeyEncoder;
 
 import br.com.arsmachina.module.service.ModuleService;
+import br.com.arsmachina.tapestrycrud.beanmodel.BeanModelCustomizer;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
 import br.com.arsmachina.tapestrycrud.encoder.Encoder;
 import br.com.arsmachina.tapestrycrud.encoder.LabelEncoder;
@@ -32,6 +33,7 @@ import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
  * 
  * @author Thiago H. de Paula Figueiredo
  */
+@SuppressWarnings("deprecation")
 public class TapestryCrudModuleServiceImpl implements TapestryCrudModuleService {
 
 	final private Set<TapestryCrudModule> modules;
@@ -41,12 +43,14 @@ public class TapestryCrudModuleServiceImpl implements TapestryCrudModuleService 
 	/**
 	 * Single constructor of this class.
 	 * 
-	 * @param entityClasses a {@link Set} of {@link TapestryCrudModule}s. It cannot be null.
+	 * @param entityClasses a {@link Set} of {@link TapestryCrudModule}s. It
+	 *            cannot be null.
 	 */
 	public TapestryCrudModuleServiceImpl(Set<TapestryCrudModule> modules) {
 
 		if (modules == null) {
-			throw new IllegalArgumentException("Parameter modules cannot be null");
+			throw new IllegalArgumentException(
+					"Parameter modules cannot be null");
 		}
 
 		this.modules = Collections.unmodifiableSet(modules);
@@ -77,7 +81,8 @@ public class TapestryCrudModuleServiceImpl implements TapestryCrudModuleService 
 
 	}
 
-	public <T> Class<? extends Encoder<T, ?>> getEncoderClass(Class<T> entityClass) {
+	public <T> Class<? extends Encoder<T, ?>> getEncoderClass(
+			Class<T> entityClass) {
 
 		Class<? extends Encoder<T, ?>> encoder = null;
 
@@ -95,7 +100,8 @@ public class TapestryCrudModuleServiceImpl implements TapestryCrudModuleService 
 
 	}
 
-	public <T> Class<? extends LabelEncoder<T>> getLabelEncoderClass(Class<T> entityClass) {
+	public <T> Class<? extends LabelEncoder<T>> getLabelEncoderClass(
+			Class<T> entityClass) {
 
 		Class<? extends LabelEncoder<T>> encoder = null;
 
@@ -285,6 +291,24 @@ public class TapestryCrudModuleServiceImpl implements TapestryCrudModuleService 
 
 	}
 
+	public <T> Class<? extends BeanModelCustomizer<T>> getBeanModelCustomizerClass(
+			Class<T> entityClass) {
+
+		Class<? extends BeanModelCustomizer<T>> clasz = null;
+
+		for (TapestryCrudModule module : getModules()) {
+
+			if (module.contains(entityClass)) {
+				clasz = module.getBeanModelCustomizerClass(entityClass);
+				break;
+			}
+
+		}
+
+		return clasz;
+
+	}
+
 	public Set<Class<?>> getEntityClasses() {
 		return entityClasses;
 	}
@@ -294,20 +318,20 @@ public class TapestryCrudModuleServiceImpl implements TapestryCrudModuleService 
 	}
 
 	public TapestryCrudModule getModule(Class<?> entityClass) {
-		
+
 		TapestryCrudModule owner = null;
-		
+
 		for (TapestryCrudModule module : modules) {
-			
+
 			if (module.contains(entityClass)) {
 				owner = module;
 				break;
 			}
-			
+
 		}
-		
+
 		return owner;
-		
+
 	}
 
 	private void fillEntityClasses() {

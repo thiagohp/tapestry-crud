@@ -224,9 +224,10 @@ public class TapestryCrudIoCModule {
 	 */
 	@SuppressWarnings("unchecked")
 	public static BeanModelCustomizerSource buildBeanModelCustomizerSource(
-			Map<Class, BeanModelCustomizer> contributions) {
+			Map<Class, BeanModelCustomizer> contributions, TapestryCrudModuleService tapestryCrudModuleService,
+			ObjectLocator objectLocator) {
 
-		return new BeanModelCustomizerSourceImpl(contributions);
+		return new BeanModelCustomizerSourceImpl(contributions, tapestryCrudModuleService, objectLocator);
 
 	}
 
@@ -241,56 +242,6 @@ public class TapestryCrudIoCModule {
 			Map<Class, SingleTypeTreeService> contributions) {
 
 		return new TreeServiceSourceImpl(contributions);
-
-	}
-
-	/**
-	 * Automatically contributes (class, {@link BeanModelCustomizer} pairs to the 
-	 * {@link BeanModelCustomizerSource} service.
-	 * 
-	 * @param configuration um {@link MappedConfiguration}.
-	 * @param tapestryCrudModuleService a {@link TapestryCrudModuleService}.
-	 * @param objectLocator an {@link ObjectLocator}.
-	 */
-	@SuppressWarnings("unchecked")
-	public static void contributeBeanModelCustomizerSource(
-			MappedConfiguration<Class, BeanModelCustomizer> configuration,
-			TapestryCrudModuleService tapestryCrudModuleService, ObjectLocator objectLocator) {
-
-		final Set<TapestryCrudModule> modules = tapestryCrudModuleService.getModules();
-		
-		for (TapestryCrudModule module : modules) {
-			
-			final Set<Class<?>> entityClasses = module.getEntityClasses();
-			
-			for (Class entityClass : entityClasses) {
-				
-				Class<BeanModelCustomizer> customizerClass = 
-					module.getBeanModelCustomizerClass(entityClass);
-				
-				if (customizerClass != null) {
-					
-					BeanModelCustomizer customizer = objectLocator.autobuild(customizerClass);
-					configuration.add(entityClass, customizer);
-					
-					if (LOGGER.isInfoEnabled()) {
-
-						final String entityName = entityClass.getSimpleName();
-						final String customizerClassName =
-							customizerClass.getName();
-						final String message =
-							String.format("Associating entity %s with bean model customizer %s",
-									entityName, customizerClassName);
-
-						LOGGER.info(message);
-
-					}
-					
-				}
-				
-			}
-			
-		}
 
 	}
 
@@ -396,6 +347,8 @@ public class TapestryCrudIoCModule {
 			EncoderSource encoderSource, EntitySource entitySource,
 			PrimaryKeyEncoderSource primaryKeyEncoderSource,
 			PrimaryKeyTypeService primaryKeyTypeService, TypeCoercer typeCoercer) {
+		
+		long start = System.currentTimeMillis();
 
 		Set<Class<?>> classes = entitySource.getEntityClasses();
 
@@ -425,6 +378,11 @@ public class TapestryCrudIoCModule {
 			}
 
 		}
+		
+		long finish = System.currentTimeMillis();
+		long elapsed= finish - start;
+		
+		System.out.println("tempo gasto: "+ elapsed);
 
 	}
 
@@ -609,7 +567,9 @@ public class TapestryCrudIoCModule {
 			EntitySource entitySource, ModuleService moduleService,
 			TapestryCrudModuleService tapestryCrudModuleService,
 			ObjectLocator objectLocator) {
-
+		
+		long start = System.currentTimeMillis();
+		
 		final Set<Class<?>> entityClasses = entitySource.getEntityClasses();
 		Encoder encoder = null;
 
@@ -645,6 +605,11 @@ public class TapestryCrudIoCModule {
 			}
 
 		}
+		
+		long finish = System.currentTimeMillis();
+		long elapsed= finish - start;
+		
+		System.out.println("tempo gasto: "+ elapsed);
 
 	}
 
@@ -771,6 +736,8 @@ public class TapestryCrudIoCModule {
 			EntitySource entitySource, ModuleService moduleService,
 			TapestryCrudModuleService tapestryCrudModuleService,
 			ObjectLocator objectLocator) {
+		
+		long start = System.currentTimeMillis();
 
 		final Set<Class<?>> entityClasses = entitySource.getEntityClasses();
 		PrimaryKeyEncoder encoder = null;
@@ -795,7 +762,7 @@ public class TapestryCrudIoCModule {
 
 				contributions.add(entityClass, encoder);
 
-				if (LOGGER.isInfoEnabled()) {
+				if (LOGGER.isDebugEnabled()) {
 
 					final String entityName = entityClass.getSimpleName();
 					final String encoderClassName =
@@ -805,13 +772,19 @@ public class TapestryCrudIoCModule {
 								"Associating entity %s with primary key encoder %s",
 								entityName, encoderClassName);
 
-					LOGGER.info(message);
+					LOGGER.debug(message);
 
 				}
 
 			}
 
 		}
+		
+		long finish = System.currentTimeMillis();
+		
+		long elapsed = finish - start;
+		
+		System.out.println("contributePrimaryKeyEncoderSource: " + elapsed);
 
 	}
 

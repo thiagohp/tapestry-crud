@@ -33,7 +33,7 @@ import br.com.arsmachina.tapestrycrud.tree.SingleTypeTreeService;
  * @author Thiago H. de Paula Figueiredo
  */
 public class DefaultTapestryCrudModule implements TapestryCrudModule {
-
+	
 	final private Module module;
 
 	final private Logger logger = LoggerFactory.getLogger(DefaultTapestryCrudModule.class);
