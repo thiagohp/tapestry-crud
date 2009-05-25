@@ -455,7 +455,7 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 	 * 
 	 * @return a <code>boolean</code>.
 	 */
-	final protected boolean isObjectPersistent() {
+	final public boolean isObjectPersistent() {
 		return object != null && getController().isPersistent(object);
 	}
 
