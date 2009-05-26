@@ -17,6 +17,7 @@ package br.com.arsmachina.tapestrycrud.pages;
 import org.apache.tapestry5.Asset;
 import org.apache.tapestry5.BindingConstants;
 import org.apache.tapestry5.EventConstants;
+import org.apache.tapestry5.FieldValidator;
 import org.apache.tapestry5.SelectModel;
 import org.apache.tapestry5.ValueEncoder;
 import org.apache.tapestry5.annotations.Component;
@@ -99,9 +100,8 @@ public class BeanModelBlocks {
 
 	@Component(parameters = { "value=editContext.propertyValue",
 			"label=prop:editContext.label", "model=prop:entityModel",
-			"clientId=prop:editContext.propertyId",
+			"clientId=prop:editContext.propertyId", "validate=prop:entityFieldValidator",
 			"encoder=prop:entityEncoder" })
-	@SuppressWarnings("unused")
 	private Select entityField;
 
 	/**
@@ -124,6 +124,13 @@ public class BeanModelBlocks {
 		return labelEncoder.toLabel(propertyValue);
 
 	}
+	
+	@SuppressWarnings("unchecked")
+	public FieldValidator getEntityFieldValidator()
+    {
+        return editContext.getValidator(entityField);
+    }
+
 
 	public boolean isEntityEditable() {
 
