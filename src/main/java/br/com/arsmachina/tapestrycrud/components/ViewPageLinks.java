@@ -13,12 +13,47 @@
 // limitations under the License.
 package br.com.arsmachina.tapestrycrud.components;
 
+import org.apache.tapestry5.annotations.Parameter;
+import org.apache.tapestry5.annotations.Property;
+
 /**
- * Simple component that just aggregates the edit object, remove object, new object and 
- * back to listing components.
+ * Simple component that just aggregates the edit object, remove object, new
+ * object and back to listing components.
  * 
  * @author Thiago H. de Paula Figueiredo
  */
 public class ViewPageLinks {
+
+	/**
+	 * Show the remove link?
+	 */
+	@Parameter(value = "true")
+	@Property
+	@SuppressWarnings("unused")
+	private boolean remove;
+
+	/**
+	 * Show the edit link?
+	 */
+	@Parameter(value = "true")
+	@Property
+	@SuppressWarnings("unused")
+	private boolean edit;
+
+	/**
+	 * Show the list link?
+	 */
+	@Parameter(value = "true")
+	@Property
+	@SuppressWarnings("unused")
+	private boolean list;
+
+	/**
+	 * Show the new object link?
+	 */
+	@Parameter(value = "true")
+	@Property
+	@SuppressWarnings("unused")
+	private boolean newObject;
 
 }

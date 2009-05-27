@@ -41,9 +41,9 @@ public class ActionLinks {
 
 	public static final String DEFAULT_EDIT_ICON_ASSET = Constants.IMAGES_ASSET_ROOT + "edit.png";
 
-	private static final String DEFAULT_DELETE_ICON_ASSET = Constants.IMAGES_ASSET_ROOT + "delete.png";
+	public static final String DEFAULT_DELETE_ICON_ASSET = Constants.IMAGES_ASSET_ROOT + "delete.png";
 
-	private static final String DEFAULT_VIEW_ICON_ASSET = Constants.IMAGES_ASSET_ROOT + "view.png";
+	public static final String DEFAULT_VIEW_ICON_ASSET = Constants.IMAGES_ASSET_ROOT + "view.png";
 
 	/**
 	 * The object that the links will refer to.
@@ -97,6 +97,14 @@ public class ActionLinks {
 	 */
 	@Parameter
 	private Boolean view;
+	
+	/**
+	 * Defines which zone will be updated by the remove link. Defaults to <code>zone</code>.
+	 */
+	@Parameter(value = "zone", defaultPrefix = BindingConstants.LITERAL)
+	@Property
+	@SuppressWarnings("unused")
+	private String removeZone;
 
 	@Parameter(defaultPrefix = BindingConstants.ASSET, value = DEFAULT_EDIT_ICON_ASSET)
 	@Property

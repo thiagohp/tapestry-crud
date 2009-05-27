@@ -16,7 +16,7 @@
 	</t:if>
 	<t:if test="remove">
 		<a href="#" t:type="crud/PrimaryKeyEventLink" t:object="object"
-			t:event="removeObject" t:id="remove" t:zone="zone" class="t-crud-delete-link">
+			t:event="removeObject" t:id="remove" t:zone="prop:removeZone" class="t-crud-delete-link">
 			<img src="${deleteIcon}" alt="${message:link.remove.object}"/>
 		</a>
 	</t:if>
