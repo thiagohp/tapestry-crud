@@ -387,7 +387,19 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 	final void clearPageState() {
 		form.getDefaultTracker().clear();
 		setMessage(null);
-		setObject(null);
+		if (isClearObjectAfterTemplateRendering()) {
+			setObject(null);
+		}
+	}
+	
+	/**
+	 * Defines if {@link #clearPageState()} will set the object to <code>null</code>
+	 * after the rendering is finished. This implementation returns <code>true</code>.
+	 * 
+	 * @return a <code>boolean</code>.
+	 */
+	protected boolean isClearObjectAfterTemplateRendering() {
+		return true;
 	}
 
 	/**
