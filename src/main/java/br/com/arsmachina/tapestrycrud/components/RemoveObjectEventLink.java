@@ -14,6 +14,8 @@
 
 package br.com.arsmachina.tapestrycrud.components;
 
+import java.io.Serializable;
+
 import org.apache.tapestry5.ComponentResources;
 import org.apache.tapestry5.Link;
 import org.apache.tapestry5.MarkupWriter;
@@ -28,6 +30,8 @@ import org.apache.tapestry5.ioc.internal.util.InternalUtils;
 import org.apache.tapestry5.runtime.Component;
 
 import br.com.arsmachina.authorization.Authorizer;
+import br.com.arsmachina.controller.Controller;
+import br.com.arsmachina.module.service.ControllerSource;
 import br.com.arsmachina.tapestrycrud.Constants;
 import br.com.arsmachina.tapestrycrud.base.BaseEditPage;
 import br.com.arsmachina.tapestrycrud.base.BaseViewPage;
@@ -67,6 +71,9 @@ public class RemoveObjectEventLink {
 	
 	@Inject
 	private Authorizer authorizer;
+	
+	@Inject
+	private ControllerSource controllerSource;
 
 	private Element element;
 
@@ -90,8 +97,11 @@ public class RemoveObjectEventLink {
 			 throw new RuntimeException("The RemoveObjectEventLink must be used inside a page "
 					+ "that extends BaseViewPage or BaseEditPage");
 		}
+		
+		final Controller controller = controllerSource.get(object.getClass());
+		boolean persistent = controller.isPersistent(object);
 
-		if (authorizer.canRemove(entityClass) == false || authorizer.canRemove(object) == false) {
+		if (persistent == false || authorizer.canRemove(entityClass) == false || authorizer.canRemove(object) == false) {
 			return false;
 		}
 
