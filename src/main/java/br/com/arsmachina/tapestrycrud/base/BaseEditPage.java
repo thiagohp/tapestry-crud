@@ -424,6 +424,9 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 				setObject(activationContextObject);
 				
 			}
+			else if (isObjectPersistent()) {
+				getController().reattach(object);
+			}
 			
 		}
 		
