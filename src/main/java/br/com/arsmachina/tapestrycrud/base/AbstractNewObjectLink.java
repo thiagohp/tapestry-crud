@@ -31,7 +31,6 @@ import br.com.arsmachina.tapestrycrud.EditPage;
 import br.com.arsmachina.tapestrycrud.components.NewObjectEventLink;
 import br.com.arsmachina.tapestrycrud.components.NewObjectPageLink;
 import br.com.arsmachina.tapestrycrud.services.PageUtil;
-import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 
 /**
  * Superclass of the {@link NewObjectEventLink} and {@link NewObjectPageLink}.
@@ -54,14 +53,10 @@ public abstract class AbstractNewObjectLink {
 
 	@Parameter(allowNull = false, defaultPrefix = BindingConstants.MESSAGE)
 	@Property
-	@SuppressWarnings("unused")
 	private String label;
 
 	@Inject
 	private ComponentResources resources;
-
-	@Inject
-	private TapestryCrudModuleService tapestryCrudModuleService;
 
 	private Component page;
 
