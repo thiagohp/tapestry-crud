@@ -6,7 +6,7 @@
 		<a href="#" t:type="crud/RemoveObjectEventLink">Remove this record</a>
 	</div>
 	<div t:type="If" t:test="newObject" class="t-crud-new-object">
-		<a href="#" t:type="crud/NewObjectPageLink">Create a new object</a>
+		<a href="#" t:type="crud/NewObjectEventLink">Create a new object</a>
 	</div>
 	<div t:type="If" t:test="list" class="t-crud-listing-link">
 		<a href="#" t:type="crud/ListPageLink">

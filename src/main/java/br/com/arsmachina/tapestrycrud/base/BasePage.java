@@ -302,6 +302,16 @@ public abstract class BasePage<T, K extends Serializable> implements
 	final public Authorizer getAuthorizer() {
 		return authorizer;
 	}
+	
+	/**
+	 * This method listens to the {@link Constants#NEW_OBJECT_EVENT} event.
+	 * 
+	 * @param context an {@link EventContext}.
+	 */
+	@OnEvent(Constants.NEW_OBJECT_EVENT)
+	final Object handleNewObject() {
+		return tapestryCrudModuleService.getEditPageClass(entityClass);
+	}
 
 	/**
 	 * This method listens to the {@link Constants#REMOVE_OBJECT_ACTION} event
@@ -310,8 +320,7 @@ public abstract class BasePage<T, K extends Serializable> implements
 	 * @param context an {@link EventContext}.
 	 */
 	@OnEvent(Constants.REMOVE_OBJECT_ACTION)
-	@SuppressWarnings("unused")
-	final private Object remove(EventContext context) {
+	final Object remove(EventContext context) {
 
 		getAuthorizer().checkRemove(getEntityClass());
 
