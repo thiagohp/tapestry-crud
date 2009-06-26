@@ -33,6 +33,7 @@ import org.apache.tapestry5.annotations.Retain;
 import org.apache.tapestry5.corelib.components.Zone;
 import org.apache.tapestry5.ioc.Messages;
 import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.runtime.Component;
 import org.apache.tapestry5.services.ComponentSource;
 import org.apache.tapestry5.services.Request;
 import org.apache.tapestry5.services.ValueEncoderSource;
@@ -308,9 +309,17 @@ public abstract class BasePage<T, K extends Serializable> implements
 	 * 
 	 * @param context an {@link EventContext}.
 	 */
+	@SuppressWarnings("unchecked")
 	@OnEvent(Constants.NEW_OBJECT_EVENT)
 	final Object handleNewObject() {
-		return tapestryCrudModuleService.getEditPageClass(entityClass);
+		
+		final Class<?> editPageClass = tapestryCrudModuleService.getEditPageClass(entityClass);
+		final Component page = componentSource.getPage(editPageClass);
+		BaseEditPage baseEditPage = (BaseEditPage) page;
+		baseEditPage.setObject(null);
+		
+		return baseEditPage;
+		
 	}
 
 	/**
