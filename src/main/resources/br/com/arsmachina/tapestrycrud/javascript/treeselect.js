@@ -39,7 +39,13 @@ var TreeSelect = {
 			}
 		);
 		
-		$(radioId).parentNode.addClassName("checked");
+		var parentNode = $(radioId).parentNode;
+		
+		if (parentNode.addClassName == undefined) {
+			Element.extend(parentNode);
+		}
+		
+		parentNode.addClassName("checked");
 		
 	}
 
