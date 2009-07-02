@@ -56,7 +56,7 @@ form input[type="checkbox"], form input[type="radio"] {
 }
 
 td.action {
-	min-width: 3em;
+	min-width: 68px;
 	text-align: center;
 }
 
@@ -133,10 +133,14 @@ ul.t-crud-tree-select {
 }
 
 ul.t-crud-tree-select label, ul.t-crud-tree-select input {
-	width: auto;
 	display: inline;
 	clear: none;
 	float: none;
+}
+
+/* Needed for IE 7, harmless to decent browsers */
+.t-crud-tree-select p {
+	display: inline;
 }
 
 ul.t-crud-tree-select label:after {
