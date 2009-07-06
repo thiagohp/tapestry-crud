@@ -35,6 +35,9 @@ div.t-crud-empty-grid, div.t-crud-message {
 	padding: 0.5em;
 	border-width: 2px;
 	border-style: solid;
+	float: none;
+	clear: both;
+	display: block;
 }
 
 div.t-crud-empty-grid {
@@ -199,4 +202,12 @@ ul.t-crud-tree-select li.checked li label {
 
 div.submit {
 	clear: both;
+}
+
+ul.t-crud-treeview li {
+	margin-left: 2em;
+}
+
+ul.t-crud-treeview > li {
+	margin-left: 0em;
 }
