@@ -328,8 +328,9 @@ public abstract class BasePage<T, K extends Serializable> implements
 	 * 
 	 * @param context an {@link EventContext}.
 	 */
-	@OnEvent(Constants.REMOVE_OBJECT_ACTION)
-	final Object remove(EventContext context) {
+	@OnEvent(Constants.REMOVE_OBJECT_EVENT)
+	@SuppressWarnings("unused")
+	final private Object remove(EventContext context) {
 
 		getAuthorizer().checkRemove(getEntityClass());
 
