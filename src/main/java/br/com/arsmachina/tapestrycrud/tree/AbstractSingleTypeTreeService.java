@@ -168,6 +168,8 @@ public abstract class AbstractSingleTypeTreeService<T> implements
 
 	public List<TreeNode<T>> buildTreeNodeList(List<T> objects) {
 
+		treeOrder(objects);
+		
 		final List<TreeNode<T>> nodes =
 			new ArrayList<TreeNode<T>>(objects.size());
 
