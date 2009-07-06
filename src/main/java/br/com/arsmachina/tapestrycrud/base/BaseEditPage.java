@@ -256,7 +256,7 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 			returnValue = page;
 
 		} else {
-
+			
 			if (request.isXHR() && useAjaxForFormSubmits()) {
 
 				if (returnZoneOnXHR()) {
@@ -264,7 +264,7 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 				} else {
 					returnValue = componentResources.getBlock(getFormBlockId());
 				}
-
+				
 			}
 			
 			setSaveOrUpdateSuccessMessage();
@@ -367,11 +367,12 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 	}
 
 	/**
-	 * Returns the current activation context of this page.
+	 * Returns the current activation context of this page. Avoid override this method, as it 
+	 * already implements the activation context encoder logic.
 	 * 
-	 * @return an {@link #A}.
+	 * @return an {@link Object}.
 	 */
-	final public Object onPassivate() {
+	public Object onPassivate() {
 
 		Object value = null;
 
@@ -416,10 +417,12 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 
 	/**
 	 * Sets the object property from a given activation context value.
+	 * Avoid to override this method, as it already contains authoriztion checks.
 	 * 
 	 * @param value an {@link EventContext}.
+	 * @return <code>null</code>.
 	 */
-	void onActivate(EventContext context) {
+	protected Object onActivate(EventContext context) {
 
 		if (ignoreActivationContext() == false) {
 
@@ -445,6 +448,8 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 			checkUpdateObjectAccess(getObject());
 		}
 
+		return null;
+		
 	}
 
 	/**
