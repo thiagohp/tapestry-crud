@@ -24,6 +24,7 @@ import org.apache.tapestry5.annotations.OnEvent;
 import org.apache.tapestry5.annotations.PageDetached;
 import org.apache.tapestry5.beaneditor.BeanModel;
 import org.apache.tapestry5.corelib.components.Grid;
+import org.apache.tapestry5.corelib.components.Zone;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.services.BeanModelSource;
 import org.apache.tapestry5.services.Request;
@@ -194,7 +195,12 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 
 	}
 	
-	@OnEvent("resetGridSorting")
+	/**
+	 * Resets the grid sorting.
+	 * 
+	 * @return a {@link Zone} or <code>null</code>.
+	 */
+	@OnEvent(Constants.RESET_SORTING_EVENT)
 	Object resetGridSorting() {
 		
 		grid.getSortModel().clear();
