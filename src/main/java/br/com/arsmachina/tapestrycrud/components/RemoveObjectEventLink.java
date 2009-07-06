@@ -108,7 +108,7 @@ public class RemoveObjectEventLink {
 		final PrimaryKeyEncoder encoder = primaryKeyEncoderSource.get(object.getClass());
 		final Object context = encoder.toKey(object);
 
-		Link link = resources.createEventLink(Constants.REMOVE_OBJECT_ACTION, context);
+		Link link = resources.createEventLink(Constants.REMOVE_OBJECT_EVENT, context);
 
 		element = writer.element("a", "href", link.toURI(), "class", "t-crud-remove-object");
 
