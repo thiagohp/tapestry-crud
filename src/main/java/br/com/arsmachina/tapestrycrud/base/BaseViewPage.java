@@ -109,6 +109,15 @@ public class BaseViewPage<T, ID extends Serializable> extends BasePage<T, ID> {
 	}
 	
 	/**
+	 * Changes the value of the <code>object</code> property.
+	 *
+	 * @param object a {@link T}.
+	 */
+	public void setObject(T object) {
+		this.object = object;
+	}
+
+	/**
 	 * Returns the current activation context of this page.
 	 * 
 	 * @return an {@link #A}.
