@@ -276,7 +276,7 @@ public abstract class BasePage<T, K extends Serializable> implements
 	}
 
 	/**
-	 * Used by {@link #returnFromRemove()} to know whether it must return a
+	 * Used by {@link #returnFromSaveOrUpdate()} to know whether it must return a
 	 * {@link Zone} or a {@link Block}. This implementation returns
 	 * <code>true</code>.
 	 * 
