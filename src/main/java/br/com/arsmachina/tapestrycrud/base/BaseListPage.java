@@ -75,6 +75,8 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 	 */
 	public void onActivate() {
 		
+		System.out.println(getMessage());
+		
 		if (isEventRequest() == false) {
 			getAuthorizer().checkSearch(getEntityClass());
 		}
@@ -182,18 +184,18 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 		return true;
 	}
 
-	/**
-	 * Clears the message after it is shown, preventing the message from appearing twice in AJAX
-	 * actions.
-	 */
-	@PageDetached
-	void clearMessage() {
-
-		if (request.isXHR()) {
-			setMessage(null);
-		}
-
-	}
+//	/**
+//	 * Clears the message after it is shown, preventing the message from appearing twice in AJAX
+//	 * actions.
+//	 */
+//	@PageDetached
+//	void clearMessage() {
+//
+//		if (request.isXHR()) {
+//			setMessage(null);
+//		}
+//
+//	}
 	
 	/**
 	 * Resets the grid sorting.
