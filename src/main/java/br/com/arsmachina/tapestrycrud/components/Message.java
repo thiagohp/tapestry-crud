@@ -15,8 +15,12 @@
 package br.com.arsmachina.tapestrycrud.components;
 
 import org.apache.tapestry5.MarkupWriter;
+import org.apache.tapestry5.annotations.AfterRender;
 import org.apache.tapestry5.annotations.BeforeRenderTemplate;
+import org.apache.tapestry5.annotations.IncludeStylesheet;
 import org.apache.tapestry5.annotations.Parameter;
+
+import br.com.arsmachina.tapestrycrud.Constants;
 
 /**
  * Component that only shows a message if a given text is not null and not empty.
@@ -27,6 +31,7 @@ import org.apache.tapestry5.annotations.Parameter;
  * 
  * @author Thiago H. de Paula Figueiredo
  */
+@IncludeStylesheet(Constants.TAPESTRY_CRUD_CSS_ASSET)
 public class Message {
 
 	/**
@@ -59,12 +64,17 @@ public class Message {
 		
 	}
 	
+	@AfterRender
+	public void clearMessage() {
+		message = null;
+	}
+	
 	/**
 	 * Returns the value of the <code>message</code> property.
 	 * 
 	 * @return a {@link String}.
 	 */
-	final public String getMessage() {
+	public String getMessage() {
 		return message;
 	}
 
@@ -73,7 +83,7 @@ public class Message {
 	 * 
 	 * @param message a {@link String}.
 	 */
-	final public void setMessage(String message) {
+	public void setMessage(String message) {
 		this.message = message;
 	}
 
