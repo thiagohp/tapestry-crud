@@ -30,6 +30,7 @@ import org.apache.tapestry5.beaneditor.BeanModel;
 import org.apache.tapestry5.corelib.components.Form;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.services.BeanModelSource;
+import org.apache.tapestry5.services.ComponentSource;
 import org.apache.tapestry5.services.Request;
 
 import br.com.arsmachina.controller.ReadableController;
@@ -37,10 +38,11 @@ import br.com.arsmachina.module.service.PrimaryKeyTypeService;
 import br.com.arsmachina.tapestrycrud.Constants;
 import br.com.arsmachina.tapestrycrud.EditPage;
 import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
+import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 
 /**
- * Base class for pages that edit entity objects. One example of its use can be
- * found in the Ars Machina Project Example Application (<a href="http://ars-machina.svn.sourceforge.net/viewvc/ars-machina/example/trunk/src/main/java/br/com/arsmachina/example/web/pages/project/EditProject.java?view=markup"
+ * Base class for pages that edit entity objects. One example of its use can be found in the Ars
+ * Machina Project Example Application (<a href="http://ars-machina.svn.sourceforge.net/viewvc/ars-machina/example/trunk/src/main/java/br/com/arsmachina/example/web/pages/project/EditProject.java?view=markup"
  * >page class</a>. <a href="http://ars-machina.svn.sourceforge.net/viewvc/ars-machina/example/trunk/src/main/webapp/project/EditProject.tml?view=markup"
  * >template</a>).
  * 
@@ -50,17 +52,16 @@ import br.com.arsmachina.tapestrycrud.encoder.ActivationContextEncoder;
  * @author Thiago H. de Paula Figueiredo
  */
 @Meta("tapestry.persistence-strategy=" + PersistenceConstants.FLASH)
-public abstract class BaseEditPage<T, K extends Serializable> extends
-		BasePage<T, K> implements EditPage<T, K> {
+public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T, K> implements
+		EditPage<T, K> {
 
-	private static final String DEFAULT_CONSTRUCTOR_NOT_FOUND_MESSAGE =
-		"Class %s does not have a single argument constructor";
+	private static final String DEFAULT_CONSTRUCTOR_NOT_FOUND_MESSAGE = "Class %s does not have a single argument constructor";
 
 	/**
 	 * You can change the persistence strategy from flash to another using
 	 * 
-	 * <code>@Meta("tapestry.persistence-strategy=" + PersistenceConstants.FLASH)</code>
-	 * in your class.
+	 * <code>@Meta("tapestry.persistence-strategy=" + PersistenceConstants.FLASH)</code> in your
+	 * class.
 	 */
 	@Persist
 	private T object;
@@ -83,6 +84,9 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 	@Inject
 	private PrimaryKeyTypeService primaryKeyTypeService;
 
+	@Inject
+	private ComponentSource componentSource;
+
 	/**
 	 * Single constructor of this class.
 	 */
@@ -94,10 +98,9 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 	}
 
 	/**
-	 * Ensures the edited object is not null before form rendering and
-	 * submission. It uses {@link #createNewObject()} to create a new entity
-	 * object if needed. If not, <code>getController.reattach(object)</code> is
-	 * invoked.
+	 * Ensures the edited object is not null before form rendering and submission. It uses
+	 * {@link #createNewObject()} to create a new entity object if needed. If not,
+	 * <code>getController.reattach(object)</code> is invoked.
 	 * 
 	 * @see ReadableController#reattach(Object)
 	 */
@@ -108,7 +111,8 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 
 		if (object == null) {
 			setObject(createNewObject());
-		} else {
+		}
+		else {
 			if (isObjectPersistent()) {
 				getController().reattach(object);
 			}
@@ -119,10 +123,10 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 	}
 
 	/**
-	 * Tells if {@link #onActivate(EventContext)} will ignore the activation or
-	 * not. This implementation returns <code>false</code>. If overriden to
-	 * return <code>false</code>, the edited object is always the one returned
-	 * by {@link #getObject()}, so it must be overriden too.
+	 * Tells if {@link #onActivate(EventContext)} will ignore the activation or not. This
+	 * implementation returns <code>false</code>. If overriden to return <code>false</code>, the
+	 * edited object is always the one returned by {@link #getObject()}, so it must be overriden
+	 * too.
 	 * 
 	 * @return a <code>boolean</code>.
 	 */
@@ -131,16 +135,15 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 	}
 
 	/**
-	 * Invoked by {@link #prepare()} after it has done its object preparation.
-	 * This implementation does nothing and should be overriden by subclasses
-	 * that need further object preparation.
+	 * Invoked by {@link #prepare()} after it has done its object preparation. This implementation
+	 * does nothing and should be overriden by subclasses that need further object preparation.
 	 */
 	protected void prepareObject() {
 	}
 
 	/**
-	 * Validates the object. This method invokes {@link #validateObject(Form)}
-	 * and then takes care of handling AJAX form submissions.
+	 * Validates the object. This method invokes {@link #validateObject(Form)} and then takes care
+	 * of handling AJAX form submissions.
 	 */
 	@OnEvent(component = Constants.FORM_ID, value = EventConstants.VALIDATE_FORM)
 	final protected Object validate() {
@@ -166,8 +169,8 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 	}
 
 	/**
-	 * Validates an <code>object</code> and stores the validation erros in a
-	 * <code>form</code>. This implementation does nothing.
+	 * Validates an <code>object</code> and stores the validation erros in a <code>form</code>. This
+	 * implementation does nothing.
 	 * 
 	 * @param object an {@link #T}.
 	 * @param a {@link Form}.
@@ -198,8 +201,8 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 	 */
 	public BeanModel<T> getBeanModel() {
 
-		final BeanModel<T> beanModel =
-			beanModelSource.createEditModel(getEntityClass(), getMessages());
+		final BeanModel<T> beanModel = beanModelSource.createEditModel(getEntityClass(),
+				getMessages());
 
 		beanModel.exclude(primaryKeyTypeService.getPrimaryKeyPropertyName(getEntityClass()));
 
@@ -239,15 +242,14 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 	}
 
 	/**
-	 * Defines what {@link #saveOrUpdate()} will return and sets the success
-	 * message.
+	 * Defines what {@link #saveOrUpdate()} will return and sets the success message.
 	 * 
 	 * @return an {@link Object} or <code>null</code>.
 	 */
 	protected Object returnFromSaveOrUpdate() {
 
 		Object returnValue = null;
-
+		
 		BaseListPage<T, K> page = getListPage();
 
 		if (page != null) {
@@ -255,18 +257,20 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 			page.setMessage(getSaveOrUpdateSuccessMessage());
 			returnValue = page;
 
-		} else {
-			
+		}
+		else {
+
 			if (request.isXHR() && useAjaxForFormSubmits()) {
 
 				if (returnZoneOnXHR()) {
 					returnValue = getFormZone().getBody();
-				} else {
+				}
+				else {
 					returnValue = componentResources.getBlock(getFormBlockId());
 				}
-				
+
 			}
-			
+
 			setSaveOrUpdateSuccessMessage();
 
 		}
@@ -292,30 +296,39 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 	}
 
 	/**
-	 * Returns the {@link BaseListPage} instance associated to this object. This
-	 * is used by {@link #returnAfterAction()} to define what will be returned
-	 * by {@link #saveOrUpdate()}. This implementation returns null and must be
-	 * overriden by pages that want to show the listing page after a successful
-	 * save or update.
+	 * Returns the {@link BaseListPage} instance associated to this object. This is used by
+	 * {@link #returnAfterAction()} to define what will be returned by {@link #saveOrUpdate()}. This
+	 * implementation uses {@link TapestryCrudModuleService#getListPageClass(Class)}.
 	 * 
 	 * @return a {@link BaseListPage}.
 	 */
+	@SuppressWarnings("unchecked")
 	protected BaseListPage<T, K> getListPage() {
-		return null;
+
+		BaseListPage returnValue = null;
+
+		Class clasz = getTapestryCrudModuleService().getListPageClass(getEntityClass());
+
+		if (clasz != null) {
+			BaseListPage<T, K> listPage = (BaseListPage<T, K>) componentSource.getPage(clasz);
+			returnValue = listPage;
+		}
+
+		return returnValue;
+
 	}
 
 	/**
-	 * Does any processing that must be done in the object before it is saved or
-	 * updated.
+	 * Does any processing that must be done in the object before it is saved or updated.
 	 */
 	protected void prepareObjectForSaveOrUpdate() {
 
 	}
 
 	/**
-	 * Creates a new entity object to be edited. Fields can be prefilled if
-	 * desired. This method is used by {@link #prepare()}. This implementation
-	 * attempts to instantiate the object using its class default constructor.
+	 * Creates a new entity object to be edited. Fields can be prefilled if desired. This method is
+	 * used by {@link #prepare()}. This implementation attempts to instantiate the object using its
+	 * class default constructor.
 	 * 
 	 * @return a {@link T}.
 	 */
@@ -326,9 +339,8 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 		}
 		catch (InstantiationException e) {
 
-			final String exceptionMessage =
-				String.format(DEFAULT_CONSTRUCTOR_NOT_FOUND_MESSAGE,
-						getEntityClass().getName());
+			final String exceptionMessage = String.format(DEFAULT_CONSTRUCTOR_NOT_FOUND_MESSAGE,
+					getEntityClass().getName());
 
 			throw new RuntimeException(exceptionMessage, e);
 
@@ -367,7 +379,7 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 	}
 
 	/**
-	 * Returns the current activation context of this page. Avoid override this method, as it 
+	 * Returns the current activation context of this page. Avoid override this method, as it
 	 * already implements the activation context encoder logic.
 	 * 
 	 * @return an {@link Object}.
@@ -381,9 +393,7 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 			final T o = getObject();
 
 			if (o != null && isObjectPersistent()) {
-				value =
-					getActivationContextEncoder(getEntityClass()).toActivationContext(
-							o);
+				value = activationContextEncoder.toActivationContext(o);
 			}
 
 		}
@@ -405,9 +415,8 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 	}
 
 	/**
-	 * Defines if {@link #clearPageState()} will set the object to
-	 * <code>null</code> after the rendering is finished. This implementation
-	 * returns <code>true</code>.
+	 * Defines if {@link #clearPageState()} will set the object to <code>null</code> after the
+	 * rendering is finished. This implementation returns <code>true</code>.
 	 * 
 	 * @return a <code>boolean</code>.
 	 */
@@ -416,8 +425,8 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 	}
 
 	/**
-	 * Sets the object property from a given activation context value.
-	 * Avoid to override this method, as it already contains authoriztion checks.
+	 * Sets the object property from a given activation context value. Avoid to override this
+	 * method, as it already contains authoriztion checks.
 	 * 
 	 * @param value an {@link EventContext}.
 	 * @return <code>null</code>.
@@ -428,17 +437,18 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 
 			if (context.getCount() == 0) {
 				checkStoreTypeAccess();
-			} else {
+			}
+			else {
 				checkUpdateTypeAccess();
 			}
 
 			if (object == null) {
 
-				final T activationContextObject =
-					activationContextEncoder.toObject(context);
+				final T activationContextObject = activationContextEncoder.toObject(context);
 				setObject(activationContextObject);
 
-			} else if (isObjectPersistent()) {
+			}
+			else if (isObjectPersistent()) {
 				getController().reattach(object);
 			}
 
@@ -449,12 +459,12 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 		}
 
 		return null;
-		
+
 	}
 
 	/**
-	 * Checks if the current user has permission to update instances of the page
-	 * entity class and throws an exception if not. This method calls
+	 * Checks if the current user has permission to update instances of the page entity class and
+	 * throws an exception if not. This method calls
 	 * <code>getAuthorizer().checkUpdate(getEntityClass())</code>.
 	 */
 	protected void checkUpdateTypeAccess() {
@@ -462,8 +472,8 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 	}
 
 	/**
-	 * Checks if the current user has permission to store instances of the page
-	 * entity class and throws an exception if not. This method calls
+	 * Checks if the current user has permission to store instances of the page entity class and
+	 * throws an exception if not. This method calls
 	 * <code>getAuthorizer().checkStore(getEntityClass())</code>.
 	 */
 	protected void checkStoreTypeAccess() {
@@ -471,12 +481,10 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 	}
 
 	/**
-	 * Checks if the current user has permission to update a given object. and
-	 * throws an exception if not. This method calls
-	 * <code>getAuthorizer().checkUpdate(activationContextObject)</code>.
+	 * Checks if the current user has permission to update a given object. and throws an exception
+	 * if not. This method calls <code>getAuthorizer().checkUpdate(activationContextObject)</code>.
 	 * 
-	 * @param activationContextObject a <code>T</code> instance. It cannot be
-	 *            null.
+	 * @param activationContextObject a <code>T</code> instance. It cannot be null.
 	 */
 	protected void checkUpdateObjectAccess(T activationContextObject) {
 		getAuthorizer().checkUpdate(activationContextObject);
@@ -492,16 +500,13 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 	}
 
 	/**
-	 * Returns <code>null</code> if we are inserting a new object and
-	 * {@link #DEFAULT_FORM_ZONE_ID} (<code>zone</code>) otherwise. This method
-	 * also returns <code>null</code> if {@link #useAjaxForFormSubmits()} return
-	 * <code>false</code>.
+	 * Returns {@link #DEFAULT_FORM_ZONE_ID} (<code>zone</code>)if {@link #useAjaxForFormSubmits()}
+	 * returns <code>true</code> and <code>null</code> otherwise.
 	 * 
 	 * @return a {@link String}.
 	 */
-	public String getZone() {
-		return isObjectPersistent() && useAjaxForFormSubmits()
-				? Constants.DEFAULT_FORM_ZONE_ID : null;
+	public String getZoneId() {
+		return useAjaxForFormSubmits() ? Constants.DEFAULT_FORM_ZONE_ID : null;
 	}
 
 	/**
@@ -513,8 +518,8 @@ public abstract class BaseEditPage<T, K extends Serializable> extends
 	}
 
 	/**
-	 * Defines if form submissions will be done through AJAX or not. This
-	 * implementation returns <code>true</code>.
+	 * Defines if form submissions will be done through AJAX or not. This implementation returns
+	 * <code>true</code>.
 	 * 
 	 * @return a <code>boolean</code>.
 	 * @return
