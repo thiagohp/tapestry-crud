@@ -49,7 +49,6 @@ import org.apache.tapestry5.services.ValueEncoderSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import br.com.arsmachina.authentication.service.UserService;
 import br.com.arsmachina.controller.Controller;
 import br.com.arsmachina.module.DefaultModule;
 import br.com.arsmachina.module.Module;
@@ -72,7 +71,6 @@ import br.com.arsmachina.tapestrycrud.selectmodel.SelectModelFactory;
 import br.com.arsmachina.tapestrycrud.selectmodel.SingleTypeSelectModelFactory;
 import br.com.arsmachina.tapestrycrud.selectmodel.impl.SelectModelFactoryImpl;
 import br.com.arsmachina.tapestrycrud.services.ActivationContextEncoderSource;
-import br.com.arsmachina.tapestrycrud.services.AuthorizationErrorMessageService;
 import br.com.arsmachina.tapestrycrud.services.BeanModelCustomizerSource;
 import br.com.arsmachina.tapestrycrud.services.EncoderSource;
 import br.com.arsmachina.tapestrycrud.services.FormValidationSupport;
@@ -83,7 +81,6 @@ import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleFactory;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 import br.com.arsmachina.tapestrycrud.services.TreeServiceSource;
 import br.com.arsmachina.tapestrycrud.services.impl.ActivationContextEncoderSourceImpl;
-import br.com.arsmachina.tapestrycrud.services.impl.AuthorizationErrorMessageServiceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.BeanModelCustomizerSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.EncoderSourceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.FormValidationSupportImpl;
@@ -94,7 +91,6 @@ import br.com.arsmachina.tapestrycrud.services.impl.PrimaryKeyEncoderValueEncode
 import br.com.arsmachina.tapestrycrud.services.impl.TapestryCrudModuleFactoryImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.TapestryCrudModuleServiceImpl;
 import br.com.arsmachina.tapestrycrud.services.impl.TreeServiceSourceImpl;
-import br.com.arsmachina.tapestrycrud.services.impl.UserServiceImpl;
 import br.com.arsmachina.tapestrycrud.tree.SingleTypeTreeService;
 
 /**
@@ -102,6 +98,7 @@ import br.com.arsmachina.tapestrycrud.tree.SingleTypeTreeService;
  * 
  * @author Thiago H. de Paula Figueiredo
  */
+@SuppressWarnings("deprecation")
 public class TapestryCrudIoCModule {
 
 	/**
@@ -131,12 +128,10 @@ public class TapestryCrudIoCModule {
 	 */
 	public static void bind(ServiceBinder binder) {
 
-		binder.bind(UserService.class, UserServiceImpl.class);
 		binder.bind(EntityDataTypeAnalyzer.class);
 		binder.bind(PageUtil.class, PageUtilImpl.class);
 		binder.bind(FormValidationSupport.class,
 				FormValidationSupportImpl.class);
-		binder.bind(AuthorizationErrorMessageService.class, AuthorizationErrorMessageServiceImpl.class);
 
 	}
 
