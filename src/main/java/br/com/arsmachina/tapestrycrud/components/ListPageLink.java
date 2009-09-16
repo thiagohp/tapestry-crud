@@ -25,12 +25,14 @@ import org.apache.tapestry5.ioc.Messages;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.internal.util.InternalUtils;
 import org.apache.tapestry5.runtime.Component;
+import org.apache.tapestry5.services.PageRenderLinkSource;
 
 import br.com.arsmachina.authorization.Authorizer;
 import br.com.arsmachina.tapestrycrud.EditPage;
 import br.com.arsmachina.tapestrycrud.base.BaseEditPage;
 import br.com.arsmachina.tapestrycrud.base.BaseListPage;
 import br.com.arsmachina.tapestrycrud.base.BasePage;
+import br.com.arsmachina.tapestrycrud.services.PageUtil;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 
 /**
@@ -48,7 +50,7 @@ import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 @SupportsInformalParameters
 public class ListPageLink {
 
-	private static final String BACK_TO_LISTING_MESSAGE = "link.list.class";
+	private static final String LIST_PAGE_LINK_MESSAGE = "link.list.class";
 
 	@Inject
 	private ComponentResources resources;
@@ -57,7 +59,13 @@ public class ListPageLink {
 	private TapestryCrudModuleService tapestryCrudModuleService;
 	
 	@Inject
+	private PageUtil pageUtil;
+	
+	@Inject
 	private Authorizer authorizer;
+	
+	@Inject
+	private PageRenderLinkSource pageRenderLinkSource;
 
 	private Class<?> entityClass;
 	
@@ -90,8 +98,8 @@ public class ListPageLink {
 			return false;
 		}
 		
-		String listPageURL = tapestryCrudModuleService.getListPageURL(entityClass);
-		Link link = resources.createPageLink(listPageURL, true);
+		Class listPageClass = tapestryCrudModuleService.getListPageClass(entityClass);
+		Link link = pageRenderLinkSource.createPageRenderLink(listPageClass);
 
 		element = writer.element("a", "href", link.toURI(), "class", "t-crud-listing-link");
 
@@ -113,14 +121,14 @@ public class ListPageLink {
 	
 				final Messages messages = resources.getMessages();
 	
-				final String key = BACK_TO_LISTING_MESSAGE + "."
-						+ tapestryCrudModuleService.getListPageURL(entityClass).replace('/', '.');
+				final String pageName = pageUtil.getRequestedPageURL().replace('/', '.');
+				final String key = LIST_PAGE_LINK_MESSAGE + "." + pageName;
 	
 				if (messages.contains(key)) {
 					label = messages.get(key);
 				}
 				else {
-					label = messages.get(BACK_TO_LISTING_MESSAGE);
+					label = messages.get(LIST_PAGE_LINK_MESSAGE);
 				}
 	
 				writer.write(label);
