@@ -1,4 +1,4 @@
-// Copyright 2008 Thiago H. de Paula Figueiredo
+// Copyright 2008-2009 Thiago H. de Paula Figueiredo
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -449,7 +449,7 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 
 			}
 			else if (isObjectPersistent()) {
-				getController().reattach(object);
+				setObject(getController().reattach(object));
 			}
 
 		}
@@ -496,7 +496,8 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 	 * @return a <code>boolean</code>.
 	 */
 	final public boolean isObjectPersistent() {
-		return object != null && getController().isPersistent(object);
+		boolean b = object != null && getController().isPersistent(object);
+		return b;
 	}
 
 	/**
