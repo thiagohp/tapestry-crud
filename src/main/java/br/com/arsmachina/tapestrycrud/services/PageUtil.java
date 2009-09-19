@@ -48,4 +48,20 @@ public interface PageUtil {
 	 */
 	String getRequestedPageTitle(Messages messages);
 	
+	/**
+	 * Tells if this is a page render request. 
+	 */
+	boolean isPageRenderRequest();
+
+	/**
+	 * Tells if this is a component event request. 
+	 */
+	boolean isComponentEventRequest();
+	
+	/**
+	 * Tells if this is a page render or a component event request.
+	 * This method must return <code>isPageRenderRequest() || isComponentEventRequest()</code>. 
+	 */
+	boolean isPageRenderOrComponentEventRequest();
+
 }

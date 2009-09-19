@@ -17,8 +17,9 @@ package br.com.arsmachina.tapestrycrud.services.impl;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.tapestry5.ioc.Messages;
-import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.services.ComponentClassResolver;
+import org.apache.tapestry5.services.ComponentEventLinkEncoder;
+import org.apache.tapestry5.services.Request;
 
 import br.com.arsmachina.tapestrycrud.Constants;
 import br.com.arsmachina.tapestrycrud.services.PageUtil;
@@ -29,20 +30,56 @@ import br.com.arsmachina.tapestrycrud.services.PageUtil;
  * @author Thiago H. de Paula Figueiredo
  */
 public class PageUtilImpl implements PageUtil {
+	
+	final private Request request;
 
-	@Inject
-	private HttpServletRequest request;
+	final private HttpServletRequest httpServletRequest;
 
-	@Inject
-	private ComponentClassResolver componentClassResolver;
+	final private ComponentClassResolver componentClassResolver;
+
+	final private ComponentEventLinkEncoder componentEventLinkEncoder;
+
+	/**
+	 * Single constructor of this class. 
+	 *
+	 * @param request a {@link Request}. It cannot be null.
+	 * @param httpServletRequest an {@link HttpServletRequest}. It cannot be null.
+	 * @param componentClassResolver a {@link ComponentClassResolver}. It cannot be null.
+	 * @param componentEventLinkEncoder a {@link ComponentEventLinkEncoder}. It cannot be null.
+	 */
+	public PageUtilImpl(Request request, HttpServletRequest httpServletRequest, ComponentClassResolver componentClassResolver,
+			ComponentEventLinkEncoder componentEventLinkEncoder) {
+		
+		if (request == null) {
+			throw new IllegalArgumentException("Parameter request cannot be null.");
+		}
+		
+		if (httpServletRequest == null) {
+			throw new IllegalArgumentException("Parameter httpServletRequest cannot be null.");
+		}
+		
+		if (componentClassResolver == null) {
+			throw new IllegalArgumentException("Parameter componentClassResolver cannot be null.");
+		}
+		
+		if (componentEventLinkEncoder == null) {
+			throw new IllegalArgumentException("Parameter componentEventLinkEncoder cannot be null.");
+		}
+
+		this.request = request;
+		this.httpServletRequest = httpServletRequest;
+		this.componentClassResolver = componentClassResolver;
+		this.componentEventLinkEncoder = componentEventLinkEncoder;
+		
+	}
 
 	public String getRequestedPageURL() {
 
 		String pageName = "";
-		String path = request.getPathInfo();
+		String path = httpServletRequest.getPathInfo();
 
 		if (path == null) {
-			path = request.getServletPath();
+			path = httpServletRequest.getServletPath();
 		}
 
 		path = path.trim();
@@ -92,6 +129,18 @@ public class PageUtilImpl implements PageUtil {
 
 	public String getRequestedPageTitle(Messages messages) {
 		return getPageTitle(getRequestedPageURL(), messages);
+	}
+
+	public boolean isComponentEventRequest() {
+		return componentEventLinkEncoder.decodeComponentEventRequest(request) != null;
+	}
+
+	public boolean isPageRenderOrComponentEventRequest() {
+		return componentEventLinkEncoder.decodePageRenderRequest(request) != null;
+	}
+
+	public boolean isPageRenderRequest() {
+		return isPageRenderRequest() || isComponentEventRequest();
 	}
 
 }
