@@ -14,8 +14,6 @@
 
 package br.com.arsmachina.tapestrycrud.components;
 
-import java.io.Serializable;
-
 import org.apache.tapestry5.ComponentResources;
 import org.apache.tapestry5.Link;
 import org.apache.tapestry5.MarkupWriter;
