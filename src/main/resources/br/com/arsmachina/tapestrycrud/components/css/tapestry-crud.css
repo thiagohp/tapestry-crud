@@ -6,14 +6,16 @@ form label, form input {
 	padding: 0;
 	margin: 0;
 	margin-bottom: 0.5em;
+	display: inline;
+	float: left;
 }
 
 form input, form textarea {
-	width: 10em;
+	width: 15em;
 }
 
 form label, form div.t-submit input {
-	width: 10em;
+	width: 15em;
 	height: auto;
 	margin-right: 1em;
 	float: left;
@@ -210,4 +212,8 @@ ul.t-crud-treeview li {
 
 ul.t-crud-treeview > li {
 	margin-left: 0em;
+}
+
+div.t-beaneditor-row {
+	clear: both;
 }
