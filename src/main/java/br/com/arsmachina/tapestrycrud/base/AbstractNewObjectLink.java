@@ -49,7 +49,7 @@ public abstract class AbstractNewObjectLink {
 	private Messages messages;
 
 	@Inject
-	private PageUtil requestUtil;
+	private PageUtil pagetUtil;
 
 	@Parameter(allowNull = false, defaultPrefix = BindingConstants.MESSAGE)
 	@Property
@@ -102,13 +102,14 @@ public abstract class AbstractNewObjectLink {
 	 */
 	abstract protected Link createLink();
 
+	@SuppressWarnings("unchecked")
 	String defaultLabel() {
 
 		page = resources.getPage();
 
 		String returnedLabel = null;
 
-		String pageName = requestUtil.getRequestedPageURL();
+		String pageName = pagetUtil.getRequestedPageURL();
 
 		pageName = pageName.replace('/', '.');
 
