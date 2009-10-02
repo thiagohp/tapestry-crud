@@ -68,7 +68,7 @@ final public class Constants {
 	final public static String MESSAGE_SUCCESS_REMOVE = "message.success.remove";
 
 	/**
-	 * Remove object success error (remove not allowed) key.
+	 * Remove object error (remove not allowed) key.
 	 */
 	final public static String MESSAGE_ERROR_REMOVE_NOT_ALLOWED = "message.error.remove.notallowed";
 

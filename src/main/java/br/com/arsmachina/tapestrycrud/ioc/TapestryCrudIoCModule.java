@@ -343,8 +343,6 @@ public class TapestryCrudIoCModule {
 			PrimaryKeyEncoderSource primaryKeyEncoderSource,
 			PrimaryKeyTypeService primaryKeyTypeService, TypeCoercer typeCoercer) {
 		
-		long start = System.currentTimeMillis();
-
 		Set<Class<?>> classes = entitySource.getEntityClasses();
 
 		for (Class clasz : classes) {
@@ -374,11 +372,6 @@ public class TapestryCrudIoCModule {
 
 		}
 		
-		long finish = System.currentTimeMillis();
-		long elapsed= finish - start;
-		
-		System.out.println("tempo gasto: "+ elapsed);
-
 	}
 
 	/**
@@ -732,8 +725,6 @@ public class TapestryCrudIoCModule {
 			TapestryCrudModuleService tapestryCrudModuleService,
 			ObjectLocator objectLocator) {
 		
-		long start = System.currentTimeMillis();
-
 		final Set<Class<?>> entityClasses = entitySource.getEntityClasses();
 		PrimaryKeyEncoder encoder = null;
 
@@ -775,12 +766,6 @@ public class TapestryCrudIoCModule {
 
 		}
 		
-		long finish = System.currentTimeMillis();
-		
-		long elapsed = finish - start;
-		
-		System.out.println("contributePrimaryKeyEncoderSource: " + elapsed);
-
 	}
 
 	/**

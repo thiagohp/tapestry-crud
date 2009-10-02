@@ -74,8 +74,6 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 	 */
 	public void onActivate() {
 		
-		System.out.println(getMessage());
-		
 		if (isEventRequest() == false) {
 			getAuthorizer().checkSearch(getEntityClass());
 		}
@@ -150,6 +148,9 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 		if (isRemovedObjectNotFound()) {
 			setMessage(getRemoveErrorNotFoundMessage());
 		}
+		else if (isRemoveObjectNotAllowed()) {
+			setMessage(getRemoveObjectNotAllowedMessage());
+		}
 		else {
 			setMessage(getRemoveSuccessMessage());
 		}
@@ -172,30 +173,6 @@ public abstract class BaseListPage<T, K extends Serializable> extends BasePage<T
 		setMessage(getRemoveErrorNotFoundMessage());
 	}
 
-	/**
-	 * Tells if a given object can be removed in this context. It must be overriden if you have some
-	 * rules about when an object can be removed. This implementation just returns <code>true</code>.
-	 * 
-	 * @param object a {@link #T}.
-	 * @return a <code>boolean</code>.
-	 */
-	protected boolean canRemove(T object) {
-		return true;
-	}
-
-//	/**
-//	 * Clears the message after it is shown, preventing the message from appearing twice in AJAX
-//	 * actions.
-//	 */
-//	@PageDetached
-//	void clearMessage() {
-//
-//		if (request.isXHR()) {
-//			setMessage(null);
-//		}
-//
-//	}
-	
 	/**
 	 * Resets the grid sorting.
 	 * 

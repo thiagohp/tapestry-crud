@@ -29,6 +29,7 @@ import org.apache.tapestry5.ValueEncoder;
 import org.apache.tapestry5.annotations.IncludeStylesheet;
 import org.apache.tapestry5.annotations.OnEvent;
 import org.apache.tapestry5.annotations.Persist;
+import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.annotations.Retain;
 import org.apache.tapestry5.corelib.components.Zone;
 import org.apache.tapestry5.ioc.Messages;
@@ -53,8 +54,7 @@ import br.com.arsmachina.tapestrycrud.services.PrimaryKeyEncoderSource;
 import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
 
 /**
- * Class that implements some common infrastructure for listing and editing
- * pages. This class is not
+ * Class that implements some common infrastructure for listing and editing pages. This class is not
  * 
  * @author Thiago H. de Paula Figueiredo
  * @param <T> the entity class related to this encoder.
@@ -62,20 +62,21 @@ import br.com.arsmachina.tapestrycrud.services.TapestryCrudModuleService;
  */
 @IncludeStylesheet(Constants.TAPESTRY_CRUD_CSS_ASSET)
 @SuppressWarnings("deprecation")
-public abstract class BasePage<T, K extends Serializable> implements
-		CrudPage<T, K> {
-	
+public abstract class BasePage<T, K extends Serializable> implements CrudPage<T, K> {
+
 	// copied from ComponentEventLinkEncoder
-    private static final int NESTED_ID = 6;
-	
+	private static final int NESTED_ID = 6;
+
 	// copied from ComponentEventLinkEncoder
-    private final Pattern PATH_PATTERN = Pattern.compile(
-            "^/" +      // The leading slash is recognized but skipped
-                    "(((\\w+)/)*(\\w+))" + // A series of folder names leading up to the page name, forming the logical page name
-                    "(\\.(\\w+(\\.\\w+)*))?" + // The first dot separates the page name from the nested component id
-                    "(\\:(\\w+))?" + // A colon, then the event type
-                    "(/(.*))?", //  A slash, then the action context
-            Pattern.COMMENTS);
+	private final Pattern PATH_PATTERN = Pattern.compile("^/" + // The leading slash is recognized
+																// but skipped
+			"(((\\w+)/)*(\\w+))" + // A series of folder names leading up to the page name, forming
+									// the logical page name
+			"(\\.(\\w+(\\.\\w+)*))?" + // The first dot separates the page name from the nested
+										// component id
+			"(\\:(\\w+))?" + // A colon, then the event type
+			"(/(.*))?", // A slash, then the action context
+			Pattern.COMMENTS);
 
 	@Retain
 	private PrimaryKeyEncoder<K, T> primaryKeyEncoder;
@@ -106,7 +107,7 @@ public abstract class BasePage<T, K extends Serializable> implements
 
 	@Inject
 	private TapestryCrudModuleService tapestryCrudModuleService;
-	
+
 	@Inject
 	private Request request;
 
@@ -131,7 +132,11 @@ public abstract class BasePage<T, K extends Serializable> implements
 	@Retain
 	private Class<K> primaryKeyClass;
 
+	@Property
 	private boolean removedObjectNotFound;
+
+	@Property
+	private boolean removeObjectNotAllowed;
 
 	/**
 	 * Single constructor of this class.
@@ -140,15 +145,13 @@ public abstract class BasePage<T, K extends Serializable> implements
 	public BasePage() {
 
 		final Type genericSuperclass = getClass().getGenericSuperclass();
-		final ParameterizedType parameterizedType =
-			((ParameterizedType) genericSuperclass);
+		final ParameterizedType parameterizedType = ((ParameterizedType) genericSuperclass);
 		entityClass = (Class<T>) parameterizedType.getActualTypeArguments()[0];
 		primaryKeyClass = primaryKeyTypeService.getPrimaryKeyType(entityClass);
 
 		controller = controllerSource.get(entityClass);
 
-		primaryKeyEncoder =
-			(PrimaryKeyEncoder<K, T>) primaryKeyEncoderSource.get(entityClass);
+		primaryKeyEncoder = (PrimaryKeyEncoder<K, T>) primaryKeyEncoderSource.get(entityClass);
 
 		assert entityClass != null;
 		assert primaryKeyClass != null;
@@ -254,9 +257,8 @@ public abstract class BasePage<T, K extends Serializable> implements
 	}
 
 	/**
-	 * ID of the {@link Block} that will be returned when a form is submitted
-	 * via AJAX. This implementation returns {@link #DEFAULT_FORM_BLOCK_ID} (
-	 * <code>block</code>).
+	 * ID of the {@link Block} that will be returned when a form is submitted via AJAX. This
+	 * implementation returns {@link #DEFAULT_FORM_BLOCK_ID} ( <code>block</code>).
 	 * 
 	 * @return a {@link String}.
 	 */
@@ -265,9 +267,8 @@ public abstract class BasePage<T, K extends Serializable> implements
 	}
 
 	/**
-	 * ID of the {@link Zone} that will be returned when a form is submitted via
-	 * AJAX. This implementation returns {@link #DEFAULT_FORM_ZONE_ID} (
-	 * <code>zone</code>).
+	 * ID of the {@link Zone} that will be returned when a form is submitted via AJAX. This
+	 * implementation returns {@link #DEFAULT_FORM_ZONE_ID} ( <code>zone</code>).
 	 * 
 	 * @return a {@link String}.
 	 */
@@ -276,9 +277,8 @@ public abstract class BasePage<T, K extends Serializable> implements
 	}
 
 	/**
-	 * Used by {@link #returnFromSaveOrUpdate()} to know whether it must return a
-	 * {@link Zone} or a {@link Block}. This implementation returns
-	 * <code>true</code>.
+	 * Used by {@link #returnFromSaveOrUpdate()} to know whether it must return a {@link Zone} or a
+	 * {@link Block}. This implementation returns <code>true</code>.
 	 * 
 	 * @return a <code>boolean</code>.
 	 */
@@ -303,7 +303,7 @@ public abstract class BasePage<T, K extends Serializable> implements
 	final public Authorizer getAuthorizer() {
 		return authorizer;
 	}
-	
+
 	/**
 	 * This method listens to the {@link Constants#NEW_OBJECT_EVENT} event.
 	 * 
@@ -312,19 +312,19 @@ public abstract class BasePage<T, K extends Serializable> implements
 	@SuppressWarnings("unchecked")
 	@OnEvent(Constants.NEW_OBJECT_EVENT)
 	final Object handleNewObject() {
-		
+
 		final Class<?> editPageClass = tapestryCrudModuleService.getEditPageClass(entityClass);
 		final Component page = componentSource.getPage(editPageClass);
 		BaseEditPage baseEditPage = (BaseEditPage) page;
 		baseEditPage.setObject(null);
-		
+
 		return baseEditPage;
-		
+
 	}
 
 	/**
-	 * This method listens to the {@link Constants#REMOVE_OBJECT_ACTION} event
-	 * and removes the corresponding object.
+	 * This method listens to the {@link Constants#REMOVE_OBJECT_ACTION} event and removes the
+	 * corresponding object.
 	 * 
 	 * @param context an {@link EventContext}.
 	 */
@@ -338,7 +338,13 @@ public abstract class BasePage<T, K extends Serializable> implements
 		final T toBeRemoved = primaryKeyEncoder.toValue(id);
 
 		if (toBeRemoved != null) {
-			getAuthorizer().checkRemove(toBeRemoved);
+
+			removeObjectNotAllowed = canRemove(toBeRemoved) == false;
+
+			if (removeObjectNotAllowed) {
+				return returnFromDoRemove();
+			}
+
 		}
 
 		return doRemove(toBeRemoved);
@@ -354,7 +360,8 @@ public abstract class BasePage<T, K extends Serializable> implements
 
 		if (object != null) {
 			remove(object);
-		} else {
+		}
+		else {
 			removedObjectNotFound = true;
 		}
 
@@ -363,7 +370,8 @@ public abstract class BasePage<T, K extends Serializable> implements
 	}
 
 	/**
-	 * Removes a given object. This implementation invokes <code>getController().delete(object)</code>.
+	 * Removes a given object. This implementation invokes
+	 * <code>getController().delete(object)</code>.
 	 * 
 	 * @param object a <code>T</code>.
 	 */
@@ -379,14 +387,16 @@ public abstract class BasePage<T, K extends Serializable> implements
 	@SuppressWarnings("unchecked")
 	protected Object returnFromDoRemove() {
 
-		Class<?> listPageClass =
-			tapestryCrudModuleService.getListPageClass(getEntityClass());
-		BaseListPage<T, K> listPage =
-			(BaseListPage<T, K>) componentSource.getPage(listPageClass);
+		Class<?> listPageClass = tapestryCrudModuleService.getListPageClass(getEntityClass());
+		BaseListPage<T, K> listPage = (BaseListPage<T, K>) componentSource.getPage(listPageClass);
 
 		if (removedObjectNotFound) {
 			listPage.setMessage(getRemoveErrorNotFoundMessage());
-		} else {
+		}
+		if (removeObjectNotAllowed) {
+			listPage.setMessage(getRemoveObjectNotAllowedMessage());
+		}
+		else {
 			listPage.setMessage(getRemoveSuccessMessage());
 		}
 
@@ -404,12 +414,21 @@ public abstract class BasePage<T, K extends Serializable> implements
 	}
 
 	/**
-	 * Returns the remove success message.
+	 * Returns the remove error by object not found message.
 	 * 
 	 * @return a {@link String}.
 	 */
 	protected String getRemoveErrorNotFoundMessage() {
 		return getMessages().get(Constants.MESSAGE_ERROR_REMOVE_NOT_FOUND);
+	}
+
+	/**
+	 * Returns the object not allowed error message.
+	 * 
+	 * @return a {@link String}.
+	 */
+	protected String getRemoveObjectNotAllowedMessage() {
+		return getMessages().get(Constants.MESSAGE_ERROR_REMOVE_NOT_ALLOWED);
 	}
 
 	/**
@@ -429,7 +448,7 @@ public abstract class BasePage<T, K extends Serializable> implements
 	public boolean isRemovedObjectNotFound() {
 		return removedObjectNotFound;
 	}
-	
+
 	/**
 	 * Returns <code>true</code> when the current request is an event one.
 	 * 
@@ -438,20 +457,41 @@ public abstract class BasePage<T, K extends Serializable> implements
 	protected boolean isEventRequest() {
 
 		boolean result;
-        Matcher matcher = PATH_PATTERN.matcher(request.getPath());
+		Matcher matcher = PATH_PATTERN.matcher(request.getPath());
 
-        if (!matcher.matches()) {
-        	result = false;
-        }
-        else {
+		if (!matcher.matches()) {
+			result = false;
+		}
+		else {
 
-	        String nestedComponentId = matcher.group(NESTED_ID);
+			String nestedComponentId = matcher.group(NESTED_ID);
 			result = nestedComponentId != null;
-			
-        }
-        
-        return result;
-		
+
+		}
+
+		return result;
+
+	}
+
+	/**
+	 * Tells if a given object can be removed in this context. It must be overriden if you have some
+	 * rules about when an object can be removed. This implementation just returns
+	 * <code>getAuthorizer().canRemove(object)</code>.
+	 * 
+	 * @param object a {@link #T}.
+	 * @return a <code>boolean</code>.
+	 */
+	protected boolean canRemove(T object) {
+		return getAuthorizer().canRemove(object);
+	}
+
+	/**
+	 * Returns the value of the <code>removeObjectNotAllowed</code> property.
+	 * 
+	 * @return a {@link boolean}.
+	 */
+	public boolean isRemoveObjectNotAllowed() {
+		return removeObjectNotAllowed;
 	}
 
 }
