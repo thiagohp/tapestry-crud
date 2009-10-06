@@ -256,6 +256,7 @@ public abstract class BaseEditPage<T, K extends Serializable> extends BasePage<T
 
 			page.setMessage(getSaveOrUpdateSuccessMessage());
 			returnValue = page;
+			setObject(null);
 
 		}
 		else {
