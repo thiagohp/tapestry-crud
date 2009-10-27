@@ -38,7 +38,9 @@ import br.com.arsmachina.tapestrycrud.tree.SingleTypeTreeService;
 import br.com.arsmachina.tapestrycrud.tree.TreeNode;
 
 /**
- * Mixin that provides a tree table-like functionality to {@link Grid}s.
+ * Mixin that provides a tree table-like functionality to {@link Grid}s. If you need to
+ * use more than one grid instance in the same page, make sure you wrap each one inside
+ * a <code>&lt;div&gt;</code>.
  * 
  * @author Thiago H. de Paula Figueiredo
  */
@@ -113,9 +115,8 @@ public class TreeGrid {
 		// we don't change grids that are not sorted in tree order. 
 		if (sortConstraints.isEmpty()) {
 		
-			final Element outerDiv = writer.getElement();
-			final Element div = childElements(outerDiv).get(0);
-			final Element table = childElements(div).get(0);
+			final Element element = writer.getElement();
+			final Element table = firstChild("table", "t-data-grid", element);
 			final List<Element> tableChildren = childElements(table);
 			
 			if (tableChildren.size() > 0) {
@@ -152,6 +153,56 @@ public class TreeGrid {
 			}
 			
 		}
+
+	}
+	
+	private Element firstChild(String tag, Element element) {
+
+		Element firstChild = null;
+
+		List<Element> children = childElements(element);
+
+		for (Element child : children) {
+
+			if (child.getName().equals(tag)) {
+				firstChild = child;
+			}
+			else {
+				firstChild = firstChild(tag, child);
+			}
+
+			if (firstChild != null) {
+				break;
+			}
+
+		}
+
+		return firstChild;
+
+	}
+
+	private Element firstChild(String tag, String className, Element element) {
+
+		Element firstChild = null;
+
+		List<Element> children = childElements(element);
+
+		for (Element child : children) {
+
+			if (child.getName().equals(tag) && child.getAttribute("class").equals(className)) {
+				firstChild = child;
+			}
+			else {
+				firstChild = firstChild(tag, child);
+			}
+
+			if (firstChild != null) {
+				break;
+			}
+
+		}
+
+		return firstChild;
 
 	}
 
